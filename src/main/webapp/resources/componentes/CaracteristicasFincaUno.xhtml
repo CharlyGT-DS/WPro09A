@@ -1,0 +1,97 @@
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+       xmlns:h="http://xmlns.jcp.org/jsf/html"
+       xmlns:p="http://primefaces.org/ui"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:gis="http://gisfaces.com">
+
+    <cc:interface>
+        <!-- Atributos que se pueden pasar al componente -->
+        <cc:attribute name="gestion_id" type="java.lang.String" required="false" />
+    </cc:interface>
+
+    <!-- ✅ Esta sección va después, y JSF la enlaza con la interfaz -->
+    <cc:implementation>
+
+        <p:panel header="V. CARACTERÍSTICAS DE LA FINCA">
+
+            <div style="width:100%; box-sizing:border-box; padding:0;">
+
+                <h:outputLabel value="5.1 Uso actual de la finca" style="font-weight:bold;"/>
+
+                <p:panelGrid columns="3" layout="grid" style="width: 100%;">
+                    <h:outputLabel value="Área total de la finca (ha):"/>
+                    <h:outputLabel value="Área restante (ha):"/>
+                    <h:outputLabel value="Área total a intervenir (ha):"/>
+                </p:panelGrid>
+
+
+                <p:panelGrid columns="3" layout="grid" style="width: 80%; margin-bottom:0;">
+                    <h:outputLabel for="campo10" value="Uso de finca:" />
+                    <h:outputLabel for="campo20" value="Área en (ha):" />
+                </p:panelGrid>
+
+                <p:panelGrid columns="3" layout="grid" style="width: 80%; margin-top:0;">
+                    <p:selectOneMenu id="campo10" style="width: 100%" value="#{bean.valor1}">
+                        <f:selectItems value="#{bean.opciones1}" />
+                    </p:selectOneMenu>
+
+                    <h:inputText id="campo20" value="#{bean.valor2}" style="width: 100%"/>
+
+                    <p:commandButton type="button" value="Agregar" style="min-width:120px"/>
+                </p:panelGrid>
+
+
+                <p:dataTable id="basicDT" var="Dt" value="#{usoSuelo.lista}">
+                    <p:column headerText="Uso">
+                        <h:outputText value="#{Dt.uso}" />
+                    </p:column>
+
+                    <p:column headerText="Area en (ha)">
+                        <h:outputText value="#{Dt.area}" />
+                    </p:column>
+
+                    <p:column headerText="Porcentaje (%)">
+                        <h:outputText value="#{Dt.porcentaje}" />
+                    </p:column>
+
+                    <p:column headerText="Quitar" style="width:3rem;text-align: center">
+                        <p:commandButton icon="pi pi-times-circle" styleClass="ui-button-danger" action="#{usoSueloBean.eliminar(item)}" 
+                                         update="basicDT"/>
+                    </p:column>
+
+                    <p:columnGroup type="footer">
+                        <p:row>
+                            <p:column footerText="Total: " class="text-right font-bold"/>
+                            <p:column footerText=" #{usoSuelo.totalArea}" class="font-bold"/>
+                            <p:column footerText="#{usoSuelo.totalPorcentaje}" class="font-bold"/>
+                        </p:row>
+                    </p:columnGroup>    
+                </p:dataTable>
+                
+                <!--
+                <h:outputText value="#{usoSuelo.totalArea}"/>
+                <br/>
+                <h:outputText value="DEBUG TOTAL %: #{usoSuelo.totalPorcentaje}" />
+                -->
+
+            </div>
+
+            <p:panelGrid columns="2" layout="grid" style="width: 80%;">
+                <p:commandButton type="button" value="Clic para cambiar mapa de fincas" style="min-width:250px"/>
+                <p:commandButton type="button" value="Ver Mapa" icon="pi pi-image" iconPos="right" style="min-width:100px"/>
+            </p:panelGrid>
+
+            <div style="margin:20px 0 2px 0;">
+                <h:outputText value="Habilitar árboles fuera de bosque" styleClass="mr-2"/>
+                <p:selectBooleanCheckbox value="#{selectBooleanView.value1}" />
+            </div>
+
+            <div style="text-align:right; margin-top:20px;">
+                <p:commandButton type="button" value="Guardar" icon="pi pi-arrow-circle-right" iconPos="right" style="min-width:120px"/>
+            </div>
+        </p:panel>
+
+    </cc:implementation>
+</html>

@@ -14,9 +14,45 @@
     <!-- ✅ Esta sección va después, y JSF la enlaza con la interfaz -->
     <cc:implementation>
         
-  
-        
-        
+        <p:panel header="IV. DESCRIPCIÓN BIOFÍSICA DEL ÁREA">
+
+            <div style="width:100%; box-sizing:border-box; padding:0;">
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin-bottom:2px;">
+                    <h:outputLabel for="TextAreaUno" value="Ubicación altitudinal y topografía" style="font-weight:bold;"/>
+                    <i class="pi pi-question-circle" title="Describa la altitud, pendiente y forma del terreno del área evaluada."
+                       style="cursor:help; color:black;"/>
+                </div>
+                <p:inputTextarea id="TextAreaUno" rows="5" autoResize="false" style="width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <h:outputLabel for="TextAreaDos" value="Zona de vida" style="font-weight:bold;"/>
+                    <i class="pi pi-question-circle" title="Indique la zona de vida según clasificación ecológica."
+                       style="cursor:help; color:black;"/>
+                </div>
+                <p:inputTextarea id="TextAreaDos" rows="5" autoResize="false" style="width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <h:outputLabel for="TextAreaTres" value="Hidrografía" style="font-weight:bold;"/>
+                    <i class="pi pi-question-circle" title="Describa ríos, quebradas, lagos u otras fuentes de agua presentes."
+                       style="cursor:help; color:black;"/>
+                </div>
+                <p:inputTextarea id="TextAreaTres" rows="5" autoResize="false"
+                                 style="width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <h:outputLabel for="TextAreaCuatro" value="Características del bosque" style="font-weight:bold;"/>
+                    <i class="pi pi-question-circle" title="Describa tipo de bosque, especies dominantes y estado de conservación."
+                       style="cursor:help; color:black;"/>
+                </div>
+                <p:inputTextarea id="TextAreaCuatro" rows="5" autoResize="false" style="width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="text-align:right; margin-top:20px;">
+                    <p:commandButton type="button" value="Guardar" icon="pi pi-arrow-circle-right" iconPos="right" style="min-width:120px"/>
+                </div>
+
+            </div>
+        </p:panel>
+   
     </cc:implementation>
 </html>
-

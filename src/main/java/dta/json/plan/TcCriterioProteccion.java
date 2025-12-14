@@ -9,22 +9,29 @@ import java.util.Date;
 
 /**
  *
- * @author csandoval
+ * @author WINDOWS
  */
-public class Uso implements Serializable{
+public class TcCriterioProteccion implements Serializable{
     
-    private int usoFincaGestionId;
+    private int criterioProteccionId;
+    private String criterioProteccionDesc;
     private int estadoId;
     private Date fechaRegistro;
-    private TcUsoFinca tcUsoFinca;
-    private double area;
 
-    public int getUsoFincaGestionId() {
-        return usoFincaGestionId;
+    public int getCriterioProteccionId() {
+        return criterioProteccionId;
     }
 
-    public void setUsoFincaGestionId(int usoFincaGestionId) {
-        this.usoFincaGestionId = usoFincaGestionId;
+    public void setCriterioProteccionId(int criterioProteccionId) {
+        this.criterioProteccionId = criterioProteccionId;
+    }
+
+    public String getCriterioProteccionDesc() {
+        return criterioProteccionDesc;
+    }
+
+    public void setCriterioProteccionDesc(String criterioProteccionDesc) {
+        this.criterioProteccionDesc = criterioProteccionDesc;
     }
 
     public int getEstadoId() {
@@ -41,22 +48,6 @@ public class Uso implements Serializable{
 
     public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
-    }
-
-    public TcUsoFinca getTcUsoFinca() {
-        return tcUsoFinca;
-    }
-
-    public void setTcUsoFinca(TcUsoFinca tcUsoFinca) {
-        this.tcUsoFinca = tcUsoFinca;
-    }
-
-    public double getArea() {
-        return area;
-    }
-
-    public void setArea(double area) {
-        this.area = area;
     }
     
     

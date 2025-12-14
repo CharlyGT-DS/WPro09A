@@ -1,0 +1,175 @@
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+       xmlns:h="http://xmlns.jcp.org/jsf/html"
+       xmlns:p="http://primefaces.org/ui"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:gis="http://gisfaces.com">
+
+    <cc:interface>
+        <!-- Atributos que se pueden pasar al componente -->
+        <cc:attribute name="gestion_id" type="java.lang.String" required="false" />
+    </cc:interface>
+
+    <!-- ✅ Esta sección va después, y JSF la enlaza con la interfaz -->
+    <cc:implementation>
+        <p:growl id="horror" life="5000"/>
+
+        <p:outputPanel id="SecUno">
+            <p:panel header="VII. RESUMEN PLAN DE MANEJO FORESTAL">
+
+                <h:outputLabel value="5.1 Uso actual de la finca" style="font-weight:bold;"/>
+
+                    <p:panelGrid columns="4" style="width: 100%;">
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Vigencia del plan (años):"/>
+                                <p:inputText id="txtVigenciaPlan" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
+                                             style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+                            </p:column>
+                            
+                            <p:column>
+                                <p:outputLabel value="Tiempo de ejecución de la extracción (meses):"/>
+                                <p:inputText id="txtTiempoEjecucion" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
+                                             style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+                            </p:column>
+                            
+                            <p:column>
+                                <p:outputLabel value="Edad de rotación (años):"/>
+                                <p:inputText id="txtEdadRotacion" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
+                                             style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+                            </p:column>
+                            
+                            <p:column>
+                                <p:outputLabel value="Número de turnos:"/>
+                                <p:inputText id="txtNumeroturnos" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
+                                             style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+                            </p:column>
+                            
+                        </p:row>
+                    </p:panelGrid>
+
+            </p:panel>
+        </p:outputPanel>
+
+
+        <!-- *************************************************Sec dos ************************************************-->
+
+        <p:outputLabel value="5.2 BOSQUE DE LA FINCA" style="margin-top:50px;"/>
+
+        <p:outputPanel id="SecDos">
+
+            <p:panel header="5.2.1 DIVISIÓN CON BÓSQUE">
+
+                
+                <p:panelGrid columns="4" style="width: 100%;" layout="grid" styleClass="ui-fluid">
+                    <p:row>
+                        <p:column  style="width: 25%;">
+                             <p:outputLabel value="Sistema de manejo:"/>
+                            <p:selectOneMenu id="somSisManejo" required="true" requiredMessage="Seleccione un tipo de bosque" 
+                                             value="#{caracteristicasFinca.tipoSeleccionado}" converter="tipoBosqueConverter" filter="true" 
+                                             filterMatchMode="contains" style="width:100%">
+                                <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{caracteristicasFinca.listaTipoBosque}" var="lisTipoBosque" itemValue="#{lisTipoBosque}"
+                                               itemLabel="#{lisTipoBosque.tipoBosqueDesc}" />
+                                <f:attribute name="listaTipoBosque" value="#{caracteristicasFinca.listaTipoBosque}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+
+                        <p:column colspan="2"  style="width: 50%;">
+                             <p:outputLabel value="Tipo de garantía:"/>
+                            <p:selectOneMenu id="somTipoGarantia" required="true" requiredMessage="Seleccione un tipo de bosque" 
+                                             value="#{caracteristicasFinca.tipoSeleccionado}" converter="tipoBosqueConverter" filter="true" 
+                                             filterMatchMode="contains" style="width:100%">
+                                <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{caracteristicasFinca.listaTipoBosque}" var="lisTipoBosque" itemValue="#{lisTipoBosque}"
+                                               itemLabel="#{lisTipoBosque.tipoBosqueDesc}" />
+                                <f:attribute name="listaTipoBosque" value="#{caracteristicasFinca.listaTipoBosque}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+
+                        <p:column  style="width: 25%;">
+                             <p:outputLabel value="Tipo de fiador:"/>
+                            <p:selectOneMenu id="somTipoFiador" required="true" requiredMessage="Seleccione un tipo de bosque" 
+                                             value="#{caracteristicasFinca.tipoSeleccionado}" converter="tipoBosqueConverter" filter="true" 
+                                             filterMatchMode="contains" style="width:100%">
+                                <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{caracteristicasFinca.listaTipoBosque}" var="lisTipoBosque" itemValue="#{lisTipoBosque}"
+                                               itemLabel="#{lisTipoBosque.tipoBosqueDesc}" />
+                                <f:attribute name="listaTipoBosque" value="#{caracteristicasFinca.listaTipoBosque}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+
+                    </p:row>
+
+                    <p:row>
+                        <p:column >
+                           <p:outputLabel value="Nombre del fiador (o representante):"/>
+                                <p:inputText id="txtNombreFiador" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
+                                             style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+
+                        </p:column>
+                        
+                        <p:column >
+                           <p:outputLabel value="DPI del fiador(o representante):"/>
+                                <p:inputText id="txtDpiFiador" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
+                                             style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+
+                        </p:column>
+                        
+                        <p:column >
+                           <p:outputLabel value="Regente propuesto:"/>
+                            <p:selectOneMenu id="somregente" required="true" requiredMessage="Seleccione un tipo de bosque" 
+                                             value="#{caracteristicasFinca.tipoSeleccionado}" converter="tipoBosqueConverter" filter="true" 
+                                             filterMatchMode="contains" style="width:100%">
+                                <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{caracteristicasFinca.listaTipoBosque}" var="lisTipoBosque" itemValue="#{lisTipoBosque}"
+                                               itemLabel="#{lisTipoBosque.tipoBosqueDesc}" />
+                                <f:attribute name="listaTipoBosque" value="#{caracteristicasFinca.listaTipoBosque}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        
+                        <p:column >
+                            <p:outputLabel value="Corta anual permisible (CAP m³):"/>
+                            <p:outputLabel value=""/>
+                        </p:column>
+                        
+                    </p:row>
+                </p:panelGrid>
+
+                <div style="text-align:left; margin-top:20px;">
+                    <p:outputLabel value="Incremento anual m3/ha:"/>
+                    <p:outputLabel value=""/>
+
+                </div>
+
+                <div style="text-align:right; margin-top:20px;">
+                    <p:commandButton value="Guardar" ajax="true" process=":form:tabw:incrustado:SecDos" update=":form:tabw:incrustado:horror" 
+                                     action="#{caracteristicasFinca.guardarSecDos}" icon="pi pi-arrow-circle-right" iconPos="right"/>
+
+                </div>
+
+            </p:panel>
+
+        </p:outputPanel>   
+
+    </cc:implementation>
+</html>

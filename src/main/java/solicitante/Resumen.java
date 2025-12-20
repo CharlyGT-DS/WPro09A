@@ -4,7 +4,6 @@
  */
 package solicitante;
 
-import EJB.DBaseLocal;
 import MANEJADORES.MHHome;
 import PATRONES.FacadePlan;
 import com.google.gson.Gson;
@@ -28,8 +27,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import org.primefaces.PrimeFaces;
 
 /**
@@ -39,6 +36,14 @@ import org.primefaces.PrimeFaces;
 @Named(value = "resumen")
 @ViewScoped
 public class Resumen implements Serializable {
+    
+     // inversion del control, iyectado el recurso
+    @Inject
+    private MHHome mhome;
+    
+    private SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    
+    private Gson gs = new Gson();
 
     private List<TcTipoGarantia> listaTipoGarantia = new ArrayList<>();
     private TcTipoGarantia tipoGarantiaSeleccionado = new TcTipoGarantia();
@@ -46,22 +51,19 @@ public class Resumen implements Serializable {
     private TcSistemaCorta sistemaSeleccionado = new TcSistemaCorta();
     private List<TcTipoFiador> listaTipofiador = new ArrayList<>();
     private TcTipoFiador tipoFiadorSeleccionado = new TcTipoFiador();
-
     private List<TcRegentePropuesto> listaRegentePorpuesto = new ArrayList<>();
     private TcRegentePropuesto RegenteSeleccionado = new TcRegentePropuesto();
 
-    private SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
-    // inversion del control, iyectado el recurso
-    @Inject
-    private MHHome mhome;
-
+    private double vigenciaPlan;
+    private double tiempoEjecucion;
+    private double edadRotacion;
+    private double numeroTurnos;
     private String nombreRepresentante;
     private String dpiRepresentante;
     private double cortaAnual;
     private double incrementeAnual;
 
-    private Gson gs = new Gson();
+    
 
     public List<TcTipoGarantia> getListaTipoGarantia() {
         return listaTipoGarantia;
@@ -159,6 +161,39 @@ public class Resumen implements Serializable {
         this.incrementeAnual = incrementeAnual;
     }
 
+    public double getVigenciaPlan() {
+        return vigenciaPlan;
+    }
+
+    public void setVigenciaPlan(double vigenciaPlan) {
+        this.vigenciaPlan = vigenciaPlan;
+    }
+
+    public double getTiempoEjecucion() {
+        return tiempoEjecucion;
+    }
+
+    public void setTiempoEjecucion(double tiempoEjecucion) {
+        this.tiempoEjecucion = tiempoEjecucion;
+    }
+
+    public double getEdadRotacion() {
+        return edadRotacion;
+    }
+
+    public void setEdadRotacion(double edadRotacion) {
+        this.edadRotacion = edadRotacion;
+    }
+
+    public double getNumeroTurnos() {
+        return numeroTurnos;
+    }
+
+    public void setNumeroTurnos(double numeroTurnos) {
+        this.numeroTurnos = numeroTurnos;
+    }
+
+    
     @PostConstruct
     public void init() { 
         // carga de todos las garantias

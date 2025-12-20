@@ -24,37 +24,33 @@
                     <p:row>
                         <p:column>
                             <p:outputLabel value="Vigencia del plan (años):"/>
-                            <p:inputText id="txtVigenciaPlan" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
-                                         style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
-                                <p:keyFilter mask="num" />
-                                <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                            <p:inputText id="txtVigenciaPlan" required="true" requiredMessage="Ingrese Área" value="#{resumen.vigenciaPlan}" 
+                                         style="width: 100%" readonly="true">
+                                <f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="0"/>
                             </p:inputText>
                         </p:column>
 
                         <p:column>
                             <p:outputLabel value="Tiempo de ejecución de la extracción (meses):"/>
-                            <p:inputText id="txtTiempoEjecucion" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
-                                         style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
-                                <p:keyFilter mask="num" />
-                                <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                            <p:inputText id="txtTiempoEjecucion" required="true" requiredMessage="Ingrese Área" value="#{resumen.tiempoEjecucion}" 
+                                         style="width: 100%" readonly="true">
+                                <f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="0"/>
                             </p:inputText>
                         </p:column>
 
                         <p:column>
                             <p:outputLabel value="Edad de rotación (años):"/>
-                            <p:inputText id="txtEdadRotacion" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
-                                         style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
-                                <p:keyFilter mask="num" />
-                                <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                            <p:inputText id="txtEdadRotacion" required="true" requiredMessage="Ingrese Área" value="#{resumen.edadRotacion}" 
+                                         style="width: 100%" readonly="true">
+                                <f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="0"/>
                             </p:inputText>
                         </p:column>
 
                         <p:column>
                             <p:outputLabel value="Número de turnos:"/>
-                            <p:inputText id="txtNumeroturnos" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
-                                         style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
-                                <p:keyFilter mask="num" />
-                                <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                            <p:inputText id="txtNumeroturnos" required="true" requiredMessage="Ingrese Área" value="#{resumen.numeroTurnos}" 
+                                         style="width: 100%" readonly="true">
+                                <f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="0"/>
                             </p:inputText>
                         </p:column>
 
@@ -73,8 +69,8 @@
 
 
                 <p:panelGrid columns="4" style="width: 100%;" layout="grid" styleClass="ui-fluid">
-                    <p:row>
-                        <p:column  style="width: 25%;">
+                   
+                        <p:column>
                             <p:outputLabel value="Sistema de manejo:"/>
                             <p:selectOneMenu id="somSisManejo" required="true" requiredMessage="Seleccione un sistema de manejo" 
                                              value="#{resumen.sistemaSeleccionado}" converter="sistemaCortaConverter" filter="true" 
@@ -86,11 +82,12 @@
                             </p:selectOneMenu>
                         </p:column>
 
-                        <p:column colspan="2"  style="width: 50%;">
+                        <p:column class="col-12 md:col-12 lg:col-6">
                             <p:outputLabel value="Tipo de garantía:"/>
                             <p:selectOneMenu id="somTipoGarantia" required="true" requiredMessage="Seleccione un tipo de garantia" 
                                              value="#{resumen.tipoGarantiaSeleccionado}" converter="tipoGarantiaConverter" filter="true" 
-                                             filterMatchMode="contains" style="width:100%">
+                                             filterMatchMode="contains" style="width:100%" appendTo="@this" autoWidth="false" 
+                                             panelStyle="width:95%;">
                                 <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
                                 <f:selectItems value="#{resumen.listaTipoGarantia}" var="lisTipoGarantia" itemValue="#{lisTipoGarantia}"
                                                itemLabel="#{lisTipoGarantia.tipoGarantiaDesc}" />
@@ -98,7 +95,7 @@
                             </p:selectOneMenu>
                         </p:column>
 
-                        <p:column  style="width: 25%;">
+                        <p:column>
                             <p:outputLabel value="Tipo de fiador:"/>
                             <p:selectOneMenu id="somTipoFiador" required="true" requiredMessage="Seleccione un tipo de fiador" 
                                              value="#{resumen.tipoFiadorSeleccionado}" converter="tipoFiadorConverter" filter="true" 
@@ -110,9 +107,9 @@
                             </p:selectOneMenu>
                         </p:column>
 
-                    </p:row>
+                    </p:panelGrid>
 
-                    <p:row>
+                 <p:panelGrid columns="4" style="width: 100%;" layout="grid" styleClass="ui-fluid">
                         <p:column >
                             <p:outputLabel value="Nombre del fiador (o representante):"/>
                             <p:inputText id="txtNombreFiador" required="true" requiredMessage="Ingrese Área" value="#{resumen.nombreRepresentante}" 
@@ -140,18 +137,18 @@
                         </p:column>
 
                         <p:column >
-                            <p:outputLabel value="Corta anual permisible (CAP m³):"/>
-                            <p:outputLabel value=""/>
+                            <p:outputLabel value="Corta anual permisible (CAP m³): "/>
+                            <p:outputLabel value="#{resumen.cortaAnual}" style="width: 100%;"/>
                         </p:column>
 
-                    </p:row>
+                   
+                        <p:column >
+                            <p:outputLabel value="Incremento anual m3/ha: "/>
+                            <p:outputLabel value="#{resumen.incrementeAnual}" style="width: 100%;"/>
+
+                        </p:column>
+                   
                 </p:panelGrid>
-
-                <div style="text-align:left; margin-top:20px;">
-                    <p:outputLabel value="Incremento anual m3/ha:"/>
-                    <p:outputLabel value=""/>
-
-                </div>
 
                 <p:panelGrid columns="3">
                     <p:column>
@@ -173,7 +170,7 @@
                     <p:column>
                         <p:dataTable>
                             <p:column headerText="Sistema de repoblación">
-                                <p:outputLabel value=""/>
+                                <p:outputLabel value="" />
                             </p:column>
                         </p:dataTable>
                     </p:column>

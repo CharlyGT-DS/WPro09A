@@ -15,10 +15,23 @@ public class TcUsoFinca implements Serializable {
 
     private int usoFincaId;
     private String usoFincaDesc;
-    private Object codigo;
+    private String codigo;
     private int estadoId;
     private Date fechaRegistro;
 
+    public TcUsoFinca() {
+    }
+
+    public TcUsoFinca(int usoFincaId, String usoFincaDesc, String codigo, int estadoId, Date fechaRegistro) {
+        this.usoFincaId = usoFincaId;
+        this.usoFincaDesc = usoFincaDesc;
+        this.codigo = codigo;
+        this.estadoId = estadoId;
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    
+    
     public int getUsoFincaId() {
         return usoFincaId;
     }
@@ -35,11 +48,11 @@ public class TcUsoFinca implements Serializable {
         this.usoFincaDesc = usoFincaDesc;
     }
 
-    public Object getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Object codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 

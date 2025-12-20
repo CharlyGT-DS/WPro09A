@@ -18,6 +18,16 @@ public class TcCriterioProteccion implements Serializable{
     private int estadoId;
     private Date fechaRegistro;
 
+    public TcCriterioProteccion() {
+    }
+
+    public TcCriterioProteccion(int criterioProteccionId, String criterioProteccionDesc, int estadoId, Date fechaRegistro) {
+        this.criterioProteccionId = criterioProteccionId;
+        this.criterioProteccionDesc = criterioProteccionDesc;
+        this.estadoId = estadoId;
+        this.fechaRegistro = fechaRegistro;
+    }
+
     public int getCriterioProteccionId() {
         return criterioProteccionId;
     }

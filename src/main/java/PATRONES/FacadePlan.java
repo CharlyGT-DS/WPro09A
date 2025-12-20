@@ -18,9 +18,28 @@ public class FacadePlan {
     
     public static RespuestaValidacion verificaArea(double area){
         return VALIDACIONES.ValidacionesNumericas.validarArea(area);
+    } 
+    
+    
+    public static RespuestaValidacion verificaAreas(String[] nombresCampos, double... areas) {
+
+        for (int i = 0; i < areas.length; i++) {
+            
+            // Validación individual
+            RespuestaValidacion res = verificaArea(areas[i]);
+
+            // Si falla
+            if (!res.isResultado()) {
+                res.setDescripcion(nombresCampos[i] + ": " + res.getDescripcion()
+                );
+                return res;
+            }
+        }
+        // Todas válidas
+        return new RespuestaValidacion("0", "Validación correcta", true);
     }
     
-    
-    
-    
+    public static RespuestaValidacion verificaDPI(String dpi) {
+        return VALIDACIONES.ValidacionesNumericas.validarDPI(dpi);
+    }
 }

@@ -19,6 +19,19 @@ public class TcTipoBosque implements Serializable{
     public Date fechaRegistro;
     public int ocultar;
 
+    public TcTipoBosque() {
+    }
+
+    public TcTipoBosque(int tipoBosqueId, String tipoBosqueDesc, int estadoId, Date fechaRegistro, int ocultar) {
+        this.tipoBosqueId = tipoBosqueId;
+        this.tipoBosqueDesc = tipoBosqueDesc;
+        this.estadoId = estadoId;
+        this.fechaRegistro = fechaRegistro;
+        this.ocultar = ocultar;
+    }
+
+    
+    
     public int getTipoBosqueId() {
         return tipoBosqueId;
     }

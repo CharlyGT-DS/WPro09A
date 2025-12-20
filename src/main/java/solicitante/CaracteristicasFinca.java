@@ -14,8 +14,12 @@ import dta.json.plan.TcUsoFinca;
 import estructuras.RespuestaValidacion;
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -51,7 +55,9 @@ public class CaracteristicasFinca implements Serializable {
     private String tipoBosque;
     private String criterioProteccion;
     private List<DtCriterioProteccion> datosDtCriterioProteccion = new ArrayList<>();
-
+    
+    private SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    
     // este es un api de comunicacion
     @Inject
     private MHHome mhome;
@@ -91,8 +97,6 @@ public class CaracteristicasFinca implements Serializable {
     public void setCriterioSeleccionado(TcCriterioProteccion criterioSeleccionado) {
         this.criterioSeleccionado = criterioSeleccionado;
     }
-    
-    
 
     public List<DtCriterioProteccion> getDatosDtCriterioProteccion() {
         return datosDtCriterioProteccion;
@@ -218,17 +222,77 @@ public class CaracteristicasFinca implements Serializable {
     @PostConstruct
     public void init() {
         // cargan todos los datos de la finca  
-        Type tipoListaUso = new TypeToken<List<TcUsoFinca>>() {}.getType();
-        listaUsoFinca = this.gs.fromJson(UTILIDADES.UtilidadesCarga.jsonUSOFinca, tipoListaUso);
+        this.listaUsoFinca.clear(); 
+        String sqlUso = UTILIDADES.SQL.usoFinca();
+        List<java.util.LinkedHashMap> listaUsoF = (List<java.util.LinkedHashMap>) this.mhome.getApi().convierteObjetoLista(sqlUso, java.util.LinkedHashMap.class);
+        TcUsoFinca temporalUso = null;
+        int idUso, idEstadoUso;
+        for (java.util.LinkedHashMap c : listaUsoF) {
+
+            try {
+                idUso = (int) Double.parseDouble(c.get("uso_finca_id").toString());
+                idEstadoUso = (int) Double.parseDouble(c.get("estado_id").toString());
+                String codigo = c.get("codigo") != null ? c.get("codigo").toString() : "";
+                temporalUso = new TcUsoFinca(idUso, c.get("uso_finca_desc").toString(), codigo ,idEstadoUso, formato.parse(c.get("fecha_registro").toString()));
+
+                this.listaUsoFinca.add(temporalUso);
+            } catch (ParseException ex) {
+                Logger.getLogger(Resumen.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
         
-        Type tipoListaTipo = new TypeToken<List<TcTipoBosque>>() {}.getType();
-        listaTipoBosque = this.gs.fromJson(UTILIDADES.UtilidadesCarga.jsonTipoBosque, tipoListaTipo);
+        this.listaTipoBosque.clear(); 
+        String sqlTipo = UTILIDADES.SQL.tipoBosque();
+        List<java.util.LinkedHashMap> listaTipoB = (List<java.util.LinkedHashMap>) this.mhome.getApi().convierteObjetoLista(sqlTipo, java.util.LinkedHashMap.class);
+        TcTipoBosque temporalBosque = null;
+        int idTipo, idEstadoTipo, ocultar;
+        for (java.util.LinkedHashMap c : listaTipoB) {
+
+            try {
+                idTipo = (int) Double.parseDouble(c.get("tipo_bosque_id").toString());
+                idEstadoTipo = (int) Double.parseDouble(c.get("estado_id").toString());
+                ocultar = (int) Double.parseDouble(c.get("ocultar").toString());
+                temporalBosque = new TcTipoBosque(idTipo, c.get("tipo_bosque_desc").toString(), idEstadoTipo, formato.parse(c.get("fecha_registro").toString()), ocultar);
+
+                this.listaTipoBosque.add(temporalBosque);
+            } catch (ParseException ex) {
+                Logger.getLogger(Resumen.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
         
-        Type tipoListaCriterio = new TypeToken<List<TcCriterioProteccion>>() {}.getType();
-        listaCriterioProteccion = this.gs.fromJson(UTILIDADES.UtilidadesCarga.jsonCriterioProteccion, tipoListaCriterio);
+        this.listaCriterioProteccion.clear(); 
+        String sqlCriterio = UTILIDADES.SQL.criterioProteccion();
+        List<java.util.LinkedHashMap> listaCriterioP = (List<java.util.LinkedHashMap>) this.mhome.getApi().convierteObjetoLista(sqlCriterio, java.util.LinkedHashMap.class);
+        TcCriterioProteccion temporalCriterio = null;
+        int idCriterio, idEstadoCriterio;
+        for (java.util.LinkedHashMap c : listaCriterioP) {
+
+            try {
+                idCriterio = (int) Double.parseDouble(c.get("criterio_proteccion_id").toString());
+                idEstadoCriterio = (int) Double.parseDouble(c.get("estado_id").toString());
+                temporalCriterio = new TcCriterioProteccion(idCriterio, c.get("criterio_proteccion_desc").toString(), idEstadoCriterio, formato.parse(c.get("fecha_registro").toString()));
+
+                this.listaCriterioProteccion.add(temporalCriterio);
+            } catch (ParseException ex) {
+                Logger.getLogger(Resumen.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        
+//        Type tipoListaUso = new TypeToken<List<TcUsoFinca>>() {
+//        }.getType();
+//        listaUsoFinca = this.gs.fromJson(UTILIDADES.UtilidadesCarga.jsonUSOFinca, tipoListaUso);
+
+//        Type tipoListaTipo = new TypeToken<List<TcTipoBosque>>() {
+//        }.getType();
+//        listaTipoBosque = this.gs.fromJson(UTILIDADES.UtilidadesCarga.jsonTipoBosque, tipoListaTipo);
+//
+//        Type tipoListaCriterio = new TypeToken<List<TcCriterioProteccion>>() {
+//        }.getType();
+//        listaCriterioProteccion = this.gs.fromJson(UTILIDADES.UtilidadesCarga.jsonCriterioProteccion, tipoListaCriterio);
     }
-    
-    
 
     // Seccion uno V. CARACTERÍSTICAS DE LA FINCA ----------------------------------------
     public void agregarDatoUso() {
@@ -262,11 +326,10 @@ public class CaracteristicasFinca implements Serializable {
                 porcentaje = Math.round(porcentaje * 100.0) / 100.0;
                 d.setPorcentajeUso(porcentaje);
             }
-            
+
             // RESETEAR CAMPOS
             areaHaUso = 0;            // para el inputNumber
             usoSeleccionado = null;   // para el selectOneMenu
-
 
         }
     }
@@ -318,48 +381,48 @@ public class CaracteristicasFinca implements Serializable {
             System.out.println("Área: " + uso.getAreaHaUso());
             System.out.println("Porcentaje: " + uso.getPorcentajeUso());
         });
-        
+
         FacesContext.getCurrentInstance().addMessage(
-                    null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Los datos se guardaron correctamente.", "Exito"));
+                null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Los datos se guardaron correctamente.", "Exito"));
 
     }
 
     // seccion dos 5.2.1 DIVISIÓN CON BÓSQUE -----------------------------------------------------
+    
     public void agregarDatoCriterio() {
         System.out.println("==== se ejecuto el metodo ag sc2****************************************** ====");
-        RespuestaValidacion res = FacadePlan.verificaArea(this.areaHaCriterio);
-        if (!(res.isResultado())) {
-            System.out.println("entro al if de error");
-            System.out.println(res.toString());
-
+        RespuestaValidacion res = FacadePlan.verificaAreas(
+                new String[]{"Area ingreso", "Área de protección"}, areaHaCriterio, areaProteccion);
+        if (!res.isResultado()) {
             FacesContext.getCurrentInstance().
                     addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, res.toString(), res.toString()));
             PrimeFaces.current().ajax().update(":form:tabw:incrustado:horror");
-        }else {
-        DtCriterioProteccion datoC = new DtCriterioProteccion();
-        datoC.setAreaHaCriterio(areaHaCriterio);
-        datoC.setCreterioProteccion(criterioProteccion);
+        } else {
+            DtCriterioProteccion datoC = new DtCriterioProteccion();
+            datoC.setCreterioProteccion(criterioSeleccionado.getCriterioProteccionDesc());
+            datoC.setAreaHaCriterio(areaHaCriterio);
+            
 
-        // Agregar registro
-        datosDtCriterioProteccion.add(datoC);
+            // Agregar registro
+            datosDtCriterioProteccion.add(datoC);
 
-        // cacular el nuevo total
-        double total = 0;
-        for (DtCriterioProteccion d : datosDtCriterioProteccion) {
-            total += d.getAreaHaCriterio();
-        }
+            // cacular el nuevo total
+            double total = 0;
+            for (DtCriterioProteccion d : datosDtCriterioProteccion) {
+                total += d.getAreaHaCriterio();
+            }
 
-        // Recalcular 
-        for (DtCriterioProteccion d : datosDtCriterioProteccion) {
-            double porcentaje = (d.getAreaHaCriterio() * 100) / total;
-            porcentaje = Math.round(porcentaje * 100.0) / 100.0;
-            d.setPorcentajeCriterio(porcentaje);
-        }
+            // Recalcular 
+            for (DtCriterioProteccion d : datosDtCriterioProteccion) {
+                double porcentaje = (d.getAreaHaCriterio() * 100) / total;
+                porcentaje = Math.round(porcentaje * 100.0) / 100.0;
+                d.setPorcentajeCriterio(porcentaje);
+            }
 
-        // Limpiar campos
-        areaHaCriterio = 0;
-        criterioProteccion = null;
-        
+            // Limpiar campos
+            areaHaCriterio = 0;
+            criterioProteccion = null;
+
         }
     }
 
@@ -396,15 +459,69 @@ public class CaracteristicasFinca implements Serializable {
     }
 
     public void guardarSecDos() {
-        System.out.println("==== se ejecuto el metodo ****************************************** ====");
-        System.out.println("area es: " + this.areaBosque);
-        System.out.println("area es: " + this.areaProteccion);
-        System.out.println("area es: " + this.areaProduccion);
-        System.out.println("area es: " + this.areaIntervenir);
-        System.out.println("area es: " + this.tipoSeleccionado);
-        System.out.println("area es: " + this.criterioSeleccionado);
-        System.out.println("area es: " + this.areaHaCriterio);
+           System.out.println("==== se ejecuto el metodo ****************************************** ====");
 
+            if (this.areaProteccion > 0) {
+
+        // 1️⃣ Debe existir desglose
+        if (datosDtCriterioProteccion == null || datosDtCriterioProteccion.isEmpty()) {
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            "Debe ingresar el desglose del Área de Protección",
+                            "Debe ingresar el desglose del Área de Protección"
+                    )
+            );
+            return; // ⛔ NO continúa
+        }
+
+        // 2️⃣ Sumar el desglose
+        double totalDesgloseProteccion = datosDtCriterioProteccion.stream()
+                .mapToDouble(a -> a.getAreaHaCriterio())
+                .sum();
+
+        // 3️⃣ Comparar contra el campo principal
+        if (Double.compare(totalDesgloseProteccion, this.areaProteccion) != 0) {
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            "El total del desglose de Área de Protección no coincide con el área ingresada",
+                            "Total desglose: " + totalDesgloseProteccion
+                                    + " | Área Protección: " + this.areaProteccion
+                    )
+            );
+            return; 
+        }
+    }
+           
+        RespuestaValidacion res = FacadePlan.verificaAreas(
+                new String[]{"Área con bosque", "Área de producción", "Área a intervenir"}, areaBosque, areaProduccion, areaIntervenir);
+
+        if (!res.isResultado()) {
+
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            res.getDescripcion(),
+                            res.getDescripcion()
+                    )
+            );
+        } else {
+
+         
+            System.out.println("area es: " + this.areaBosque);
+            System.out.println("area es: " + this.areaProteccion);
+            System.out.println("area es: " + this.areaProduccion);
+            System.out.println("area es: " + this.areaIntervenir);
+            System.out.println("area es: " + this.tipoSeleccionado);
+            System.out.println("area es: " + this.criterioSeleccionado);
+            System.out.println("area es: " + this.areaHaCriterio);
+            FacesContext.getCurrentInstance().addMessage(
+                null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Los datos se guardaron correctamente.", "Exito"));
+        }
     }
 
 }

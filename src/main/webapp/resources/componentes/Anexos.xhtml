@@ -1,0 +1,119 @@
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+       xmlns:h="http://xmlns.jcp.org/jsf/html"
+       xmlns:p="http://primefaces.org/ui"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:gis="http://gisfaces.com">
+
+    <cc:interface>
+        <!-- Atributos que se pueden pasar al componente -->
+        <cc:attribute name="gestion_id" type="java.lang.String" required="false" />
+    </cc:interface>
+
+    <!-- ✅ Esta sección va después, y JSF la enlaza con la interfaz -->
+    <cc:implementation>
+        <p:growl id="horror" life="5000"/>
+
+
+
+        <p:panel>
+            <f:facet name="header">
+                <strong>NOTA:</strong>
+                Todos los mapas deben de llevar la orientación del norte, escala gráfica y numérica, identidicación de vértices georreferencidos
+                con DATUM WGS 84, sistema de coordenadas GTM y grilla de cooredenadas, los cuales deberán aparecer de la leyenda debidamente anotado 
+                como parte de las referencias. Con respecto a la protección del recurso hídrico se deberá considerar la Normativa Forestal Vigente 
+                (Lay Forestal y su Reglamento, Lineamientos Técnicos de Manejo Forestal Sostenible, Código de Salud, entre otros).
+                <br/>
+                <strong>La descripción del anexo ésta lista, es únicamente referencia del documento que necesita escanear o crear y luego adjuntat. 
+                    En el caso de ser un grupo debe crear un solo ducumento por grupo. Por ejemplo si existe varios solicitantes debe crear un documento 
+                    PDF con todos los docuemntos de identificación solicitados y luego adjuntar la opción respectiva</strong>
+            </f:facet>
+
+            <h:form id="frmAnexos" enctype="multipart/form-data">
+
+                <p:dataTable id="dtAnexos"
+                             var="dtDocs"
+                             value="#{anexos.documentos}"
+                             styleClass="ui-datatable-sm"
+                             rowIndexVar="idx">
+                    <p:column headerText="No." style="width: 5%">
+                        #{idx + 1}
+                    </p:column>
+
+                    <p:column headerText="Anexo" style="width: 80%">
+                        #{dtDocs.nombre}
+                    </p:column>
+
+                    <p:column headerText="Opción" style="width: 15%">
+
+                        <!-- AGREGAR (cuando NO hay archivo) -->
+                        <p:commandButton value="Agregar"
+                                         icon="pi pi-upload"
+                                         rendered="#{!dtDocs.tieneArchivo}"
+                                         actionListener="#{anexos.prepararDialog}"
+                                         process="@this"
+                                         update=":form:tabw:compAnexos:frmAnexos:dlgUpload"
+                                         styleClass="ui-button-info">
+                            <f:attribute name="doc" value="#{dtDocs}" />
+                        </p:commandButton>
+
+                        <!-- VER (cuando SÍ hay archivo) -->
+                        <p:commandButton value="Abrir" icon="pi pi-eye"
+                                         rendered="#{dtDocs.tieneArchivo}"
+                                         actionListener="#{anexos.verArchivo(dtDocs)}"
+                                         styleClass="ui-button-secondary"/>
+
+                        <!-- CAMBIAR (cuando SÍ hay archivo) -->
+                        <p:commandButton value="Cambiar"
+                                         icon="pi pi-refresh"
+                                         rendered="#{dtDocs.tieneArchivo}"
+                                         actionListener="#{anexos.prepararDialog}"
+                                         process="@this"
+                                         update=":form:tabw:compAnexos:frmAnexos:dlgUpload">
+                            <f:attribute name="doc" value="#{dtDocs}" />
+                        </p:commandButton>
+
+                    </p:column>
+
+                </p:dataTable>
+
+                <!-- DIALOG DE SUBIDA -->
+                <p:dialog id="dlgUpload"
+                          header="#{empty anexos.documentoSeleccionado.nombreArchivo 
+                                    ? 'Subir archivo'
+                                    : 'Cambiar archivo'}"
+                          widgetVar="dlgUpload"
+                          modal="true"
+                          width="450">
+
+                    <p:panel rendered="#{not empty anexos.documentoSeleccionado.nombreArchivo}">
+                        Archivo actual:
+                        <strong>#{anexos.documentoSeleccionado.nombreArchivo}</strong>
+                    </p:panel>
+
+                     <p:messages />
+    <p:autoUpdate />
+
+                    <p:fileUpload mode="simple"
+                                  skinSimple="true"
+                                  allowTypes="/(\.|\/)(pdf|jpeg|jpg|png)$/"
+                                  sizeLimit="3145728"
+                                  label="Seleccionar archivo"
+                                  auto="true"
+                                  listener="#{anexos.subirArchivo}"
+                                  update=":form:tabw:compAnexos:frmAnexos:dtAnexos"
+                                  oncomplete="PF('dlgUpload').hide()" />
+                </p:dialog>
+
+
+
+            </h:form>
+
+
+
+        </p:panel>
+
+
+    </cc:implementation>
+</html>

@@ -13,9 +13,52 @@ import java.util.Date;
  */
 public class TcSistemaCorta implements Serializable{
     
-    public int sistemaCortaId;
-    public String sistemaCortaDesc;
-    public int estadoId;
-    public Date fechaRegistro;
+    private int sistemaCortaId;
+    private String sistemaCortaDesc;
+    private int estadoId;
+    private Date fechaRegistro;
+
+    public TcSistemaCorta() {
+    }
+
+    public TcSistemaCorta(int sistemaCortaId, String sistemaCortaDesc, int estadoId, Date fechaRegistro) {
+        this.sistemaCortaId = sistemaCortaId;
+        this.sistemaCortaDesc = sistemaCortaDesc;
+        this.estadoId = estadoId;
+        this.fechaRegistro = fechaRegistro;
+    }
+    
+    public int getSistemaCortaId() {
+        return sistemaCortaId;
+    }
+
+    public void setSistemaCortaId(int sistemaCortaId) {
+        this.sistemaCortaId = sistemaCortaId;
+    }
+
+    public String getSistemaCortaDesc() {
+        return sistemaCortaDesc;
+    }
+
+    public void setSistemaCortaDesc(String sistemaCortaDesc) {
+        this.sistemaCortaDesc = sistemaCortaDesc;
+    }
+
+    public int getEstadoId() {
+        return estadoId;
+    }
+
+    public void setEstadoId(int estadoId) {
+        this.estadoId = estadoId;
+    }
+
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+    
     
 }

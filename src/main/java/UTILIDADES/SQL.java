@@ -17,6 +17,27 @@ import lire042.DocumentoInab.SolicitudActualizacion.Contenido.Modificaciones.Det
 
 
 public class SQL implements Serializable{
+    
+    public static String criterioProteccion(){
+        return"select * from tc_criterio_proteccion limit 50;";
+    }
+    
+    public static String tipoBosque(){
+        return"select * from tc_tipo_bosque limit 50;";
+    }
+    
+    public static String usoFinca(){
+        return"select * from tc_uso_finca limit 50;";
+    }
+    
+    public static String sistemaCorta(){
+        return "select * from tc_sistema_corta limit 20;";
+    }
+    
+    public static String todasLasGarantias(){
+        
+        return "select * from tc_tipo_garantia limit 200";
+    }
 
     
     public static String consultaCentroFinca(String id_gestion){

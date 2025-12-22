@@ -61,8 +61,15 @@
                         <!-- VER (cuando SÍ hay archivo) -->
                         <p:commandButton value="Abrir" icon="pi pi-eye"
                                          rendered="#{dtDocs.tieneArchivo}"
-                                         actionListener="#{anexos.verArchivo(dtDocs)}"
-                                         styleClass="ui-button-secondary"/>
+                                         actionListener="#{anexos.previsualizarArchivo}"
+                                         styleClass="ui-button-secondary"
+                                         process="@this"
+                                         update=":form:tabw:compAnexos:frmAnexos:dlgPreview">
+
+                            <f:attribute name="doc" value="#{dtDocs}"/>
+
+
+                        </p:commandButton>
 
                         <!-- CAMBIAR (cuando SÍ hay archivo) -->
                         <p:commandButton value="Cambiar"
@@ -92,8 +99,8 @@
                         <strong>#{anexos.documentoSeleccionado.nombreArchivo}</strong>
                     </p:panel>
 
-                     <p:messages />
-    <p:autoUpdate />
+                    <p:messages />
+                    <p:autoUpdate />
 
                     <p:fileUpload mode="simple"
                                   skinSimple="true"
@@ -104,6 +111,77 @@
                                   listener="#{anexos.subirArchivo}"
                                   update=":form:tabw:compAnexos:frmAnexos:dtAnexos"
                                   oncomplete="PF('dlgUpload').hide()" />
+                </p:dialog>
+
+                <!-- DIALOG DE PREVIEW -->
+                <p:dialog id="dlgPreview" 
+                          header="Previsualización - #{anexos.documentoParaPrevisualizar.nombreArchivo}" 
+                          widgetVar="dlgPreview" 
+                          modal="true" 
+                          width="900" 
+                          height="700"
+                          responsive="true"
+                          dynamic="true"
+                          draggable="false"
+                          resizable="false">
+
+                    <h:panelGroup rendered="#{not empty anexos.documentoParaPrevisualizar}">
+
+                        <!-- Información del archivo -->
+                        <p:panel style="margin-bottom: 10px;">
+                            <h:panelGrid columns="2" cellpadding="5">
+                                <p:column>
+                                <h:outputText value="Nombre:"/>
+                                <h:outputText value="#{anexos.documentoParaPrevisualizar.nombreArchivo}"/>
+                                </p:column>
+                                
+                                <p:column>
+                                <h:outputText value="Tipo:"/>
+                                <h:outputText value="#{anexos.documentoParaPrevisualizar.tipoArchivo}"/>   
+                                </p:column>
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <!-- Previsualización para PDF e imágenes -->
+                        <h:panelGroup rendered="#{anexos.esPDF() or anexos.esImagen()}">
+
+                            <iframe src="#{request.contextPath}/preview"
+                                    width="100%"
+                                    height="500"
+                                    style="border:none">
+                            </iframe>
+
+                            <!-- Botón solo para PDF -->
+                            <p:commandButton value="Abrir PDF en nueva pestaña"
+                                             icon="pi pi-external-link"
+                                             rendered="#{anexos.esPDF()}"
+                                             onclick="window.open('#{request.contextPath}/preview', '_blank'); return false;"
+                                             styleClass="ui-button-secondary"
+                                             type="button"
+                                             style="margin-top: 10px;" />
+                        </h:panelGroup>
+
+                        <!-- Lo dejo por si se necesita aceptar otros tipos  -->
+                        <h:panelGroup rendered="#{!anexos.esImagen() and !anexos.esPDF()}">
+                            <p:panel>
+                                <div style="text-align: center; padding: 40px;">
+                                    <i class="pi pi-file" style="font-size: 64px; color: #999;"></i>
+                                    <p style="margin-top: 20px;">
+                                        Vista previa no disponible para este tipo de archivo.
+                                    </p>
+                                    <p:commandButton value="Descargar archivo" 
+                                                     icon="pi pi-download"
+                                                     styleClass="ui-button-primary"
+                                                     ajax="false"
+                                                     style="margin-top: 10px;">
+                                        <p:fileDownload value="#{anexos.archivoDescarga}"/>
+                                    </p:commandButton>
+                                </div>
+                            </p:panel>
+                        </h:panelGroup>
+
+                    </h:panelGroup>
+
                 </p:dialog>
 
 

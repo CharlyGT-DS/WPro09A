@@ -358,12 +358,9 @@ public class LIRE042 implements Serializable{
             
              this.mhome.getPer().setPplanM(pl);// carga el plan a la session
              
-             
-             
-             
              InitialContext ctx = new InitialContext();
              
-             this.ir =  (EJBGestionREDLocal) ctx.lookup("java:global/WPro09/EJBGestionRED!PERFIL.EJBGestionREDLocal");
+             this.ir =  (EJBGestionREDLocal) ctx.lookup("java:global/WPro09A/EJBGestionRED!PERFIL.EJBGestionREDLocal");
          } catch (NamingException ex) {
              Logger.getLogger(LIRE042.class.getName()).log(Level.SEVERE, null, ex);
          }

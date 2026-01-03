@@ -44,6 +44,9 @@ public class CaracteristicasFinca implements Serializable {
     private double porcentajeUso;
     private List<DtUsoFinca> datosDtUsoFinca = new ArrayList<>();
 
+    private double areaTotalFinca = 12;
+    private double areaIntervenirUso;
+    private double areaRestanteUso;
     private double areaBosque;
     private double areaProteccion;
     private double areaProduccion;
@@ -63,6 +66,30 @@ public class CaracteristicasFinca implements Serializable {
     private Gson gs = new Gson();
 
     private String datos = "la vista de caracteristicas";
+
+    public double getAreaTotalFinca() {
+        return areaTotalFinca;
+    }
+
+    public void setAreaTotalFinca(double areaTotalFinca) {
+        this.areaTotalFinca = areaTotalFinca;
+    }
+
+    public double getAreaIntervenirUso() {
+        return areaIntervenirUso;
+    }
+
+    public void setAreaIntervenirUso(double areaIntervenirUso) {
+        this.areaIntervenirUso = areaIntervenirUso;
+    }
+
+    public double getAreaRestanteUso() {
+        return areaRestanteUso;
+    }
+
+    public void setAreaRestanteUso(double areaRestanteUso) {
+        this.areaRestanteUso = areaRestanteUso;
+    }
 
     public List<TcTipoBosque> getListaTipoBosque() {
         return listaTipoBosque;
@@ -295,31 +322,39 @@ public class CaracteristicasFinca implements Serializable {
     public void agregarDatoUso() {
         System.out.println("==== se ejecuto el metodo ag****************************************** ====");
         RespuestaValidacion res = FacadePlan.verificaArea(this.areaHaUso);
-
         if (!(res.isResultado())) {
-            System.out.println("entro al if de error");
-            System.out.println(res.toString());
-
             FacesContext.getCurrentInstance().
-                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, res.toString(), res.toString()));
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, res.getDescripcion(), res.toString()));
             PrimeFaces.current().ajax().update(":form:tabw:incrustado:horror");
-        } else {// Agrega la fila al dt
+        } else {
+             //calcula el total del dt
+            double totalActual = datosDtUsoFinca.stream()
+                    .mapToDouble(a -> a.getAreaHaUso())
+                    .sum();
+ 
+            // Total incluyendo el nuevo valor
+            double totalNuevo = totalActual + areaHaUso;
+        
+            //valida que el total del dt no es mayor al total de la finca 
+            if (Double.compare(totalNuevo, this.areaTotalFinca) > 0){
+                FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "El área total de los usos no debe ser mayor al total de la finca",
+                        "Error"));
+                
+            }else{// Agrega la fila al dt
             DtUsoFinca dato = new DtUsoFinca();
             dato.setAreaHaUso(areaHaUso);
             dato.setUsoFinca(usoSeleccionado.getUsoFincaDesc());
 
             // Agregar registro
             datosDtUsoFinca.add(dato);
-
-            // cacular el nuevo total
-            double total = 0;
-            for (DtUsoFinca d : datosDtUsoFinca) {
-                total += d.getAreaHaUso();
-            }
+            
+            this.areaRestanteUso = (this.areaTotalFinca - totalNuevo);
+            this.areaIntervenirUso = totalNuevo;
 
             // Recalcular 
             for (DtUsoFinca d : datosDtUsoFinca) {
-                double porcentaje = (d.getAreaHaUso() * 100) / total;
+                double porcentaje = (d.getAreaHaUso() * 100) / totalNuevo;
                 porcentaje = Math.round(porcentaje * 100.0) / 100.0;
                 d.setPorcentajeUso(porcentaje);
             }
@@ -327,7 +362,7 @@ public class CaracteristicasFinca implements Serializable {
             // RESETEAR CAMPOS
             areaHaUso = 0;            // para el inputNumber
             usoSeleccionado = null;   // para el selectOneMenu
-
+            }
         }
     }
 
@@ -345,6 +380,10 @@ public class CaracteristicasFinca implements Serializable {
             double porcentaje = (d.getAreaHaUso() * 100) / total;
             d.setPorcentajeUso(porcentaje);
         }
+        
+        this.areaRestanteUso = (this.areaTotalFinca - total);
+        this.areaIntervenirUso = total;
+
     }
 
     public double getTotalAreaUso() {
@@ -482,7 +521,7 @@ public class CaracteristicasFinca implements Serializable {
                         null,
                         new FacesMessage(
                                 FacesMessage.SEVERITY_ERROR,
-                                "Total de los criterios de protección no coincide con el área ingresada",
+                                "Total de los criterios de protección no coincide con el área de protección ingresada",
                                 "Total criterios: " + totalDesgloseProteccion
                                 + " | Área Protección: " + this.areaProteccion
                         )

@@ -26,15 +26,21 @@
                         <p:row>
                             <p:column>
                                 <p:outputLabel value="Área total de la finca (ha): "/>
-                                <p:outputLabel value="#{caracteristicasFinca.areaTotalFinca}" style="font-weight:bold;"/>
+                                <p:outputLabel value="#{caracteristicasFinca.areaTotalFinca}" style="font-weight:bold;">
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="1"/>
+                                </p:outputLabel>
                             </p:column>
                             <p:column>
                                 <p:outputLabel value="Área restante (ha):"/>
-                                <p:outputLabel value="#{caracteristicasFinca.areaRestanteUso}" style="font-weight:bold;"/>
+                                <p:outputLabel value="#{caracteristicasFinca.areaRestanteUso}" style="font-weight:bold;">
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="1"/>
+                                </p:outputLabel>
                             </p:column>
                             <p:column>
                                 <p:outputLabel value="Área total a intervenir (ha):"/>
-                                <p:outputLabel value="#{caracteristicasFinca.areaIntervenirUso}" style="font-weight:bold;"/>
+                                <p:outputLabel value="#{caracteristicasFinca.areaIntervenirUso}" style="font-weight:bold;">
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="1"/>
+                                </p:outputLabel>
                             </p:column>
                         </p:row>
                     </p:panelGrid>

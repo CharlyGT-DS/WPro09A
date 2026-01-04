@@ -245,7 +245,10 @@ public class CaracteristicasFinca implements Serializable {
 
     // se ejecuta luego de crearce la vista , solo se ejecuta una vez
     @PostConstruct
+    
+    
     public void init() {
+        this.areaRestanteUso = this.areaTotalFinca;
         // cargan todos los datos de la finca  
         this.listaUsoFinca.clear();
         String sqlUso = UTILIDADES.SQL.usoFinca();

@@ -40,7 +40,7 @@ public class FacadeData {
     }
     
     public static lire042.DocumentoInab crea042(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE042.Elemento> elementos){       
-        CreaDocumento crea = new CreaDocumento();        
+        CreaDocumento crea = new CreaDocumento();          
         return crea.creaDoc(ru, per,elementos);
     }
     

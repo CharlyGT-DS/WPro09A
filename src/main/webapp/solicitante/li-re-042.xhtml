@@ -1,0 +1,222 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- Optional
+            <style></style>
+            <script></script>
+        -->
+          <f:metadata>
+            
+              <f:viewAction action="#{lire042.llamar()}"  />
+        </f:metadata>
+        
+        
+      
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+       
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                    <p:panel header="Crea Solcitud LI-RE-042" >
+                       
+                        <div class="grid">
+                             <div class="col">
+                               <p:progressBar widgetVar="pb" />
+                             </div>
+                        </div>
+                       
+                        <div style="display: flex; flex-direction: column; height: auto; min-height: 60vh; ">
+                            
+                              <h:form id="arch">
+                                 <p:fileUpload listener="#{lire042.handleFileUpload}" required="true" requiredMessage="Seleccione el Tipo de Actualización" mode="advanced" dragDropSupport="false" label="Seleccione Documentos" uploadLabel="Subir" cancelLabel="Cancelar"
+                                      multiple="true" update="messages" sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(PDF|pdf)$/" style="width:100%" />
+                                 
+                                <p:growl id="messages" showDetail="true" />
+                             </h:form>
+                            <hr/><!-- comment -->
+                            <br/><!-- comment -->
+                        <h:form id="form">
+                            <p:growl id="msg" sticky="false" life="2500" />
+                            <table width="100%" border="0">
+                                <tr>
+                                    <td width="50%">
+                                        <b>Lugar y Fecha de Documento:</b> #{mHHome.per.tcSubregion.alias} , #{lire042.fechaFormateada}
+                                    </td>
+                                    <td width="50%" style="text-align: right">
+                                        <b> Ver Datos Ocultos  </b> 
+                                        <p:toggleSwitch   value="#{lire042.bot}">
+                                        
+                                            <p:ajax update=":form:datos"  />  
+                                        </p:toggleSwitch> 
+                                    </td>
+                                </tr>
+                                
+                            </table>
+                            
+                            
+                            <ui:repeat id="bot4" value="#{lire042.elementos}" var="elemento">
+                               
+                                    <table width="80%" border="0">
+                                        <tr style="vertical-align: middle;">
+                                            <td width="10%" style="vertical-align: middle;" >
+                                                <p:commandButton value="Quitar" actionListener="#{lire042.eliminarElemento(elemento)}" update="form" styleClass="rounded-button ui-button-danger mr-2 mb-2" rendered="#{not empty lire042.elementos}"/> 
+                                            </td>
+                                           
+                                            <td width="60%">
+                                                <p:inputText value="#{elemento.valor}" disabled="#{bot4}" required="true" requiredMessage="Ingrese Motivo Solicitud" placeholder="Ingrese Motivo de su Solicitud"  style="width: 100%;" />
+                                            </td>
+                                            <td width="10%">
+                                                <p:commandButton value="Agregar Elemento" styleClass="rounded-button ui-button-success mr-2 mb-2" actionListener="#{lire042.agregarElemento}" update="form" />
+                                            </td>
+                                            
+                                        </tr>
+                                        
+                                    </table>                                   
+                            </ui:repeat>
+                            
+                           
+                            <h:panelGroup id="datos" layout="block"
+                                          style="display: #{lire042.bot ? 'block' : 'none'};">
+                                
+                             <div class="col-12 md:col-6" >
+                    <div class="card ui-fluid">
+                        <h5>Datos que integran el Documento</h5>
+                        <div class="field grid">
+                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Licencia</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="lic" disabled="true" value="#{mHHome.per.licencia.numero_licencia_poa}" />
+                            </div>
+                        </div>
+                        <div class="field grid">
+                            <p:outputLabel for="exp" styleClass="col-12 mb-2 md:col-2 mb-md-0">Expediente</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="exp" disabled="true" value="#{mHHome.per.licencia.expediente}" />
+                            </div>
+                        </div>
+                        
+                        <div class="field grid">
+                            <p:outputLabel for="ela" styleClass="col-12 mb-2 md:col-2 mb-md-0">Elaborador</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="ela" disabled="true" value="#{mHHome.per.tcPersona.personaDesc}" />
+                            </div>
+                        </div>
+                        
+                        <div class="field grid">
+                            <p:outputLabel for="tit" styleClass="col-12 mb-2 md:col-2 mb-md-0">Regente</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="tit" disabled="true" value="#{mHHome.ru.regente}" />
+                            </div>
+                        </div>
+                        
+                    </div>
+                    </div>
+                                 </h:panelGroup>
+                            <hr/><!-- comment -->
+                            
+                           
+                            <br/>
+                            
+                           
+                            
+                            <hr/>
+                            <table width="100%" border="0">
+                                <tr>
+                                    <td width="15%">
+                                        
+                                        <p:commandButton id="bot1" disabled="#{lire042.bot1}"  
+                                                         actionListener="#{lire042.generarDocumento048()}"
+                                                         update=":form:productDetail,:form:msg,:form" 
+                                                        icon="pi pi-search" title="Vista Previa"  value="Vista Previa" />
+                                        
+                                    </td>
+                                    <td width="15%">
+                                        <p:commandButton oncomplete="PF('productDialog2').show()" id='bot2'
+                                                         actionListener="#{lire042.generarDocumento048Final()}" 
+                                                         disabled="#{lire042.bot2}" update="productDetail2" value="Generar Documento" />
+                                    </td>
+                                    <td width="25%">
+                                        
+                                    </td>
+                                    <td width="25%">
+                                        
+                                    </td>
+                                    <td width="10%">
+                                        
+                                    </td>
+                                    <td width="10%">
+                                        
+                                    </td>
+                                    
+                                </tr>
+                                
+                            </table>
+                            
+                             <p:dialog header="Vista Previa del Documento" widgetVar="productDialog" modal="true" showEffect="fade"
+                                       hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                 <p:outputPanel id="productDetail" style="text-align:center;">
+                                    
+                                 <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire042.rutaNombre}" 
+                                       width="900px" 
+                                       height="600px" 
+                                       style="border:none;">
+                                 </iframe>
+
+                                     
+                                 </p:outputPanel>
+                                 <center>
+                                     <p:commandButton value="Cerrar" update="bot1,bot2,bot4" actionListener="#{lire042.activarBoton()}" oncomplete="PF('productDialog').hide()" />
+                                 </center>
+                                 
+                             </p:dialog>
+                            
+                                <p:dialog header="Documento Creado" widgetVar="productDialog2" modal="true" showEffect="fade"
+                                       hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                   <p:outputPanel id="productDetail2" style="text-align:center;">
+                                       <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire042.rutaNombre}" 
+                                       width="900px" 
+                                       height="600px" 
+                                       style="border:none;">
+                                 </iframe>
+                                       
+                                   </p:outputPanel>
+                                      <center>
+                                          <table width="50%">
+                                              <tr>                                                  
+                                                  <td style="width: 50%;text-align: center">
+                                                      <p:commandButton value="Cerrar" update="bot1,bot2" actionListener="#{lire042.desactivaAmbosBotones()}" oncomplete="PF('productDialog2').hide()" />
+                                                  </td>
+                                              </tr>
+                                          </table>
+                                        
+                                      </center>
+                                </p:dialog>
+                                
+                    
+                        </h:form>        
+                            
+                        </div>
+                        
+                    </p:panel>
+                  
+                    
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

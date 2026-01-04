@@ -16,8 +16,13 @@ import estructuras.RespuestaSeccionUNO;
 import estructuras.RespuestaWSLicencias;
 import estructuras.TransporteInab;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.faces.context.FacesContext;
 import javax.naming.InitialContext;
@@ -149,9 +154,28 @@ public class VerificaUsuario implements Serializable{
                 // Ahora responseBody contiene todo el contenido de la respuesta
             } else {
                 System.out.println("Error en la petición: " + response.code());
+                
+                
+                try (InputStream is = Thread.currentThread()
+                        .getContextClassLoader()
+                        .getResourceAsStream("ezcomp/Plan.json")) {
+
+                    if (is == null) {
+                        throw new RuntimeException("No se encontró el archivo JSON");
+                    }
+
+                    responseBody = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+                    System.out.println("JSON cargado OK");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }       
+
+                
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            
+               e.printStackTrace();
         }
 
         

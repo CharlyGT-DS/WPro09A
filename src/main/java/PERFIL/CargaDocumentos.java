@@ -54,7 +54,7 @@ public class CargaDocumentos implements CargaDocumentosLocal, Serializable {
             InitialContext ctx = new InitialContext();
             this.api = (DBaseLocal) ctx.lookup("java:global/ComponenteCero-2.0/DBase!EJB.DBaseLocal");
             
-            this.ir =  (EJBGestionREDLocal) ctx.lookup("java:global/WPro09/EJBGestionRED!PERFIL.EJBGestionREDLocal");
+            this.ir =  (EJBGestionREDLocal) ctx.lookup("java:global/WPro09A/EJBGestionRED!PERFIL.EJBGestionREDLocal");
             
         } catch (NamingException ex) {
             Logger.getLogger(CargaDocumentos.class.getName()).log(Level.SEVERE, null, ex);

@@ -27,19 +27,19 @@
                             <p:column>
                                 <p:outputLabel value="Área total de la finca (ha): "/>
                                 <p:outputLabel value="#{caracteristicasFinca.areaTotalFinca}" style="font-weight:bold;">
-                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="1"/>
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="2"/>
                                 </p:outputLabel>
                             </p:column>
                             <p:column>
                                 <p:outputLabel value="Área restante (ha):"/>
                                 <p:outputLabel value="#{caracteristicasFinca.areaRestanteUso}" style="font-weight:bold;">
-                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="1"/>
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="2"/>
                                 </p:outputLabel>
                             </p:column>
                             <p:column>
                                 <p:outputLabel value="Área total a intervenir (ha):"/>
                                 <p:outputLabel value="#{caracteristicasFinca.areaIntervenirUso}" style="font-weight:bold;">
-                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="1"/>
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="2"/>
                                 </p:outputLabel>
                             </p:column>
                         </p:row>
@@ -274,7 +274,7 @@
 
                         <p:column headerText="Porcentaje (%)">
                             <p:outputLabel value="#{DtCriterio.porcentajeCriterio}" >
-                                <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                <f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="0"/>
                             </p:outputLabel>
                             <p:outputLabel value="%"/>
                         </p:column>
@@ -299,7 +299,7 @@
                                 <p:column style="font-weight: bold;">
                                     <f:facet name="footer">
                                         <p:outputLabel value="#{caracteristicasFinca.totalPorcentajeCriterio}">
-                                            <f:convertNumber type="number" maxFractionDigits="1" minFractionDigits="0"/>
+                                            <f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="0"/>
                                         </p:outputLabel>
                                         <h:outputText value="%"/>
                                     </f:facet>

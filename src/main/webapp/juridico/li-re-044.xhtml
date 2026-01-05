@@ -1,0 +1,183 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- Optional
+            <style></style>
+            <script></script>
+        -->
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                    <p:panel header="CREAR DICTAMEN JURÍDICO DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL LI-RE-044" >
+
+
+                        <h:form id="form">
+                            <table width="100%" border="0">
+                                <tr>
+                                    <td width="50%">
+                                        <b>Lugar y Fecha de Documento:</b> #{mHHome.per.tcSubregion.alias} , #{lire042.fechaFormateada}
+                                    </td>
+                                    <td width="50%" style="text-align: right">
+                                        <b> Ver Datos Ocultos  </b> 
+                                        <p:toggleSwitch   value="#{lire042.bot}">
+
+                                            <p:ajax update=":form:datos"  />  
+                                        </p:toggleSwitch> 
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                            <table width="80%" border="0">
+                                <tr>
+                                    <th colspan="3" style="font-size:18px">Antecedentes</th>
+                                </tr>
+                                <tr style="vertical-align: middle;">
+                                    <td width="10%" style="vertical-align: middle;" >
+                                        <p:commandButton value="Quitar" actionListener="#{lire042.eliminarElemento(elemento)}" update="" styleClass="rounded-button ui-button-danger mr-2 mb-2" rendered="#{not empty lire042.elementos}"/> 
+                                    </td>
+
+                                    <td width="60%">
+                                        <p:inputText value="#{elemento.valor}" disabled="" required="true" requiredMessage="Ingrese Motivo Solicitud" placeholder="Ingrese su antecedente"  style="width: 100%;" />
+                                    </td>
+                                    <td width="10%">
+                                        <p:commandButton value="Agregar Elemento" styleClass="rounded-button ui-button-success mr-2 mb-2" actionListener="#{lire042.agregarElemento}" update="" />
+                                    </td>
+
+                                </tr>
+
+                            </table>  
+                            
+                            <table width="80%" border="0">
+                                <tr>
+                                    <th colspan="3" style="font-size:18px">Fundamento Legal</th>
+                                </tr>
+                                <tr style="vertical-align: middle;">
+                                    <td width="10%" style="vertical-align: middle;" >
+                                        <p:commandButton value="Quitar" actionListener="#{lire042.eliminarElemento(elemento)}" update="" styleClass="rounded-button ui-button-danger mr-2 mb-2" rendered="#{not empty lire042.elementos}"/> 
+                                    </td>
+
+                                    <td width="60%">
+                                        <p:inputText value="#{elemento.valor}" disabled="" required="true" requiredMessage="Ingrese Motivo Solicitud" placeholder="Ingrese su fundamento legal"  style="width: 100%;" />
+                                    </td>
+                                    <td width="10%">
+                                        <p:commandButton value="Agregar Elemento" styleClass="rounded-button ui-button-success mr-2 mb-2" actionListener="#{lire042.agregarElemento}" update="" />
+                                    </td>
+
+                                </tr>
+
+                            </table>
+                            
+                            <table width="80%" border="0">
+                                <tr>
+                                    <th colspan="3" style="font-size:18px">Análisis</th>
+                                </tr>
+                                <tr style="vertical-align: middle;">
+                                    <td width="10%" style="vertical-align: middle;" >
+                                        <p:commandButton value="Quitar" actionListener="#{lire042.eliminarElemento(elemento)}" update="" styleClass="rounded-button ui-button-danger mr-2 mb-2" rendered="#{not empty lire042.elementos}"/> 
+                                    </td>
+
+                                    <td width="60%">
+                                        <p:inputText value="#{elemento.valor}" disabled="" required="true" requiredMessage="Ingrese Motivo Solicitud" placeholder="Ingrese su análisis"  style="width: 100%;" />
+                                    </td>
+                                    <td width="10%">
+                                        <p:commandButton value="Agregar Elemento" styleClass="rounded-button ui-button-success mr-2 mb-2" actionListener="#{lire042.agregarElemento}" update="" />
+                                    </td>
+
+                                </tr>
+
+                            </table>
+
+                            <table width="100%" border="0">
+                                <tr>
+                                    <td width="15%">
+
+                                        <p:commandButton id="bot1" disabled=""  
+                                                         actionListener="#{lire042.generarDocumento048()}"
+                                                         update="" 
+                                                         icon="pi pi-search" title="Vista Previa"  value="Vista Previa" />
+
+                                    </td>
+                                    <td width="15%">
+                                        <p:commandButton oncomplete="PF('productDialog2').show()" id='bot2'
+                                                         actionListener="#{lire042.generarDocumento048Final()}" 
+                                                         disabled="" update="" value="Generar Documento" />
+                                    </td>
+                                    <td width="25%">
+
+                                    </td>
+                                    <td width="25%">
+
+                                    </td>
+                                    <td width="10%">
+
+                                    </td>
+                                    <td width="10%">
+
+                                    </td>
+
+                                </tr>
+
+                            </table>
+
+                            <h:panelGroup id="datos" layout="block"
+                                          style="">
+
+                                <div class="col-12 md:col-6" >
+                                    <div class="card ui-fluid">
+                                        <h5>Datos que integran el Documento</h5>
+                                        <div class="field grid">
+                                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Licencia</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="lic" disabled="true" value="#{mHHome.per.licencia.numero_licencia_poa}" />
+                                            </div>
+                                        </div>
+                                        <div class="field grid">
+                                            <p:outputLabel for="exp" styleClass="col-12 mb-2 md:col-2 mb-md-0">Expediente</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="exp" disabled="true" value="#{mHHome.per.licencia.expediente}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="ela" styleClass="col-12 mb-2 md:col-2 mb-md-0">Plan Operativo</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="ela" disabled="true" value="#{mHHome.per.tcPersona.personaDesc}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="tit" styleClass="col-12 mb-2 md:col-2 mb-md-0">Director Subregional</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="tit" disabled="true" value="#{mHHome.ru.regente}" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                        </h:form>
+                    </p:panel>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

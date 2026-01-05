@@ -175,6 +175,22 @@ public class VerificaUsuario implements Serializable{
             }
         } catch (IOException e) {
             
+              try (InputStream is = Thread.currentThread()
+                        .getContextClassLoader()
+                        .getResourceAsStream("ezcomp/Plan.json")) {
+
+                    if (is == null) {
+                        throw new RuntimeException("No se encontró el archivo JSON");
+                    }
+
+                    responseBody = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+                    System.out.println("JSON cargado OK");
+
+                } catch (Exception et) {
+                    et.printStackTrace();
+                }       
+
+            
                e.printStackTrace();
         }
 

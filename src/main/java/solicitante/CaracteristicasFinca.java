@@ -12,6 +12,8 @@ import dta.json.plan.TcTipoBosque;
 import dta.json.plan.TcUsoFinca;
 import estructuras.RespuestaValidacion;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public class CaracteristicasFinca implements Serializable {
     private double porcentajeUso;
     private List<DtUsoFinca> datosDtUsoFinca = new ArrayList<>();
 
-    private double areaTotalFinca = 12;
+    private double areaTotalFinca = 0.43;
     private double areaIntervenirUso;
     private double areaRestanteUso;
     private double areaBosque;
@@ -245,8 +247,7 @@ public class CaracteristicasFinca implements Serializable {
 
     // se ejecuta luego de crearce la vista , solo se ejecuta una vez
     @PostConstruct
-    
-    
+
     public void init() {
         this.areaRestanteUso = this.areaTotalFinca;
         // cargan todos los datos de la finca  
@@ -325,46 +326,55 @@ public class CaracteristicasFinca implements Serializable {
     public void agregarDatoUso() {
         System.out.println("==== se ejecuto el metodo ag****************************************** ====");
         RespuestaValidacion res = FacadePlan.verificaArea(this.areaHaUso);
+
         if (!(res.isResultado())) {
             FacesContext.getCurrentInstance().
                     addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, res.getDescripcion(), res.toString()));
             PrimeFaces.current().ajax().update(":form:tabw:incrustado:horror");
+            return;
         } else {
-             //calcula el total del dt
-            double totalActual = datosDtUsoFinca.stream()
-                    .mapToDouble(a -> a.getAreaHaUso())
-                    .sum();
- 
+
+            //calcula el total del dt
+            BigDecimal totalActual = datosDtUsoFinca.stream()
+                    .map(d -> BigDecimal.valueOf(d.getAreaHaUso()))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
             // Total incluyendo el nuevo valor
-            double totalNuevo = totalActual + areaHaUso;
-        
+            BigDecimal totalNuevo = totalActual.add(BigDecimal.valueOf(areaHaUso));
+            BigDecimal areaTotal = BigDecimal.valueOf(areaTotalFinca);
+
             //valida que el total del dt no es mayor al total de la finca 
-            if (Double.compare(totalNuevo, this.areaTotalFinca) > 0){
-                FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,
+            if (totalNuevo.compareTo(areaTotal) > 0) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "El área total de los usos no debe ser mayor al total de la finca",
                         "Error"));
-                
-            }else{// Agrega la fila al dt
-            DtUsoFinca dato = new DtUsoFinca();
-            dato.setAreaHaUso(areaHaUso);
-            dato.setUsoFinca(usoSeleccionado.getUsoFincaDesc());
+                return;
+            } else {// Agrega la fila al dt
+                DtUsoFinca dato = new DtUsoFinca();
+                dato.setAreaHaUso(areaHaUso);
+                dato.setUsoFinca(usoSeleccionado.getUsoFincaDesc());
 
-            // Agregar registro
-            datosDtUsoFinca.add(dato);
-            
-            this.areaRestanteUso = (this.areaTotalFinca - totalNuevo);
-            this.areaIntervenirUso = totalNuevo;
+                // Agregar registro
+                datosDtUsoFinca.add(dato);
 
-            // Recalcular 
-            for (DtUsoFinca d : datosDtUsoFinca) {
-                double porcentaje = (d.getAreaHaUso() * 100) / totalNuevo;
-                porcentaje = Math.round(porcentaje * 100.0) / 100.0;
-                d.setPorcentajeUso(porcentaje);
-            }
+                this.areaIntervenirUso = totalNuevo.doubleValue();
+                this.areaRestanteUso = this.areaTotalFinca - totalNuevo.doubleValue();
 
-            // RESETEAR CAMPOS
-            areaHaUso = 0;            // para el inputNumber
-            usoSeleccionado = null;   // para el selectOneMenu
+                // Recalcular 
+                for (DtUsoFinca d : datosDtUsoFinca) {
+
+                    BigDecimal areaUso = BigDecimal.valueOf(d.getAreaHaUso());
+
+                    BigDecimal porcentaje = areaUso
+                            .multiply(BigDecimal.valueOf(100))
+                            .divide(totalNuevo, 2, RoundingMode.HALF_UP);
+
+                    d.setPorcentajeUso(porcentaje.doubleValue());
+                }
+
+                // RESETEAR CAMPOS
+                areaHaUso = 0;            // para el inputNumber
+                usoSeleccionado = null;   // para el selectOneMenu
             }
         }
     }
@@ -383,7 +393,7 @@ public class CaracteristicasFinca implements Serializable {
             double porcentaje = (d.getAreaHaUso() * 100) / total;
             d.setPorcentajeUso(porcentaje);
         }
-        
+
         this.areaRestanteUso = (this.areaTotalFinca - total);
         this.areaIntervenirUso = total;
 
@@ -428,39 +438,74 @@ public class CaracteristicasFinca implements Serializable {
 
     // seccion dos 5.2.1 DIVISIÓN CON BÓSQUE -----------------------------------------------------
     public void agregarDatoCriterio() {
-        System.out.println("==== se ejecuto el metodo ag sc2****************************************** ====");
+
+        System.out.println("==== se ejecuto el metodo ag sc2 ****************************************** ====");
+
         RespuestaValidacion res = FacadePlan.verificaAreas(
-                new String[]{"Area del criterio de proteccion", "Área de protección"}, areaHaCriterio, areaProteccion);
+                new String[]{"Area del criterio de proteccion", "Área de protección"},
+                areaHaCriterio,
+                areaProteccion
+        );
+
         if (!res.isResultado()) {
-            FacesContext.getCurrentInstance().
-                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, res.getDescripcion(), res.getDescripcion()));
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            res.getDescripcion(),
+                            res.getDescripcion()
+                    )
+            );
             PrimeFaces.current().ajax().update(":form:tabw:incrustado:horror");
+            return;
         } else {
-            DtCriterioProteccion datoC = new DtCriterioProteccion();
-            datoC.setCreterioProteccion(criterioSeleccionado.getCriterioProteccionDesc());
-            datoC.setAreaHaCriterio(areaHaCriterio);
 
-            // Agregar registro
-            datosDtCriterioProteccion.add(datoC);
+            //calcula el total del dt
+            BigDecimal totalActual = datosDtCriterioProteccion.stream()
+                    .map(d -> BigDecimal.valueOf(d.getAreaHaCriterio()))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            // cacular el nuevo total
-            double total = 0;
-            for (DtCriterioProteccion d : datosDtCriterioProteccion) {
-                total += d.getAreaHaCriterio();
+            // Total incluyendo el nuevo valor
+            BigDecimal totalNuevo = totalActual.add(BigDecimal.valueOf(areaHaCriterio));
+            BigDecimal areaTotal = BigDecimal.valueOf(areaProteccion);
+
+            //valida que el total del dt no es mayor al total de la finca 
+            if (totalNuevo.compareTo(areaTotal) > 0) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "El área total de los criterios no debe ser mayor al área de proteccion ingresada",
+                        "Error"));
+                return;
+            } else {
+
+                //Crear y agregar registro
+                DtCriterioProteccion datoC = new DtCriterioProteccion();
+                datoC.setCreterioProteccion(criterioSeleccionado.getCriterioProteccionDesc());
+                datoC.setAreaHaCriterio(areaHaCriterio);
+                datosDtCriterioProteccion.add(datoC);
+
+                //Calcular total con BigDecimal
+                BigDecimal total = datosDtCriterioProteccion.stream()
+                        .map(d -> BigDecimal.valueOf(d.getAreaHaCriterio()))
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                //Recalcular porcentajes con BigDecimal
+                for (DtCriterioProteccion d : datosDtCriterioProteccion) {
+
+                    BigDecimal area = BigDecimal.valueOf(d.getAreaHaCriterio());
+
+                    BigDecimal porcentaje = area
+                            .multiply(BigDecimal.valueOf(100))
+                            .divide(total, 2, RoundingMode.HALF_UP);
+
+                    d.setPorcentajeCriterio(porcentaje.doubleValue());
+                }
+
+                //Limpiar campos
+                areaHaCriterio = 0;
+                criterioSeleccionado = null;
             }
-
-            // Recalcular 
-            for (DtCriterioProteccion d : datosDtCriterioProteccion) {
-                double porcentaje = (d.getAreaHaCriterio() * 100) / total;
-                porcentaje = Math.round(porcentaje * 100.0) / 100.0;
-                d.setPorcentajeCriterio(porcentaje);
-            }
-
-            // Limpiar campos
-            areaHaCriterio = 0;
-            criterioSeleccionado = null;
 
         }
+
     }
 
     public void eliminarDatoCriterio(DtCriterioProteccion datoC) {
@@ -496,48 +541,56 @@ public class CaracteristicasFinca implements Serializable {
     }
 
     public void guardarSecDos() {
+
         System.out.println("==== se ejecuto el metodo ****************************************** ====");
 
+        //Validación de Área de Protección
         if (this.areaProteccion > 0) {
 
-            // Debe existir por lo menos un criterio ingresado
+            // Debe existir al menos un criterio
             if (datosDtCriterioProteccion == null || datosDtCriterioProteccion.isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage(
                         null,
                         new FacesMessage(
                                 FacesMessage.SEVERITY_ERROR,
-                                "¡Área de protección Ingresada! - Debe Ingresar criterios de protección",
+                                "¡Área de protección ingresada!",
                                 "Debe ingresar el desglose del Área de Protección"
                         )
                 );
-                return; //NO continúa
+                return;
             }
 
-            // suma criterios
-            double totalDesgloseProteccion = datosDtCriterioProteccion.stream()
-                    .mapToDouble(a -> a.getAreaHaCriterio())
-                    .sum();
+            //Sumar criterios con BigDecimal
+            BigDecimal totalDesgloseProteccion = datosDtCriterioProteccion.stream()
+                    .map(d -> BigDecimal.valueOf(d.getAreaHaCriterio()))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            // compara el total de la tabla con el campo area proteccion
-            if (Double.compare(totalDesgloseProteccion, this.areaProteccion) != 0) {
+            BigDecimal areaProteccionBD = BigDecimal.valueOf(this.areaProteccion);
+
+            //Comparación EXACTA (igualdad)
+            if (totalDesgloseProteccion.compareTo(areaProteccionBD) != 0) {
                 FacesContext.getCurrentInstance().addMessage(
                         null,
                         new FacesMessage(
                                 FacesMessage.SEVERITY_ERROR,
                                 "Total de los criterios de protección no coincide con el área de protección ingresada",
-                                "Total criterios: " + totalDesgloseProteccion
-                                + " | Área Protección: " + this.areaProteccion
+                                "Total criterios: " + totalDesgloseProteccion.doubleValue()
+                                + " | Área Protección: " + areaProteccionBD.doubleValue()
                         )
                 );
                 return;
             }
         }
 
+        //Validación de áreas generales
         RespuestaValidacion res = FacadePlan.verificaAreas(
-                new String[]{"Área con bosque", "Área de producción", "Área a intervenir"}, areaBosque, areaProduccion, areaIntervenir);
+                new String[]{"Área con bosque", "Área de producción", "Área a intervenir"},
+                areaBosque,
+                areaProduccion,
+                areaIntervenir
+        );
 
         if (!res.isResultado()) {
-
             FacesContext.getCurrentInstance().addMessage(
                     null,
                     new FacesMessage(
@@ -546,18 +599,25 @@ public class CaracteristicasFinca implements Serializable {
                             res.getDescripcion()
                     )
             );
-        } else {
-
-            System.out.println("area es: " + this.areaBosque);
-            System.out.println("area es: " + this.areaProteccion);
-            System.out.println("area es: " + this.areaProduccion);
-            System.out.println("area es: " + this.areaIntervenir);
-            System.out.println("area es: " + this.tipoSeleccionado);
-            System.out.println("area es: " + this.criterioSeleccionado);
-            System.out.println("area es: " + this.areaHaCriterio);
-            FacesContext.getCurrentInstance().addMessage(
-                    null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Los datos se guardaron correctamente.", "Exito"));
+            return;
         }
+
+        System.out.println("area bosque: " + this.areaBosque);
+        System.out.println("area protección: " + this.areaProteccion);
+        System.out.println("area producción: " + this.areaProduccion);
+        System.out.println("area intervenir: " + this.areaIntervenir);
+        System.out.println("tipo seleccionado: " + this.tipoSeleccionado);
+        System.out.println("criterio seleccionado: " + this.criterioSeleccionado);
+        System.out.println("area criterio: " + this.areaHaCriterio);
+
+        FacesContext.getCurrentInstance().addMessage(
+                null,
+                new FacesMessage(
+                        FacesMessage.SEVERITY_INFO,
+                        "Éxito",
+                        "Los datos se guardaron correctamente."
+                )
+        );
     }
 
 }

@@ -13,8 +13,7 @@ import estructuras.RespuestaValidacion;
 // este es una clase Servidora
 public class ValidacionesNumericas {
 
-    // los nombres de los metodos son acciones por lo que se usan nombre como verbos
-    // la nomentlatura es camel case.  los parametros que reciben las acciones se llmana arguntos
+    
     public static estructuras.RespuestaValidacion validarArea(double area) {
         if (area <= 0) {
             return new RespuestaValidacion("001", "El área no puede ser cero o negativa", false);

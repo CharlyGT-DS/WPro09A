@@ -7,6 +7,7 @@ package solicitante;
 import MANEJADORES.MHHome;
 import PERFIL.EJBGestionREDLocal;
 import com.google.gson.Gson;
+import dta.json.plan.TcUsuario;
 import inab.pro.wpro09.resources.VerificaUsuario;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -61,6 +62,22 @@ public class LIRE044 implements Serializable{
      private String rutaNombre="";
      
      private String tipoActualizacion="0";
+     
+     private String direccion="";
+     
+     private String nombreDirectorSub="";
+
+    public String getNombreDirectorSub() {
+        return nombreDirectorSub;
+    }
+     
+     
+
+    public String getDireccion() {
+        return direccion;
+    }
+     
+     
      
     @Inject
     private MHHome mhome;
@@ -247,6 +264,11 @@ public class LIRE044 implements Serializable{
     
     public void llamar(){
          try {
+             
+             
+             this.direccion = this.mhome.getPer().getCincoCampos().getDato4().toString();
+             this.nombreDirectorSub = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
+             
              antecedentes.add(new LIRE044.Elemento(""));
              fundamentos.add(new Elemento(""));
              analisis.add(new Elemento(""));

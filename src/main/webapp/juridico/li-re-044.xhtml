@@ -53,6 +53,44 @@
 
                             </table>
 
+                            
+                            
+                            <h:panelGroup id="datos" layout="block" style="display: #{lire044.bot ? 'block' : 'none'};">
+
+                                <p:divider />
+                                <div class="col-12 md:col-6" >
+                                    <div class="card ui-fluid">
+                                        <h5>Datos que integran el Documento</h5>
+                                        <div class="field grid">
+                                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Licencia</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="lic" disabled="true" value="#{mHHome.per.licencia.numero_licencia_poa}" />
+                                            </div>
+                                        </div>
+                                        <div class="field grid">
+                                            <p:outputLabel for="exp" styleClass="col-12 mb-2 md:col-2 mb-md-0">Expediente</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="exp" disabled="true" value="#{mHHome.per.licencia.expediente}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="ela" styleClass="col-12 mb-2 md:col-2 mb-md-0">Plan Operativo</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="ela" disabled="true" value="#{mHHome.per.tcPersona.personaDesc}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="tit" styleClass="col-12 mb-2 md:col-2 mb-md-0">Director Subregional</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="tit" disabled="true" value="#{mHHome.ru.regente}" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </h:panelGroup>
 
                             <h:panelGroup id="secAntecedentes">
                                 <p:outputLabel value="ANTECEDENTES" style="display:block;text-align:center;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
@@ -136,46 +174,6 @@
                                         </tr>
                                     </table>
                                 </ui:repeat>
-                            </h:panelGroup>
-
-
-
-
-                            <h:panelGroup id="datos" layout="block" style="display: #{lire044.bot ? 'block' : 'none'};">
-
-                                <p:divider />
-                                <div class="col-12 md:col-6" >
-                                    <div class="card ui-fluid">
-                                        <h5>Datos que integran el Documento</h5>
-                                        <div class="field grid">
-                                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Licencia</p:outputLabel>
-                                            <div class="col-12 md:col-10">
-                                                <p:inputText id="lic" disabled="true" value="#{mHHome.per.licencia.numero_licencia_poa}" />
-                                            </div>
-                                        </div>
-                                        <div class="field grid">
-                                            <p:outputLabel for="exp" styleClass="col-12 mb-2 md:col-2 mb-md-0">Expediente</p:outputLabel>
-                                            <div class="col-12 md:col-10">
-                                                <p:inputText id="exp" disabled="true" value="#{mHHome.per.licencia.expediente}" />
-                                            </div>
-                                        </div>
-
-                                        <div class="field grid">
-                                            <p:outputLabel for="ela" styleClass="col-12 mb-2 md:col-2 mb-md-0">Plan Operativo</p:outputLabel>
-                                            <div class="col-12 md:col-10">
-                                                <p:inputText id="ela" disabled="true" value="#{mHHome.per.tcPersona.personaDesc}" />
-                                            </div>
-                                        </div>
-
-                                        <div class="field grid">
-                                            <p:outputLabel for="tit" styleClass="col-12 mb-2 md:col-2 mb-md-0">Director Subregional</p:outputLabel>
-                                            <div class="col-12 md:col-10">
-                                                <p:inputText id="tit" disabled="true" value="#{mHHome.ru.regente}" />
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
                             </h:panelGroup>
 
                             <table width="100%" border="0">

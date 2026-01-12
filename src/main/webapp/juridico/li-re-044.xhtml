@@ -30,63 +30,90 @@
         <div class="grid">
             <div class="col-12">
                 <div class="card">
-                    <p:panel header="CREAR DICTAMEN JURÍDICO DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL LI-RE-044" >
-
-
+                    <p:panel header="DICTAMEN JURÍDICO DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL LI-RE-044" >
+                
 
                         <h:form id="form044">
+                            
+                            <p:dialog id="dlgDocumento" header="Validación de Documento" modal="true" closable="false" draggable="false"
+                                      resizable="false" visible="#{lire044.dialogValidez}">
+                                <h:outputText value="¿El documento es procedente y llena los requisitos?" 
+                                              style="display:block;font-weight:bold;margin-top:20px;margin-bottom:20px;font-size:1.2rem;"/>
+                                <br/>
+
+                                <p:commandButton value="SI" icon="pi pi-check" actionListener="#{lire044.validarDocumento(true)}"
+                                                 process="@this" update="@form"/>
+
+                                <p:commandButton value="NO" icon="pi pi-times" styleClass="ui-button-danger"
+                                                 actionListener="#{lire044.validarDocumento(false)}" process="@this" update="@form"/>
+                            </p:dialog>
+
+
+
+
+
 
                             <p:growl id="msg" showDetail="true" life="2500" />
-                            <table width="100%" border="0">
-                                <tr>
-                                    <td width="50%">
-                                        <b>Lugar y Fecha de Documento:</b> #{mHHome.per.tcSubregion.alias} , #{lire044.fechaFormateada}
-                                    </td>
-                                    <td width="50%" style="text-align: right">
-                                        <b> Ver Datos Ocultos  </b> 
-                                        <p:toggleSwitch   value="#{lire044.bot}">
 
-                                            <p:ajax update=":form044:datos"  />  
-                                        </p:toggleSwitch> 
-                                    </td>
-                                </tr>
+                            <p:panelGrid columns="3" style="width: 100%;" layout="grid" styleClass="ui-fluid">
 
-                            </table>
+                                <p:column colspan="2" class="col-12 lg:col-8">
+                                    <p:outputLabel value="Lugar y Fecha de Documento: " style="font-weight:bold;" />
+                                    <p:outputLabel value="#{lire044.direccion}, #{lire044.fechaFormateada}"/>
+                                </p:column>
 
-                            
-                            
+                                <p:column>
+                                    <p:outputLabel value="Ver datos ocultos: " style="font-weight:bold;" />
+                                    <p:toggleSwitch   value="#{lire044.bot}">
+                                        <p:ajax update=":form044:datos"  />  
+                                    </p:toggleSwitch> 
+                                </p:column>
+                            </p:panelGrid>
+
+                            <div class="field grid">
+                                <p:outputLabel value="No. Dictamen: "/>
+                                <div class="col-12 md:col-10">
+                                    <p:inputText id="noDic" required="true" requiredMessage="Ingrese número de Dictamen" 
+                                                 value="#{lire044.noDictamen}" style="width: 30%" />
+                                </div>
+                            </div>
+
+
+
                             <h:panelGroup id="datos" layout="block" style="display: #{lire044.bot ? 'block' : 'none'};">
 
                                 <p:divider />
                                 <div class="col-12 md:col-6" >
                                     <div class="card ui-fluid">
                                         <h5>Datos que integran el Documento</h5>
+
                                         <div class="field grid">
-                                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Licencia</p:outputLabel>
+                                            <p:outputLabel for="tit" styleClass="col-12 mb-2 md:col-2 mb-md-0">Director Subregional</p:outputLabel>
                                             <div class="col-12 md:col-10">
-                                                <p:inputText id="lic" disabled="true" value="#{mHHome.per.licencia.numero_licencia_poa}" />
+                                                <p:inputText id="tit" disabled="true" value="#{lire044.nombreDirectorSub}" />
                                             </div>
                                         </div>
                                         <div class="field grid">
                                             <p:outputLabel for="exp" styleClass="col-12 mb-2 md:col-2 mb-md-0">Expediente</p:outputLabel>
                                             <div class="col-12 md:col-10">
-                                                <p:inputText id="exp" disabled="true" value="#{mHHome.per.licencia.expediente}" />
+                                                <p:inputText id="exp" disabled="true" value="#{lire044.expediente}" />
                                             </div>
                                         </div>
 
+                                        <div class="field grid">
+                                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Licencia</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="lic" disabled="true" value="#{lire044.licencia}" />
+                                            </div>
+                                        </div>
                                         <div class="field grid">
                                             <p:outputLabel for="ela" styleClass="col-12 mb-2 md:col-2 mb-md-0">Plan Operativo</p:outputLabel>
                                             <div class="col-12 md:col-10">
-                                                <p:inputText id="ela" disabled="true" value="#{mHHome.per.tcPersona.personaDesc}" />
+                                                <p:inputText id="ela" disabled="true" value="#{lire044.planOperativo}" />
                                             </div>
                                         </div>
 
-                                        <div class="field grid">
-                                            <p:outputLabel for="tit" styleClass="col-12 mb-2 md:col-2 mb-md-0">Director Subregional</p:outputLabel>
-                                            <div class="col-12 md:col-10">
-                                                <p:inputText id="tit" disabled="true" value="#{mHHome.ru.regente}" />
-                                            </div>
-                                        </div>
+
 
                                     </div>
                                 </div>
@@ -95,7 +122,7 @@
                             <h:panelGroup id="secAntecedentes">
                                 <p:outputLabel value="ANTECEDENTES" style="display:block;text-align:center;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
                                 <ui:repeat id="bot4" value="#{lire044.antecedentes}" var="antecedente">
-                                    <table width="80%" border="0">
+                                    <table width="100%" border="0">
                                         <tr style="vertical-align: middle;">
 
                                             <td width="10%">
@@ -122,7 +149,7 @@
                             <h:panelGroup id="secFundamentos">
                                 <p:outputLabel value="FUNDAMENTO LEGAL" style="display:block;text-align:center;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
                                 <ui:repeat id="bot5" value="#{lire044.fundamentos}" var="fundamento">
-                                    <table width="80%" border="0">
+                                    <table width="100%" border="0">
                                         <tr style="vertical-align: middle;">
 
                                             <td width="10%">
@@ -151,7 +178,7 @@
                             <h:panelGroup id="secAnalisis">
                                 <p:outputLabel value="ANÁLISIS" style="display:block;text-align:center;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
                                 <ui:repeat id="bot6" value="#{lire044.analisis}" var="an">
-                                    <table width="80%" border="0">
+                                    <table width="100%" border="0">
                                         <tr style="vertical-align: middle;">
 
                                             <td width="10%">
@@ -174,6 +201,14 @@
                                         </tr>
                                     </table>
                                 </ui:repeat>
+                            </h:panelGroup>
+                            
+
+                            <h:panelGroup style="display:inline-flex;align-items:center;gap:10px;margin-top:20px;margin-bottom:20px;">
+                               
+
+                                <p:outputLabel value="La modificación del plan es: #{lire044.validezDocumento ? 'Procedente' : 'No procedente'}"
+                                               style="font-weight:bold;" />
                             </h:panelGroup>
 
                             <table width="100%" border="0">
@@ -206,48 +241,50 @@
 
                                 </tr>
                             </table>
-                            
-                            <p:dialog header="Vista Previa del Documento" widgetVar="productDialog" modal="true" showEffect="fade"
-                                       hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
-                                 <p:outputPanel id="productDetail" style="text-align:center;">
-                                    
-                                 <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire044.rutaNombre}" 
-                                       width="900px" 
-                                       height="600px" 
-                                       style="border:none;">
-                                 </iframe>
 
-                                     
-                                 </p:outputPanel>
-                                 <center>
-                                     <p:commandButton value="Cerrar" update="bot1,bot2,bot4,bot5,bot6" actionListener="#{lire044.activarBoton()}" oncomplete="PF('productDialog').hide()" />
-                                 </center>
-                                 
-                             </p:dialog>
-                            
-                                <p:dialog header="Documento Creado" widgetVar="productDialog2" modal="true" showEffect="fade"
-                                       hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
-                                   <p:outputPanel id="productDetail2" style="text-align:center;">
-                                       <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire044.rutaNombre}" 
-                                       width="900px" 
-                                       height="600px" 
-                                       style="border:none;">
-                                 </iframe>
-                                       
-                                   </p:outputPanel>
-                                      <center>
-                                          <table width="50%">
-                                              <tr>                                                  
-                                                  <td style="width: 50%;text-align: center">
-                                                      <p:commandButton value="Cerrar" update="bot1,bot2" actionListener="#{lire044.desactivaAmbosBotones()}" oncomplete="PF('productDialog2').hide()" />
-                                                  </td>
-                                              </tr>
-                                          </table>
-                                        
-                                      </center>
-                                </p:dialog>
+                            <p:dialog header="Vista Previa del Documento" widgetVar="productDialog" modal="true" showEffect="fade"
+                                      hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                <p:outputPanel id="productDetail" style="text-align:center;">
+
+                                    <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire044.rutaNombre}" 
+                                            width="900px" 
+                                            height="600px" 
+                                            style="border:none;">
+                                    </iframe>
+
+
+                                </p:outputPanel>
+                                <center>
+                                    <p:commandButton value="Cerrar" update="bot1,bot2,bot4,bot5,bot6" actionListener="#{lire044.activarBoton()}" oncomplete="PF('productDialog').hide()" />
+                                </center>
+
+                            </p:dialog>
+
+                            <p:dialog header="Documento Creado" widgetVar="productDialog2" modal="true" showEffect="fade"
+                                      hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                <p:outputPanel id="productDetail2" style="text-align:center;">
+                                    <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire044.rutaNombre}" 
+                                            width="900px" 
+                                            height="600px" 
+                                            style="border:none;">
+                                    </iframe>
+
+                                </p:outputPanel>
+                                <center>
+                                    <table width="50%">
+                                        <tr>                                                  
+                                            <td style="width: 50%;text-align: center">
+                                                <p:commandButton value="Cerrar" update="bot1,bot2" actionListener="#{lire044.desactivaAmbosBotones()}" oncomplete="PF('productDialog2').hide()" />
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </center>
+                            </p:dialog>
 
                         </h:form>
+                        
+                       
                     </p:panel>
                 </div>
             </div>

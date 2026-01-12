@@ -66,6 +66,64 @@ public class Datum implements Serializable{
     private ArrayList<RodalesRepoblacion> rodalesRepoblacion;
     private String nug;
 
+    public Datum() {
+    }
+
+    public Datum(int gestionId, double area, TcPersonaCrea tcPersonaCrea, Date fechaRegistro, TcElaborador tcElaborador, TcTipoGestion tcTipoGestion, TcPlanTipoGestion tcPlanTipoGestion, String expediente, Date fechaAceptacion, TcTipoBosque tcTipoBosque, String cronograma, int ultimoPanel, int anio, int numero, int tieneRepresentante, Object observacionesCronograma, TcSubregion tcSubregion, int estadoId, Date fechaCierre, int personaAnulaId, Object fechaAnulacion, Object observaciones, int categoriaProfesionId, int pasoId, String fechaVencimiento, Object expedienteVacId, ArrayList<Persona> personas, ArrayList<Representante> representantes, Object ttRepresentanteGestion, TtDivisionAreaGestion ttDivisionAreaGestion, TtBiofisicaGestion ttBiofisicaGestion, TtInventarioGestion ttInventarioGestion, TtPlanificacionGestion ttPlanificacionGestion, Object ttRepoblacionGestion, TtProteccionGestion ttProteccionGestion, TtTipoPropietarioGestion ttTipoPropietarioGestion, ArrayList<Notificacione> notificaciones, ArrayList<Finca> fincas, ArrayList<Uso> uso, ArrayList<Object> criterio, ArrayList<Anexo> anexo, ArrayList<Especy> especies, ArrayList<Rodal> rodal, ArrayList<CodigoClase> codigoClase, Object ttEstadisticoGestion, ArrayList<SistemaRepoblacion> sistemaRepoblacion, TtResumenGestion ttResumenGestion, Object informes, ArrayList<RodalesRepoblacion> rodalesRepoblacion, String nug) {
+        this.gestionId = gestionId;
+        this.area = area;
+        this.tcPersonaCrea = tcPersonaCrea;
+        this.fechaRegistro = fechaRegistro;
+        this.tcElaborador = tcElaborador;
+        this.tcTipoGestion = tcTipoGestion;
+        this.tcPlanTipoGestion = tcPlanTipoGestion;
+        this.expediente = expediente;
+        this.fechaAceptacion = fechaAceptacion;
+        this.tcTipoBosque = tcTipoBosque;
+        this.cronograma = cronograma;
+        this.ultimoPanel = ultimoPanel;
+        this.anio = anio;
+        this.numero = numero;
+        this.tieneRepresentante = tieneRepresentante;
+        this.observacionesCronograma = observacionesCronograma;
+        this.tcSubregion = tcSubregion;
+        this.estadoId = estadoId;
+        this.fechaCierre = fechaCierre;
+        this.personaAnulaId = personaAnulaId;
+        this.fechaAnulacion = fechaAnulacion;
+        this.observaciones = observaciones;
+        this.categoriaProfesionId = categoriaProfesionId;
+        this.pasoId = pasoId;
+        this.fechaVencimiento = fechaVencimiento;
+        this.expedienteVacId = expedienteVacId;
+        this.personas = personas;
+        this.representantes = representantes;
+        this.ttRepresentanteGestion = ttRepresentanteGestion;
+        this.ttDivisionAreaGestion = ttDivisionAreaGestion;
+        this.ttBiofisicaGestion = ttBiofisicaGestion;
+        this.ttInventarioGestion = ttInventarioGestion;
+        this.ttPlanificacionGestion = ttPlanificacionGestion;
+        this.ttRepoblacionGestion = ttRepoblacionGestion;
+        this.ttProteccionGestion = ttProteccionGestion;
+        this.ttTipoPropietarioGestion = ttTipoPropietarioGestion;
+        this.notificaciones = notificaciones;
+        this.fincas = fincas;
+        this.uso = uso;
+        this.criterio = criterio;
+        this.anexo = anexo;
+        this.especies = especies;
+        this.rodal = rodal;
+        this.codigoClase = codigoClase;
+        this.ttEstadisticoGestion = ttEstadisticoGestion;
+        this.sistemaRepoblacion = sistemaRepoblacion;
+        this.ttResumenGestion = ttResumenGestion;
+        this.informes = informes;
+        this.rodalesRepoblacion = rodalesRepoblacion;
+        this.nug = nug;
+    }
+
+    
+    
     public int getGestionId() {
         return gestionId;
     }

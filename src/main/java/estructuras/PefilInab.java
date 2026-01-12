@@ -40,6 +40,18 @@ public class PefilInab implements Serializable {
     private int hombres=0;
     private int mujeres=0;
     private  Point2D.Double centro;
+    
+    private List<tablas.MANEJO.TcUsuario> listaTcUsuario = new ArrayList();
+
+    public List<TcUsuario> getListaTcUsuario() {
+        return listaTcUsuario;
+    }
+
+    public void setListaTcUsuario(List<TcUsuario> listaTcUsuario) {
+        this.listaTcUsuario = listaTcUsuario;
+    }
+    
+    
 
     public Point2D.Double getCentro() {
         return centro;

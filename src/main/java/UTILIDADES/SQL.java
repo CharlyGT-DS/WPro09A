@@ -17,6 +17,30 @@ import lire042.DocumentoInab.SolicitudActualizacion.Contenido.Modificaciones.Det
 
 
 public class SQL implements Serializable{
+
+
+    public static String llamaJuridicoPorId(int id){
+
+      return "  select tu.usuario_id dato1,tu.usuario dato2,tu.usuario_desc dato3,CONCAT(tsr.alias,' ',tsr.subregion_desc,', ' ,tmun.municipio_desc,', ',tdep.departamento_desc) dato4 , \n" +
+"                 tpp.perfil_desc dato5 \n" +
+"                 from manejo2.tc_usuario tu \n" +
+"                 inner join manejo2.tc_usuario_perfil_sistema tups ON tu.usuario_id=tups.usuario_id \n" +
+"                 inner join manejo2.tc_persona tp ON tu.usuario_id=tp.usuario_id \n" +
+"                 inner join manejo2.tc_usuario_subregion tus ON tp.persona_id=tus.persona_id \n" +
+"                 inner join manejo2.tc_subregion tsr ON tus.subregion_id=tsr.subregion_id \n" +
+"                 inner join manejo2.tc_municipio tmun ON tsr.municipio_id=tmun.municipio_id \n" +
+"                 inner join  manejo2.tc_departamento tdep ON  tmun.departamento_id=tdep.departamento_id \n" +
+"                 inner join manejo2.tc_perfil tpp on tups.perfil_id = tpp.perfil_id\n" +
+"                 Where tu.estado_id=1 \n" +
+"                 and tups.perfil_id=6 \n" +
+"                 and tus.subregion_id=38\n" +
+"                 and tu.usuario_id="+id;
+    }
+    
+    public static String busquedaUsuarioPorId(int id){
+        
+        return " select * from manejo2.tc_usuario where usuario_id ="+id;
+    }
     
     public static String criterioProteccion(){
         return"select * from tc_criterio_proteccion limit 50;";

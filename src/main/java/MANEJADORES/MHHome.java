@@ -8,6 +8,7 @@ package MANEJADORES;
 import EJB.DBaseLocal;
 import PERFIL.CargaDocumentosLocal;
 import com.google.gson.Gson;
+import estructuras.GEnericaCincoCampos;
 import estructuras.PefilInab;
 import estructuras.RespuestaSeccionUNO;
 import java.io.Serializable;
@@ -29,6 +30,7 @@ import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import redis.clients.jedis.Jedis;
+import tablas.MANEJO.TcPerfil;
 import tablas.MANEJO.TcUsuario;
 
 /**
@@ -51,6 +53,7 @@ public class MHHome implements Serializable{
     private transient Gson gson = new Gson();
     private int entrada; 
     private RespuestaSeccionUNO  ru = new RespuestaSeccionUNO();
+    private String sql="";
 
     public int getEntrada() {
         return entrada;
@@ -98,12 +101,56 @@ public class MHHome implements Serializable{
             try {
                 InitialContext ctx = new InitialContext();
                 this.api =  (DBaseLocal) ctx.lookup("java:global/ComponenteCero-2.0/DBase!EJB.DBaseLocal");
+                carga2();
             } catch (NamingException ex) {
                 Logger.getLogger(MHHome.class.getName()).log(Level.SEVERE, null, ex);
             }
                 
         }
         
+        
+        public void carga2(){
+              per = new estructuras.PefilInab();
+              
+                try{
+                    
+
+                  // busqueda del componente por JNDI
+                  ctx = new InitialContext();
+                  this.api =  (DBaseLocal) ctx.lookup("java:global/ComponenteCero-2.0/DBase!EJB.DBaseLocal");
+                  
+                           // usuario origen
+                           sql=  UTILIDADES.SQL.busquedaUsuarioPorId(697);
+                           this.per.setTcUsuario((TcUsuario) this.api.repuestaApi(new tablas.MANEJO.TcUsuario(),"JSON",sql));
+                           
+                           // busca el perfil por subregion por id
+                           sql = UTILIDADES.SQL.llamaJuridicoPorId(697);
+                           this.per.setCincoCampos((GEnericaCincoCampos) this.api.repuestaApi(new estructuras.GEnericaCincoCampos(),"JSON",sql));
+                           System.out.println("dato 5 ="+ this.per.getCincoCampos().getDato5().toString());
+                           tablas.MANEJO.TcPerfil temPerfil = new tablas.MANEJO.TcPerfil();
+                           temPerfil.setPerfilDesc(this.per.getCincoCampos().getDato5().toString());
+                           this.per.setTcPerfil(temPerfil);
+                           
+                           // subregional el destino
+                             sql=  UTILIDADES.SQL.busquedaUsuarioPorId(142);
+                             TcUsuario tmpU = (TcUsuario) this.api.repuestaApi(new tablas.MANEJO.TcUsuario(),"JSON",sql);
+                             this.per.getListaTcUsuario().add(tmpU);
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                    
+            } catch (NamingException ex) {
+                Logger.getLogger(MHHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
        
         public void carga(){
             
@@ -170,6 +217,8 @@ public class MHHome implements Serializable{
                           
                            Future<estructuras.PefilInab> tper6 = fred.buscaUsuario(ra, per);
                            this.per = tper6.get();
+                           
+                          
                            
                           
                           System.out.println(":::IINICIO-JSON:::");

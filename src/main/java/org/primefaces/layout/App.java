@@ -17,6 +17,7 @@ package org.primefaces.layout;
 
 import EJB.DBaseLocal;
 import PERFIL.CargaDocumentosLocal;
+import dta.json.plan.TcUsuario;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -329,7 +330,9 @@ public class App implements Serializable {
             PrimeFaces.current().ajax().update(":layoutMenuForm:dat");
             PrimeFaces.current().ajax().update(":form:num");
             
-           
+            sql = UTILIDADES.SQL.obtieneTcUsuarioPorId("697","tc_usuario");
+            TcUsuario usario =  (TcUsuario) this.api.repuestaApi(new TcUsuario(),"JSON", sql);
+            
             
             
         } catch (NamingException ex) {

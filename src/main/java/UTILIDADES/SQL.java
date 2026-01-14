@@ -32,7 +32,7 @@ public class SQL implements Serializable{
 "                 inner join  manejo2.tc_departamento tdep ON  tmun.departamento_id=tdep.departamento_id \n" +
 "                 inner join manejo2.tc_perfil tpp on tups.perfil_id = tpp.perfil_id\n" +
 "                 Where tu.estado_id=1 \n" +
-"                 and tups.perfil_id=6 \n" +
+"                 and tups.perfil_id=7 \n" +
 "                 and tus.subregion_id=38\n" +
 "                 and tu.usuario_id="+id;
     }

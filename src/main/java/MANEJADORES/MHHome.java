@@ -120,11 +120,11 @@ public class MHHome implements Serializable{
                   this.api =  (DBaseLocal) ctx.lookup("java:global/ComponenteCero-2.0/DBase!EJB.DBaseLocal");
                   
                            // usuario origen
-                           sql=  UTILIDADES.SQL.busquedaUsuarioPorId(697);
+                           sql=  UTILIDADES.SQL.busquedaUsuarioPorId(1150);
                            this.per.setTcUsuario((TcUsuario) this.api.repuestaApi(new tablas.MANEJO.TcUsuario(),"JSON",sql));
                            
                            // busca el perfil por subregion por id
-                           sql = UTILIDADES.SQL.llamaJuridicoPorId(697);
+                           sql = UTILIDADES.SQL.llamaJuridicoPorId(1150);
                            this.per.setCincoCampos((GEnericaCincoCampos) this.api.repuestaApi(new estructuras.GEnericaCincoCampos(),"JSON",sql));
                            System.out.println("dato 5 ="+ this.per.getCincoCampos().getDato5().toString());
                            tablas.MANEJO.TcPerfil temPerfil = new tablas.MANEJO.TcPerfil();

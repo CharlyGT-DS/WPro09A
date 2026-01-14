@@ -34,24 +34,6 @@
                 
 
                         <h:form id="form044">
-                            
-                            <p:dialog id="dlgDocumento" header="Validación de Documento" modal="true" closable="false" draggable="false"
-                                      resizable="false" visible="#{lire044.dialogValidez}">
-                                <h:outputText value="¿El documento es procedente y llena los requisitos?" 
-                                              style="display:block;font-weight:bold;margin-top:20px;margin-bottom:20px;font-size:1.2rem;"/>
-                                <br/>
-
-                                <p:commandButton value="SI" icon="pi pi-check" actionListener="#{lire044.validarDocumento(true)}"
-                                                 process="@this" update="@form"/>
-
-                                <p:commandButton value="NO" icon="pi pi-times" styleClass="ui-button-danger"
-                                                 actionListener="#{lire044.validarDocumento(false)}" process="@this" update="@form"/>
-                            </p:dialog>
-
-
-
-
-
 
                             <p:growl id="msg" showDetail="true" life="2500" />
 

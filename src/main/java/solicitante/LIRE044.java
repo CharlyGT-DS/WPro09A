@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -60,7 +61,7 @@ public class LIRE044 implements Serializable {
     private String noDictamen;
     private String direccion = "";
     private String[] partesDireccion;
-    private String sede;
+    private String subRegion;
     private String municipio;
     private String departamento;
     private String nombreDirectorSub = "";
@@ -71,7 +72,6 @@ public class LIRE044 implements Serializable {
     private List<LIRE044.Elemento> fundamentos = new ArrayList<>();
     private List<LIRE044.Elemento> analisis = new ArrayList<>();
     private boolean validezDocumento;
-    private boolean dialogValidez;
 
     public String getExpediente() {
         return expediente;
@@ -105,12 +105,12 @@ public class LIRE044 implements Serializable {
         this.partesDireccion = partesDireccion;
     }
 
-    public String getSede() {
-        return sede;
+    public String getsSubRegion() {
+        return subRegion;
     }
 
-    public void setSede(String sede) {
-        this.sede = sede;
+    public void setSubRegion(String subRegion) {
+        this.subRegion = subRegion;
     }
 
     public String getMunicipio() {
@@ -128,8 +128,6 @@ public class LIRE044 implements Serializable {
     public void setDepartamento(String departamento) {
         this.departamento = departamento;
     }
-    
-    
     
     public void setNoDictamen(String noDictamen) {
         this.noDictamen = noDictamen;
@@ -238,27 +236,23 @@ public class LIRE044 implements Serializable {
     public void setAnalisis(List<Elemento> analisis) {
         this.analisis = analisis;
     }
-
-    public boolean isDialogValidez() {
-        return dialogValidez;
-    }
-
-    public void setDialogValidez(boolean dialogValidez) {
-        this.dialogValidez = dialogValidez;
-    }
+    
+    
 
     @PostConstruct
     public void init() {
-        this.dialogValidez = true;
+        String tipo = FacesContext.getCurrentInstance()
+            .getExternalContext()
+            .getRequestParameterMap()
+            .get("tipo");
+
+        if (tipo != null) {
+            validezDocumento = Boolean.parseBoolean(tipo);
+        }
     }
     
-    public void abrirDialogValidez() {
-        this.dialogValidez = true;
-    }
-
-    public void validarDocumento(boolean valor) {
-        this.validezDocumento = valor;
-        this.dialogValidez = false;
+    public String irFormulario(boolean valor) {
+        return "li-re-044?faces-redirect=true&tipo=" + valor;
     }
 
     public void agregarAntecedente() {
@@ -328,7 +322,7 @@ public class LIRE044 implements Serializable {
 
     public void generarDocumento044() {
         System.out.println("validez :" + this.validezDocumento);
-        System.out.println("Sede :"+this.partesDireccion[0]+"Municipio :"+this.partesDireccion[1]+"Departamento :"+this.partesDireccion[2]);
+        System.out.println("subRegion :"+this.partesDireccion[0]+"Municipio :"+this.partesDireccion[1]+"Departamento :"+this.partesDireccion[2]);
     }
 
     public void generarDocumento044Final() {
@@ -340,15 +334,13 @@ public class LIRE044 implements Serializable {
             this.fechaFormateada = formato.format(hoy);
             this.direccion = this.mhome.getPer().getCincoCampos().getDato4().toString();
             this.partesDireccion = direccion.split("\\s*,\\s*");
-            this.sede = this.partesDireccion[0];
+            this.subRegion = this.partesDireccion[0];
             this.municipio = this.partesDireccion[1];
             this.departamento = this.partesDireccion[2];
-            
             this.nombreDirectorSub = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
-            this.expediente = mhome.getPer().getLicencia().getExpediente();
-             
-             
-             this.validezDocumento = true;
+            this.licencia = "LI-RE-0445-2024";
+            this.expediente = "EXP-INAB-2023-01872";
+            this.planOperativo = "POA-2024-00631";
 
             antecedentes.add(new LIRE044.Elemento(""));
             fundamentos.add(new Elemento(""));

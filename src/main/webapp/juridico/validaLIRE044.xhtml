@@ -1,0 +1,71 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- Optional
+            <style></style>
+            <script></script>
+        -->
+        
+        <f:metadata>
+
+            <f:viewAction action="#{lire044.llamar()}"  />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+      
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                    
+                    <h:form id="form">
+
+                        <p:growl id="msg" showDetail="true" life="2500" />
+                        
+                        <p:outputLabel value="Lugar y Fecha de Documento: " style="font-weight:bold;" />
+                        <p:outputLabel value="#{lire044.direccion}, #{lire044.fechaFormateada}"/>
+
+                        <p:panel>
+
+                            
+                            <p:panelGrid columns="1" style="width: 50%;margin: 0 auto;" layout="grid" >
+                                <p:outputLabel value="DICTAMEN JURÍDICO DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL LI-RE-044" 
+                                               style="display:block;text-align:center;font-weight:bold;font-size:1.5rem" />
+                                <p:outputLabel value="Previo a crear el documento seleccione si desea generar un Dictamen para aprobar o denagar la Modificación del Plan" 
+                                               style="display:block;text-align:center;" /> 
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" style="width: 50%;margin: 0 auto;" layout="grid" styleClass="ui-fluid">
+
+                                <p:commandButton value="Aprobar" icon="pi pi-check" action="#{lire044.irFormulario(true)}"
+                                                 process="@this" ajax="false"/>
+
+                                <p:commandButton value="Denegar" icon="pi pi-times" styleClass="ui-button-danger"
+                                                 action="#{lire044.irFormulario(false)}" ajax="false"/>
+                            </p:panelGrid>
+
+
+                          
+                        </p:panel>
+                    </h:form>
+
+                    
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

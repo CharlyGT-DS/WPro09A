@@ -1,0 +1,64 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- Optional
+            <style></style>
+            <script></script>
+        -->
+
+        <f:metadata>
+
+            
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+
+                    <p:panel header="CREAR DICTAMEN TÉCNICO">
+
+                        <h:form>
+                            <h:outputText
+                                value="Favor de seleccionar el dictamen que desea crear"
+                                style="display:block;font-weight:bold;margin-bottom:20px;font-size:1.2rem;" />
+
+                            <p:commandButton
+                                value="Aprobar"
+                                icon="pi pi-check"
+                                action="#{lire043.decidirDocumento(true)}"
+                                style="margin-right:10px"
+                                ajax="false"/>
+
+                            <p:commandButton
+                                value="Denegar"
+                                icon="pi pi-times"
+                                styleClass="ui-button-warning"
+                                action="#{lire043.decidirDocumento(false)}"
+                                style="margin-right: 10px"
+                                ajax="false"/>
+                        </h:form>
+
+                    </p:panel>
+
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

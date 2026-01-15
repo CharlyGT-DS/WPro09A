@@ -123,6 +123,8 @@ public class MHHome implements Serializable{
                            sql=  UTILIDADES.SQL.busquedaUsuarioPorId(1150);
                            this.per.setTcUsuario((TcUsuario) this.api.repuestaApi(new tablas.MANEJO.TcUsuario(),"JSON",sql));
                            
+                           
+                           
                            // busca el perfil por subregion por id
                            sql = UTILIDADES.SQL.llamaJuridicoPorId(1150);
                            this.per.setCincoCampos((GEnericaCincoCampos) this.api.repuestaApi(new estructuras.GEnericaCincoCampos(),"JSON",sql));
@@ -135,17 +137,7 @@ public class MHHome implements Serializable{
                              sql=  UTILIDADES.SQL.busquedaUsuarioPorId(142);
                              TcUsuario tmpU = (TcUsuario) this.api.repuestaApi(new tablas.MANEJO.TcUsuario(),"JSON",sql);
                              this.per.getListaTcUsuario().add(tmpU);
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                    
+     
             } catch (NamingException ex) {
                 Logger.getLogger(MHHome.class.getName()).log(Level.SEVERE, null, ex);
             }

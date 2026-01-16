@@ -30,11 +30,10 @@
         <div class="grid">
             <div class="col-12">
                 <div class="card">
-                    <p:panel header="DICTAMEN TÉCNICO DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL LI-RE-043 #{lire043.aprobado} #{lire043.aprobado != null ? (lire043.aprobado ? '(Aprobado)' : '(Denegado)' ) : ''}" >
+                    <p:panel header="DICTAMEN TÉCNICO DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL LI-RE-043 #{lire043.validezDocumento ? '(APROBAR)' : '(DENEGAR)'}">
 
 
                         <h:form id="form043">
-
 
                             <p:growl id="msg" showDetail="true" life="2500" />
 
@@ -43,7 +42,7 @@
                                 <p:column colspan="2" class="col-12 lg:col-8">
                                     <p:outputLabel value="Lugar y Fecha de Documento: " style="font-weight:bold;" />
                                     <p:outputLabel value="#{lire043.direccion}, #{lire043.fechaFormateada}"/>
-                                </p:column>L
+                                </p:column>
 
                                 <p:column>
                                     <p:outputLabel value="Ver datos ocultos: " style="font-weight:bold;" />
@@ -54,24 +53,21 @@
                             </p:panelGrid>
 
                             <div class="field grid">
-                                <p:outputLabel value="No. Dictamen: "/>
+                                <p:outputLabel value="No. Dictamen: " />
                                 <div class="col-12 md:col-10">
                                     <p:inputText id="noDic" required="true" requiredMessage="Ingrese número de Dictamen" 
                                                  value="#{lire043.noDictamen}" style="width: 30%" />
                                 </div>
+                                <div class="col-12 md:col-10">
+                                <p:outputLabel value="Señor(a): " style="font-weight:bold;" />
+                                <p:outputLabel value="#{lire043.nombreDirectorSub}" />
+                                </div>
 
-                                <div class="col-12 md:col-10">
-                                    <p:outputLabel for="tit" styleClass="col-12 mb-2 md:col-2 mb-md-0">Director Subregional</p:outputLabel>
-                                    <div class="col-12 md:col-10">
-                                        <p:inputText id="tit" disabled="true" value="#{lire043.nombreDirectorSub}" />
-                                    </div>
+                                <div class="col-12 md:col-10">                                
+                                <p:outputLabel value="Sede de INAB: " style="font-weight:bold;" />
+                                <p:outputLabel value="#{lire043.subRegion}" />
                                 </div>
-                                <div class="col-12 md:col-10">
-                                    <p:outputLabel for="sed" styleClass="col-12 mb-2 md:col-2 mb-md-0">Sede de INAB</p:outputLabel>
-                                    <div class="col-12 md:col-10">
-                                        <p:inputText id="sed" disabled="true" value="#{lire043.sede}" />
-                                    </div>
-                                </div>
+
                             </div>
 
 
@@ -84,6 +80,13 @@
                                         <h5>Datos que integran el Documento</h5>
 
                                         <div class="field grid">
+                                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Licencia</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="lic" disabled="true" value="#{lire043.licencia}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
                                             <p:outputLabel for="exp" styleClass="col-12 mb-2 md:col-2 mb-md-0">Expediente</p:outputLabel>
                                             <div class="col-12 md:col-10">
                                                 <p:inputText id="exp" disabled="true" value="#{lire043.expediente}" />
@@ -91,56 +94,48 @@
                                         </div>
 
                                         <div class="field grid">
-                                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Licencia</p:outputLabel>
+                                            <p:outputLabel for="ela" styleClass="col-12 mb-2 md:col-2 mb-md-0">Elaborador</p:outputLabel>
                                             <div class="col-12 md:col-10">
-                                                <p:inputText id="lic" disabled="true" value="#{lire043.licencia}" />
-                                            </div>
-                                        </div>
-                                        <div class="field grid">
-                                            <p:outputLabel for="ela" styleClass="col-12 mb-2 md:col-2 mb-md-0">Elaborado</p:outputLabel>
-                                            <div class="col-12 md:col-10">
-                                                <p:inputText id="ela" disabled="true" value="#{lire043.planOperativo}" />
-                                            </div>
-                                        </div>
-                                        <div class="field grid">
-                                            <p:outputLabel for="reg" styleClass="col-12 mb-2 md:col-2 mb-md-0">Regente</p:outputLabel>
-                                            <div class="col-12 md:col-10">
-                                                <p:inputText id="reg" disabled="true" value="#{lire043.planOperativo}" />
+                                                <p:inputText id="ela" disabled="true" value="#{lire043.elaborador}" />
                                             </div>
                                         </div>
 
+                                        <div class="field grid">
+                                            <p:outputLabel for="rege" styleClass="col-12 mb-2 md:col-2 mb-md-0">Regente</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="rege" disabled="true" value="#{lire043.regente}" />
+                                            </div>
+                                        </div>
 
                                     </div>
                                 </div>
                             </h:panelGroup>
 
-                            <h:panelGroup id="secAntecedentes">
-                                <p:outputLabel value="CONCLUSIONES" style="display:block;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
-                                <ui:repeat id="bot4" value="#{lire043.antecedentes}" var="antecedente">
+                            <h:panelGroup id="secConclusiones">
+                                <p:outputLabel value="CONCLUSIONES" style="display:block;text-align:justify;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
+                                <ui:repeat id="bot4" value="#{lire043.conclusiones}" var="conclusion">
                                     <table width="100%" border="0">
                                         <tr style="vertical-align: middle;">
 
                                             <td width="10%">
-                                                <p:commandButton value="Quitar" actionListener="#{lire043.eliminarAntecedente(antecedente)}"
-                                                                 process="@this" update="form043" rendered="#{not empty lire043.antecedentes}" styleClass="rounded-button ui-button-danger" />
+                                                <p:commandButton value="Quitar" actionListener="#{lire043.eliminarConclusion(conclusion)}"
+                                                                 process="@this" update="form043" rendered="#{not empty lire043.conclusiones}" styleClass="rounded-button ui-button-danger" />
                                             </td>
 
                                             <td width="70%">
-                                                <p:inputText value="#{antecedente.valor}" required="true" requiredMessage="Ingrese conclusión"
+                                                <p:inputText value="#{conclusion.valor}" required="true" requiredMessage="Ingrese conclusión"
                                                              placeholder="Ingrese su conclusión" style="width:100%;" />
                                             </td>
 
                                             <td width="10%">
-                                                <p:commandButton value="Agregar Elemento" actionListener="#{lire043.agregarAntecedente}"
-                                                                 process="form043:secAntecedentes" update="form043" styleClass="rounded-button ui-button-success" />
+                                                <p:commandButton value="Agregar Elemento" actionListener="#{lire043.agregarConclusion}"
+                                                                 process="form043:secConclusiones" update="form043" styleClass="rounded-button ui-button-success" />
                                             </td>
 
                                         </tr>
                                     </table>
                                 </ui:repeat>
                             </h:panelGroup>
-
-
 
 
                             <h:panelGroup style="display:inline-flex;align-items:center;gap:10px;margin-top:20px;margin-bottom:20px;">

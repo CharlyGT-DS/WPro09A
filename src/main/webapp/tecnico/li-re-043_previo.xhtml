@@ -15,47 +15,54 @@
             <style></style>
             <script></script>
         -->
-
+        
         <f:metadata>
 
-            
+            <f:viewAction action="#{lire043.llamar()}"  />
         </f:metadata>
     </ui:define>
 
     <ui:define name="breadcrumb">
-
+      
     </ui:define>
 
     <ui:define name="content">
         <div class="grid">
             <div class="col-12">
                 <div class="card">
+                    
+                    <h:form id="form">
 
-                    <p:panel header="CREAR DICTAMEN TÉCNICO">
+                        <p:growl id="msg" showDetail="true" life="2500" />
+                        
+                        <p:outputLabel value="Lugar y Fecha de Documento: " style="font-weight:bold;" />
+                        <p:outputLabel value="#{lire043.direccion}, #{lire043.fechaFormateada}"/>
 
-                        <h:form>
-                            <h:outputText
-                                value="Favor de seleccionar el dictamen que desea crear"
-                                style="display:block;font-weight:bold;margin-bottom:20px;font-size:1.2rem;" />
+                        <p:panel>
 
-                            <p:commandButton
-                                value="Aprobar"
-                                icon="pi pi-check"
-                                action="#{lire043.decidirDocumento(true)}"
-                                style="margin-right:10px"
-                                ajax="false"/>
+                            
+                            <p:panelGrid columns="1" style="width: 50%;margin: 0 auto;" layout="grid" >
+                                <p:outputLabel value="DICTAMEN TÉCNICO DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL LI-RE-043" 
+                                               style="display:block;text-align:center;font-weight:bold;font-size:1.5rem" />
+                                <p:outputLabel value="Previo a crear el documento seleccione si desea generar un Dictamen para aprobar o denagar la Modificación del Plan" 
+                                               style="display:block;text-align:center;" /> 
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" style="width: 50%;margin: 0 auto;" layout="grid" styleClass="ui-fluid">
 
-                            <p:commandButton
-                                value="Denegar"
-                                icon="pi pi-times"
-                                styleClass="ui-button-warning"
-                                action="#{lire043.decidirDocumento(false)}"
-                                style="margin-right: 10px"
-                                ajax="false"/>
-                        </h:form>
+                                <p:commandButton value="Aprobar" icon="pi pi-check" action="#{lire043.irFormulario(true)}"
+                                                 process="@this" ajax="false"/>
 
-                    </p:panel>
+                                <p:commandButton value="Denegar" icon="pi pi-times" styleClass="ui-button-danger"
+                                                 action="#{lire043.irFormulario(false)}" ajax="false"/>
+                            </p:panelGrid>
 
+
+                          
+                        </p:panel>
+                    </h:form>
+
+                    
                 </div>
             </div>
         </div>

@@ -91,18 +91,18 @@
                                                 <p:inputText id="lic" disabled="true" value="#{lire009.licencia}" />
                                             </div>
                                         </div>
-                                         <div class="field grid">
-                                            <p:outputLabel for="tec" value="Técnico (a) Forestal" styleClass="col-12 mb-2 md:col-4 mb-md-0"/>
-                                            <div class="col-12 md:col-8">
-                                                <p:inputText id="tec" disabled="true" value="#{lire009.tecnico}" />
-                                            </div>
-                                            </div>
-                                            <div class="field grid">
-                                            <p:outputLabel for="jur" value="Delegado (a) V Jurídico (a)" styleClass="col-12 mb-2 md:col-4 mb-md-0"/>
-                                            <div class="col-12 md:col-8">
-                                                <p:inputText id="jur" disabled="true" value="#{lire009.juridico}" />
-                                            </div>
-                                        </div>
+                                        <h:panelGroup rendered="#{not empty lire009.tecnico}" class="field grid">
+                                                <p:outputLabel for="tec" value="Técnico (a) Forestal" styleClass="col-12 mb-2 md:col-4 mb-md-0"/>
+                                                <div class="col-12 md:col-8">
+                                                    <p:inputText id="tec" disabled="true" value="#{lire009.tecnico}" />
+                                                </div>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{not empty lire009.juridico}" class="field grid">
+                                                <p:outputLabel for="jur" value="Delegado (a) V Jurídico (a)" styleClass="col-12 mb-2 md:col-4 mb-md-0"/>
+                                                <div class="col-12 md:col-8">
+                                                    <p:inputText id="jur" disabled="true" value="#{lire009.juridico}" />
+                                                </div>
+                                        </h:panelGroup>
                                     </div>
                                 </div>
                             </h:panelGroup>
@@ -110,6 +110,7 @@
                             
                             <p:divider />
                             <h:panelGroup id="seceEnmiendas" style="margin-top:20px;">
+                                <p:outputLabel value="- Faltantes o Enmiedas" style="display:block;font-weight:bold;font-size:1.2rem;margin-top:25px; margin-bottom:10px;"/>
                                 <ui:repeat id="bot4" value="#{lire009.enmiendas}" var="enmienda">
                                     <table width="100%" border="0">
                                         <tr style="vertical-align: middle;">
@@ -134,36 +135,16 @@
                                 </ui:repeat>
                             </h:panelGroup>
 
-                            <table width="100%" border="0">
-                                <tr>
-                                    <td width="15%">
-
-                                        <p:commandButton id="bot1" disabled="#{lire009.bot1}"  
-                                                         actionListener="#{lire009.generarDocumento009()}"
-                                                         update=":form009:productDetail,:form009:msg,:form009" 
-                                                         icon="pi pi-search" title="Vista Previa"  value="Vista Previa" />
-
-                                    </td>
-                                    <td width="15%">
-                                        <p:commandButton oncomplete="PF('productDialog2').show()" id='bot2'
+                            <p:panelGrid columns="2" style="width:40%;margin-top:30px;" styleClass="ui-fluid">
+                                <p:commandButton id="bot1" disabled="#{lire009.bot1}" value="Vista Previa" title="Vista Previa" 
+                                                         actionListener="#{lire009.generarDocumento009()}" icon="pi pi-search" 
+                                                         update=":form009:productDetail,:form009:msg,:form009"/>
+                                
+                                <p:commandButton oncomplete="PF('productDialog2').show()" id='bot2'
                                                          actionListener="#{lire009.generarDocumento009Final()}" 
                                                          disabled="#{lire009.bot2}" update="productDetail2" value="Generar Documento" />
-                                    </td>
-                                    <td width="25%">
-
-                                    </td>
-                                    <td width="25%">
-
-                                    </td>
-                                    <td width="10%">
-
-                                    </td>
-                                    <td width="10%">
-
-                                    </td>
-
-                                </tr>
-                            </table>
+                            </p:panelGrid>
+                            
 
                             <p:dialog header="Vista Previa del Documento" widgetVar="productDialog" modal="true" showEffect="fade"
                                       hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">

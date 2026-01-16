@@ -2,14 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package juridico;
+package subregional;
 
+import juridico.*;
 import MANEJADORES.MHHome;
 import PERFIL.EJBGestionREDLocal;
 import com.google.gson.Gson;
 import dta.json.plan.TcUsuario;
 import inab.pro.wpro09.resources.VerificaUsuario;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,9 +34,9 @@ import redis.clients.jedis.Jedis;
  *
  * @author WINDOWS
  */
-@Named(value = "lire044")
+@Named(value = "lire045")
 @ViewScoped
-public class LIRE044 implements Serializable {
+public class LIRE045 implements Serializable {
 
     @Inject
     private MHHome mhome;
@@ -53,48 +55,43 @@ public class LIRE044 implements Serializable {
     private boolean bot1 = false;
     private boolean bot2 = true;
     private boolean bot4 = false;
-    private boolean bot5 = false;
-    private boolean bot6 = false;
     private String nomXML = "";
     private String rutaNombre = "";
     private String tipoActualizacion = "0";
-    private String noDictamen;
+    private String noOficio;
     private String direccion = "";
     private String[] partesDireccion;
     private String subRegion;
     private String municipio;
     private String departamento;
     private String nombreDirectorSub = "";
-    private String expediente;
+    private String nombreDirectorReg;
+    private Date fechaSolicitud;
+    private String solicitante;
     private String licencia;
     private String planOperativo;
-    private List<LIRE044.Elemento> antecedentes = new ArrayList<>();
-    private List<LIRE044.Elemento> fundamentos = new ArrayList<>();
-    private List<LIRE044.Elemento> analisis = new ArrayList<>();
-    private boolean validezDocumento;
+    private String juridico;
+    private String noDictamenJ;
+    private Date fechaDictamenT;
+    private String tecnico;
+    private String noDictamenT;
+    private Date fechaDictamenJ;
+    private List<LIRE045.Elemento> razones = new ArrayList<>();
 
-    public String getExpediente() {
-        return expediente;
+    public String getSolicitante() {
+        return solicitante;
     }
 
-    public String getLicencia() {
-        return licencia;
-    }
-
-    public String getPlanOperativo() {
-        return planOperativo;
-    }
-
-    public String getNombreDirectorSub() {
-        return nombreDirectorSub;
+    public void setSolicitante(String solicitante) {
+        this.solicitante = solicitante;
     }
 
     public String getDireccion() {
         return direccion;
     }
 
-    public String getNoDictamen() {
-        return noDictamen;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public String[] getPartesDireccion() {
@@ -105,7 +102,7 @@ public class LIRE044 implements Serializable {
         this.partesDireccion = partesDireccion;
     }
 
-    public String getsSubRegion() {
+    public String getSubRegion() {
         return subRegion;
     }
 
@@ -128,17 +125,94 @@ public class LIRE044 implements Serializable {
     public void setDepartamento(String departamento) {
         this.departamento = departamento;
     }
+
     
-    public void setNoDictamen(String noDictamen) {
-        this.noDictamen = noDictamen;
+    public String getNombreDirectorReg() {
+        return nombreDirectorReg;
     }
 
-    public boolean isValidezDocumento() {
-        return validezDocumento;
+    public void setNombreDirectorReg(String nombreDirectorReg) {
+        this.nombreDirectorReg = nombreDirectorReg;
     }
 
-    public void setValidezDocumento(boolean validezDocumento) {
-        this.validezDocumento = validezDocumento;
+    public Date getFechaSolicitud() {
+        return fechaSolicitud;
+    }
+
+    public void setFechaSolicitud(Date fechaSolicitud) {
+        this.fechaSolicitud = fechaSolicitud;
+    }
+
+    public String getPlanOperativo() {
+        return planOperativo;
+    }
+
+    public void setPlanOperativo(String planOperativo) {
+        this.planOperativo = planOperativo;
+    }
+
+    public String getNoDictamenJ() {
+        return noDictamenJ;
+    }
+
+    public void setNoDictamenJ(String noDictamenJ) {
+        this.noDictamenJ = noDictamenJ;
+    }
+
+    public Date getFechaDictamenT() {
+        return fechaDictamenT;
+    }
+
+    public void setFechaDictamenT(Date fechaDictamenT) {
+        this.fechaDictamenT = fechaDictamenT;
+    }
+
+    public String getNoDictamenT() {
+        return noDictamenT;
+    }
+
+    public void setNoDictamenT(String noDictamenT) {
+        this.noDictamenT = noDictamenT;
+    }
+
+    public Date getFechaDictamenJ() {
+        return fechaDictamenJ;
+    }
+
+    public void setFechaDictamenJ(Date fechaDictamenJ) {
+        this.fechaDictamenJ = fechaDictamenJ;
+    }
+    
+    public String getJuridico() {
+        return juridico;
+    }
+
+    public void setJuridico(String juridico) {
+        this.juridico = juridico;
+    }
+
+    public String getTecnico() {
+        return tecnico;
+    }
+
+    public void setTecnico(String tecnico) {
+        this.tecnico = tecnico;
+    }
+
+    public String getLicencia() {
+        return licencia;
+    }
+
+    public String getNombreDirectorSub() {
+        return nombreDirectorSub;
+    }
+
+    public String getNoOficio() {
+        return noOficio;
+    }
+    
+    public void setNoOficio(String noOficio) {
+        this.noOficio = noOficio;
     }
 
     public String getTipoActualizacion() {
@@ -180,23 +254,7 @@ public class LIRE044 implements Serializable {
     public void setBot4(boolean bot4) {
         this.bot4 = bot4;
     }
-
-    public boolean isBot5() {
-        return bot5;
-    }
-
-    public void setBot5(boolean bot5) {
-        this.bot5 = bot5;
-    }
-
-    public boolean isBot6() {
-        return bot6;
-    }
-
-    public void setBot6(boolean bot6) {
-        this.bot6 = bot6;
-    }
-
+    
     public String getFechaFormateada() {
         return fechaFormateada;
     }
@@ -213,85 +271,36 @@ public class LIRE044 implements Serializable {
         this.rutaNombre = rutaNombre;
     }
 
-    public List<Elemento> getAntecedentes() {
-        return antecedentes;
+    public List<Elemento> getRazones() {
+        return razones;
     }
 
-    public void setAntecedentes(List<Elemento> antecedentes) {
-        this.antecedentes = antecedentes;
+    public void setRazones(List<Elemento> razones) {
+        this.razones = razones;
     }
-
-    public List<Elemento> getFundamentos() {
-        return fundamentos;
-    }
-
-    public void setFundamentos(List<Elemento> fundamentos) {
-        this.fundamentos = fundamentos;
-    }
-
-    public List<Elemento> getAnalisis() {
-        return analisis;
-    }
-
-    public void setAnalisis(List<Elemento> analisis) {
-        this.analisis = analisis;
-    }
-    
     
 
     @PostConstruct
     public void init() {
-        String tipo = FacesContext.getCurrentInstance()
-            .getExternalContext()
-            .getRequestParameterMap()
-            .get("tipo");
+    
+    }
 
-        if (tipo != null) {
-            validezDocumento = Boolean.parseBoolean(tipo);
+    public void agregarRazon() {
+        activarBotonVistaPrevia();
+        razones.add(new LIRE045.Elemento(""));
+    }
+
+    public void eliminarRazon(LIRE045.Elemento elemento) {
+        if (razones.size() > 1) {
+            razones.remove(elemento);
         }
     }
     
-    public String irFormulario(boolean valor) {
-        return "li-re-044?faces-redirect=true&tipo=" + valor;
-    }
-
-    public void agregarAntecedente() {
-        antecedentes.add(new LIRE044.Elemento(""));
-    }
-
-    public void eliminarAntecedente(LIRE044.Elemento elemento) {
-        if (antecedentes.size() > 1) {
-            antecedentes.remove(elemento);
-        }
-    }
-
-    public void agregarFundamento() {
-        fundamentos.add(new LIRE044.Elemento(""));
-    }
-
-    public void eliminarFundamento(LIRE044.Elemento elemento) {
-        if (fundamentos.size() > 1) {
-            fundamentos.remove(elemento);
-        }
-    }
-
-    public void agregarAnalisis() {
-        analisis.add(new LIRE044.Elemento(""));
-    }
-
-    public void eliminarAnalisis(LIRE044.Elemento elemento) {
-        if (analisis.size() > 1) {
-            analisis.remove(elemento);
-        }
-    }
-
     public void activarBoton() {
         this.bot1 = true;
         this.bot2 = false;
         this.bot4 = true;// desactiva ingreso para cambiar el texto de la solicitud
-        this.bot5 = true;
-        this.bot6 = true;
-        PF.current().ajax().update(":bot1,:bot2,:bot4,:bot5,:bot6");
+        PF.current().ajax().update(":bot1,:bot2,:bot4");
     }
 
     public void activarBotonVistaPrevia() {
@@ -320,35 +329,45 @@ public class LIRE044 implements Serializable {
         this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a';");
     }
 
-    public void generarDocumento044() {
-        activarBoton();
-        System.out.println("validez :" + this.validezDocumento);
-        System.out.println("subRegion :"+this.partesDireccion[0]+"Municipio :"+this.partesDireccion[1]+"Departamento :"+this.partesDireccion[2]);
+    public void generarDocumento045() {
+     activarBoton();
     }
 
-    public void generarDocumento044Final() {
+    public void generarDocumento045Final() {
 
     }
 
     public void llamar() {
         try {
             this.fechaFormateada = formato.format(hoy);
+            this.nombreDirectorReg = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
             this.direccion = this.mhome.getPer().getCincoCampos().getDato4().toString();
             this.partesDireccion = direccion.split("\\s*,\\s*");
             this.subRegion = this.partesDireccion[0];
             this.municipio = this.partesDireccion[1];
             this.departamento = this.partesDireccion[2];
-            this.nombreDirectorSub = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
+            
+         
+            try {
+                fechaSolicitud = new SimpleDateFormat("dd/MM/yyyy").parse("15/01/2026");
+            } catch (ParseException ex) {
+                Logger.getLogger(LIRE045.class.getName()).log(Level.SEVERE, null, ex);
+            }
+   
+           
+            this.solicitante = "Pedro Lopez";
             this.licencia = "LI-RE-0445-2024";
-            this.expediente = "EXP-INAB-2023-01872";
             this.planOperativo = "POA-2024-00631";
+            this.tecnico = "Juan Perez";
+            this.noDictamenT = "DT-2025-0456";
+            this.juridico = "Juan Lopez";
+            this.noDictamenJ = "DJ-2026-00045";
+
             
-            antecedentes = new ArrayList<>();
-            antecedentes.add(new LIRE044.Elemento("Antecedente-11"));
-            antecedentes.add(new LIRE044.Elemento("Antecedente-2"));
             
-            fundamentos.add(new Elemento(""));
-            analisis.add(new Elemento(""));
+            
+
+            razones.add(new LIRE045.Elemento(""));
 
             System.out.println("licencia :" + mhome.getPer().getLicencia().getNumero_licencia_poa());
             System.out.println("datos de subregion : " + mhome.getPer().getCincoCampos().getDato1());
@@ -376,7 +395,7 @@ public class LIRE044 implements Serializable {
 
             this.ir = (EJBGestionREDLocal) ctx.lookup("java:global/WPro09A/EJBGestionRED!PERFIL.EJBGestionREDLocal");
         } catch (NamingException ex) {
-            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LIRE045.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

@@ -102,23 +102,23 @@
                             </h:panelGroup>
 
                             <h:panelGroup id="secAntecedentes">
-                                <p:outputLabel value="ANTECEDENTES" style="display:block;text-align:center;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
+                                <p:outputLabel value=" - ANTECEDENTES" style="display:block;font-weight:bold;font-size:1.2rem;margin-top:40px;margin-bottom:10px;" />
                                 <ui:repeat id="bot4" value="#{lire044.antecedentes}" var="antecedente">
                                     <table width="100%" border="0">
                                         <tr style="vertical-align: middle;">
 
                                             <td width="10%">
-                                                <p:commandButton value="Quitar" actionListener="#{lire044.eliminarAntecedente(antecedente)}"
+                                                <p:commandButton value="Quitar" actionListener="#{lire044.eliminarAntecedente(antecedente)}" disabled="true"
                                                                  process="@this" update="form044" rendered="#{not empty lire044.antecedentes}" styleClass="rounded-button ui-button-danger" />
                                             </td>
 
                                             <td width="70%">
                                                 <p:inputText value="#{antecedente.valor}" required="true" requiredMessage="Ingrese antecedente"
-                                                             placeholder="Ingrese su antecedente" style="width:100%;" />
+                                                             placeholder="Ingrese su antecedente" style="width:100%;" readonly="true"/>
                                             </td>
 
                                             <td width="10%">
-                                                <p:commandButton value="Agregar Elemento" actionListener="#{lire044.agregarAntecedente}"
+                                                <p:commandButton value="Agregar Elemento" actionListener="#{lire044.agregarAntecedente}" disabled="true"
                                                                  process="form044:secAntecedentes" update="form044" styleClass="rounded-button ui-button-success" />
                                             </td>
 
@@ -129,7 +129,7 @@
 
                             <p:divider />
                             <h:panelGroup id="secFundamentos">
-                                <p:outputLabel value="FUNDAMENTO LEGAL" style="display:block;text-align:center;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
+                                <p:outputLabel value=" - FUNDAMENTO LEGAL" style="display:block;font-weight:bold;font-size:1.2rem;margin-top:40px;margin-bottom:10px;" />
                                 <ui:repeat id="bot5" value="#{lire044.fundamentos}" var="fundamento">
                                     <table width="100%" border="0">
                                         <tr style="vertical-align: middle;">
@@ -158,7 +158,7 @@
 
                             <p:divider />
                             <h:panelGroup id="secAnalisis">
-                                <p:outputLabel value="ANÁLISIS" style="display:block;text-align:center;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
+                                <p:outputLabel value=" - ANÁLISIS" style="display:block;font-weight:bold;font-size:1.2rem;margin-top:40px;margin-bottom:10px;"/>
                                 <ui:repeat id="bot6" value="#{lire044.analisis}" var="an">
                                     <table width="100%" border="0">
                                         <tr style="vertical-align: middle;">
@@ -186,43 +186,23 @@
                             </h:panelGroup>
                             
 
-                            <h:panelGroup style="display:inline-flex;align-items:center;gap:10px;margin-top:20px;margin-bottom:20px;">
-                               
-
+                            <h:panelGroup style="display:inline-flex;align-items:center;gap:10px;margin-top:30px;margin-bottom:30px;">
                                 <p:outputLabel value="La modificación del plan es: #{lire044.validezDocumento ? 'Procedente' : 'No procedente'}"
                                                style="font-weight:bold;" />
                             </h:panelGroup>
+                            
 
-                            <table width="100%" border="0">
-                                <tr>
-                                    <td width="15%">
+                            <p:panelGrid columns="2" style="width:40%" styleClass="ui-fluid">
+                                <p:commandButton id="bot1" disabled="#{lire044.bot1}"  
+                                                 actionListener="#{lire044.generarDocumento044()}"
+                                                 update=":form044:productDetail,:form044:msg,:form044" 
+                                                 icon="pi pi-search" title="Vista Previa"  value="Vista Previa" />
 
-                                        <p:commandButton id="bot1" disabled="#{lire044.bot1}"  
-                                                         actionListener="#{lire044.generarDocumento044()}"
-                                                         update=":form044:productDetail,:form044:msg,:form044" 
-                                                         icon="pi pi-search" title="Vista Previa"  value="Vista Previa" />
+                                <p:commandButton oncomplete="PF('productDialog2').show()" id='bot2'
+                                                 actionListener="#{lire044.generarDocumento044Final()}" 
+                                                 disabled="#{lire044.bot2}" update="productDetail2" value="Generar Documento" />
+                            </p:panelGrid>
 
-                                    </td>
-                                    <td width="15%">
-                                        <p:commandButton oncomplete="PF('productDialog2').show()" id='bot2'
-                                                         actionListener="#{lire044.generarDocumento044Final()}" 
-                                                         disabled="#{lire044.bot2}" update="productDetail2" value="Generar Documento" />
-                                    </td>
-                                    <td width="25%">
-
-                                    </td>
-                                    <td width="25%">
-
-                                    </td>
-                                    <td width="10%">
-
-                                    </td>
-                                    <td width="10%">
-
-                                    </td>
-
-                                </tr>
-                            </table>
 
                             <p:dialog header="Vista Previa del Documento" widgetVar="productDialog" modal="true" showEffect="fade"
                                       hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">

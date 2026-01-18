@@ -207,7 +207,7 @@ public class LIRE042 implements Serializable{
         System.out.println("data ----- ");
     }
     
-     public void generarDocumento048Final(){
+     public void generarDocumento042Final(){
          try {
              // nombre de archivo temporal
              String n = this.dInab.getSolicitudActualizacion().getVisor().getVista().getUrlDocumento();
@@ -281,7 +281,7 @@ public class LIRE042 implements Serializable{
          
      }
     
-     public void generarDocumento048(){
+     public void generarDocumento042(){
         
         
          try {

@@ -5,15 +5,16 @@
 package juridico;
 
 import MANEJADORES.MHHome;
+import PERFIL.CargaDocumentosLocal;
 import PERFIL.EJBGestionREDLocal;
 import com.google.gson.Gson;
-import dta.json.plan.TcUsuario;
 import inab.pro.wpro09.resources.VerificaUsuario;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import lire044.DocumentoInab;
 import org.primefaces.PF;
 import org.primefaces.PrimeFaces;
 import redis.clients.jedis.Jedis;
@@ -38,6 +40,9 @@ public class LIRE044 implements Serializable {
 
     @Inject
     private MHHome mhome;
+    
+    @Inject
+    private CargaDocumentosLocal cargaDoc;
 
     @EJB
     private PERFIL.EJBGestionREDLocal ir = null;
@@ -72,6 +77,37 @@ public class LIRE044 implements Serializable {
     private List<LIRE044.Elemento> fundamentos = new ArrayList<>();
     private List<LIRE044.Elemento> analisis = new ArrayList<>();
     private boolean validezDocumento;
+    
+    private List<LIRE044.Elemento> elementos = new ArrayList<>();
+
+    public List<Elemento> getElementos() {
+        return elementos;
+    }
+
+    public void setElementos(List<Elemento> elementos) {
+        this.elementos = elementos;
+    }
+    
+    public void agregarElemento() {
+        elementos.add(new LIRE044.Elemento(""));
+    }
+
+    public void eliminarElemento(LIRE044.Elemento elemento) {
+        if(elementos.size()>1)
+         elementos.remove(elemento);
+    }
+    
+    private  DocumentoInab  dInab = new  DocumentoInab();
+
+    public DocumentoInab getdInab() {
+        return dInab;
+    }
+
+    public void setdInab(DocumentoInab dInab) {
+        this.dInab = dInab;
+    }
+    
+    
 
     public String getExpediente() {
         return expediente;
@@ -320,15 +356,7 @@ public class LIRE044 implements Serializable {
         this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a';");
     }
 
-    public void generarDocumento044() {
-        activarBoton();
-        System.out.println("validez :" + this.validezDocumento);
-        System.out.println("subRegion :"+this.partesDireccion[0]+"Municipio :"+this.partesDireccion[1]+"Departamento :"+this.partesDireccion[2]);
-    }
-
-    public void generarDocumento044Final() {
-
-    }
+   
 
     public void llamar() {
         try {
@@ -397,6 +425,20 @@ public class LIRE044 implements Serializable {
         public void setValor(String valor) {
             this.valor = valor;
         }
+    }
+    
+     public void generarDocumento044() {
+       // activarBoton();
+       
+       // creadocumento 044
+        Future<lire044.DocumentoInab> dc = cargaDoc.creaDocumento044(mhome.getRu(),mhome.getPer(),this.elementos);
+          this.dInab = dc.get();
+       
+       
+    }
+
+    public void generarDocumento044Final() {
+
     }
 
 }

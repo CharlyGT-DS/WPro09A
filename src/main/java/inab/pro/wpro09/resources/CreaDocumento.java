@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import juridico.LIRE044;
 import lire042.Asociados;
 import lire042.Asociados.Firmantes.Firma;
 import lire042.DocumentoInab;
@@ -427,5 +428,86 @@ public class CreaDocumento implements Serializable{
         
         return  doc42;
     }
-    
+     public lire044.DocumentoInab creaDoc44(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE044.Elemento> antecedentes, List<LIRE044.Elemento> fundamentoLegal,List<LIRE044.Elemento> analisisDocumento){
+        
+        // atributos del documento 044 no master (DcoumentoInab)
+        lire042.DocumentoInab doc44 = new DocumentoInab();
+        doc44.setVersion(BigDecimal.ONE);
+        doc44.setExpediente("LI-RE-044.xsd");
+        doc44.setEstado("Activo");
+        doc44.setOrden("1");
+        doc44.setProceso("PROC9");
+        doc44.setPaso("PASO5");
+        doc44.setIdGestion(per.getLicencia().getGestion_id());
+        doc44.setExpediente(per.getLicencia().getExpediente());
+        doc44.setLicencia(ru.getNumero_licencia_poa());
+        doc44.setNombreEsquema("LI-RE-044.xsd");
+        
+        
+        // nodo secundario (DictamenJuridicoModificacion)
+        lire042.DocumentoInab.SolicitudActualizacion SAC = new DocumentoInab.SolicitudActualizacion();
+        SAC.setID(UTILIDADES.FuncionesComunes.md5(String.valueOf(per.getLicencia().getGestion_id()))); // md5 del idGestion
+        SAC.setFechaDocumento(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));        
+        SAC.setTipoDocumento(Integer.valueOf("9001"));
+        
+        // nodo General
+        lire042.DocumentoInab.SolicitudActualizacion.General gen = new DocumentoInab.SolicitudActualizacion.General();
+        gen.setTituloDocumento("SOLICITUD DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL");
+        gen.setFechaSolicitud(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+        gen.setNombreSubregional(per.getListSubRegional().get(0).getUsuarioDesc());
+        gen.setDireccionSedeInab(per.getTcSubregion().getDireccion() +" - "+per.getTcSubregion().getSubregionDesc()+" - "+per.getTcSubregion().getAlias());
+        
+        // nodo Contenido
+        lire042.DocumentoInab.SolicitudActualizacion.Contenido con = new DocumentoInab.SolicitudActualizacion.Contenido();
+        con.setLicencia(per.getLicencia().getNumero_licencia_poa());
+        con.setResolucion("consulta donde esta en la base");
+        con.setExpediente(per.getLicencia().getExpediente());
+        
+        // nodo modifiaciones carga todos los detalles
+        int total_antecedentes = antecedentes.size();
+        lire044.DocumentoInab.DictamenJuridicoModificacion.Antecedentes mod = new lire044.DocumentoInab.DictamenJuridicoModificacion.Antecedentes();
+        mod.setTotalAntecedentes(total_antecedentes);
+        int i=1;
+        for(Elemento el : elementos){
+            lire042.DocumentoInab.SolicitudActualizacion.Contenido.Modificaciones.Detalle de = new DocumentoInab.SolicitudActualizacion.Contenido.Modificaciones.Detalle();
+            de.setOrden(i);
+            de.setValue(el.getValor());
+            mod.getDetalle().add(de);
+            i=i+1;            
+        }
+        
+        con.setModificaciones(mod);// carga modificaciones
+        
+        // nodo visor
+        
+        // primera firma quien elabora documento
+        lire042.Asociados.Firmantes.Firma firma1 = new Asociados.Firmantes.Firma();
+        Long id= per.getTcUsuario().getUsuarioId();
+        int idUsuario = Integer.parseInt(String.valueOf(id));
+        firma1.setIDUsuario(idUsuario);
+        firma1.setNombreQuienFirma(per.getTcUsuario().getUsuarioDesc());
+        
+        // segunda firma titular / regente
+        lire042.Asociados.Firmantes.Firma firma2 = new Asociados.Firmantes.Firma();   
+        
+        firma2.setNombreQuienFirma(ru.getTitulares().get(0).getPersona_desc());
+        firma2.setIDUsuario(ru.getTitulares().get(0).getTipo_propietario_id()); // pendiente este id
+        
+        lire042.Asociados.Firmantes firmas = new lire042.Asociados.Firmantes();  
+        firmas.getFirma().add(firma1);
+        firmas.getFirma().add(firma2);
+        firmas.setTotal(firmas.getTotal());
+        
+        lire042.Asociados asoc = new Asociados();
+        
+        asoc.setFirmantes(firmas);
+        SAC.setGeneral(gen);    // carga general
+        SAC.setContenido(con);  // carga contenido
+        SAC.setVisor(asoc);// carga los asociados        
+        doc42.setSolicitudActualizacion(SAC);
+        
+        //String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc48);        
+        
+        return  doc42;
+    }
 }

@@ -13,6 +13,7 @@ import inab.pro.wpro09.resources.CreaDocumento;
 import inab.pro.wpro09.resources.CreaHistorico;
 import inab.pro.wpro09.resources.VerificaUsuario;
 import java.util.List;
+import juridico.LIRE044;
 import secretaria.LIRE080;
 import solicitante.LIRE042;
 import secretaria.LIRE079;
@@ -43,6 +44,12 @@ public class FacadeData {
         CreaDocumento crea = new CreaDocumento();          
         return crea.creaDoc(ru, per,elementos);
     }
+    
+    public static lire044.DocumentoInab crea044(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE044.Elemento> elementos){       
+        CreaDocumento crea = new CreaDocumento();          
+        return crea.creaDoc44(ru, per,elementos); 
+    }
+    
     
     
     // para registrar historico 

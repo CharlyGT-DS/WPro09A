@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.bind.JAXBException;
+import juridico.LIRE044;
 import lire042.Asociados;
 import redis.clients.jedis.Jedis;
 import solicitante.LIRE042;
@@ -70,8 +71,8 @@ public class CargaDocumentos implements CargaDocumentosLocal, Serializable {
     @Override
     public Future<lire042.DocumentoInab> creaDocumento042(RespuestaSeccionUNO ru, PefilInab per, List<LIRE042.Elemento> elementos) {
       String xml="";
-      lire042.DocumentoInab doc48= UTILIDADES.FacadeData.crea042(ru,per,elementos);                      
-      return  CompletableFuture.completedFuture(doc48);
+      lire042.DocumentoInab doc42= UTILIDADES.FacadeData.crea042(ru,per,elementos);                      
+      return  CompletableFuture.completedFuture(doc42);
     }
     
      @Asynchronous
@@ -97,7 +98,8 @@ public class CargaDocumentos implements CargaDocumentosLocal, Serializable {
         as.setVista(vista);
         doc42.getSolicitudActualizacion().setVisor(as);        
         xml=UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc42);        
-        ir.retornRecursoRedis(JD);                
+        ir.retornRecursoRedis(JD);         
+        
      return CompletableFuture.completedFuture(xml);
      }
 
@@ -350,6 +352,43 @@ public class CargaDocumentos implements CargaDocumentosLocal, Serializable {
          r = this.api.enviarApiMMCoreJSON(json,1,core,index);        
         
          return CompletableFuture.completedFuture(r);
+    }
+
+    @Override
+    public Future<String> creaXML44(PefilInab per, String proceso, String paso, String documento, lire044.DocumentoInab doc44) {
+       
+        Jedis JD =  ir.obtieneConeccionRedis();
+        String xml="";
+        //long l = JD.incrBy("D-"+proceso+"-"+paso+"-"+documento, 1);
+        long l =1;
+        if(doc44.getEstado().compareTo("Finalizado")==0){            
+            l = JD.incrBy("D-"+proceso+"-"+paso+"-"+documento, 1);
+        }
+        
+        String id= doc44.getDictamenJuridicoModificacion().getID();
+        
+        String nombrePDF="PRO-09-P-"+paso+"-DOC-"+l+"-"+id;
+        
+        lire044.Asociados.Vista vista = new lire044.Asociados.Vista();
+        vista.setRutaPdf("/home/server/pdf/licencia/"+doc44.getLicencia()+"/documentos/"+doc44.getNombreEsquema().replaceAll(".xsd","")+"/"+nombrePDF+".pdf");                
+        vista.setUrlDocumento(nombrePDF+".xml");
+        lire044.Asociados as = new lire044.Asociados();        
+        as = doc44.getDictamenJuridicoModificacion().getVisor();      
+        as.setVista(vista);
+        doc44.getDictamenJuridicoModificacion().setVisor(as);        
+        xml=UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc44);        
+        ir.retornRecursoRedis(JD);         
+        
+       
+        return CompletableFuture.completedFuture(xml);
+    }
+
+    @Override
+    public Future<lire042.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, PefilInab per, List<LIRE044.Elemento> elementos) {
+       
+      String xml="";
+      lire044.DocumentoInab doc44= UTILIDADES.FacadeData.crea044(ru,per,elementos);                      
+      return  CompletableFuture.completedFuture(doc44);
     }
   
     

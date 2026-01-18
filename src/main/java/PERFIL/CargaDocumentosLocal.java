@@ -9,6 +9,7 @@ import estructuras.RespuestaSeccionUNO;
 import java.util.List;
 import java.util.concurrent.Future;
 import javax.ejb.Local;
+import juridico.LIRE044;
 import redis.clients.jedis.Jedis;
 import solicitante.LIRE042;
 
@@ -20,8 +21,12 @@ import solicitante.LIRE042;
 public interface CargaDocumentosLocal {
     
       public Future<lire042.DocumentoInab> creaDocumento042(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE042.Elemento> elementos);
+      
+      public Future<lire042.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE044.Elemento> elementos);
     
       public Future<String> creaXML42(PefilInab per,String proceso, String paso, String documento,lire042.DocumentoInab doc42);
+      
+      public Future<String> creaXML44(PefilInab per,String proceso, String paso, String documento,lire044.DocumentoInab doc44);
       
       public Future<String> creaXML79(PefilInab per, String proceso, String paso, String documento, lire079.DocumentoInab doc79);
       

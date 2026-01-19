@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,25 +78,6 @@ public class LIRE044 implements Serializable {
     private List<LIRE044.Elemento> fundamentos = new ArrayList<>();
     private List<LIRE044.Elemento> analisis = new ArrayList<>();
     private boolean validezDocumento;
-    
-    private List<LIRE044.Elemento> elementos = new ArrayList<>();
-
-    public List<Elemento> getElementos() {
-        return elementos;
-    }
-
-    public void setElementos(List<Elemento> elementos) {
-        this.elementos = elementos;
-    }
-    
-    public void agregarElemento() {
-        elementos.add(new LIRE044.Elemento(""));
-    }
-
-    public void eliminarElemento(LIRE044.Elemento elemento) {
-        if(elementos.size()>1)
-         elementos.remove(elemento);
-    }
     
     private  DocumentoInab  dInab = new  DocumentoInab();
 
@@ -428,11 +410,40 @@ public class LIRE044 implements Serializable {
     }
     
      public void generarDocumento044() {
-       // activarBoton();
-       
-       // creadocumento 044
-        Future<lire044.DocumentoInab> dc = cargaDoc.creaDocumento044(mhome.getRu(),mhome.getPer(),this.elementos);
-          this.dInab = dc.get();
+        try {
+            // activarBoton();
+            
+            // creadocumento 044
+            Future<lire044.DocumentoInab> dc = cargaDoc.creaDocumento044(mhome.getRu(),mhome.getPer(),this.antecedentes,this.fundamentos,this.analisis);
+            
+            this.dInab = dc.get();
+            //crea xml 
+             Future<String> xml = cargaDoc.creaXML44(mhome.getPer(),"PRO09","P1","044", dInab);
+             
+             String valor = xml.get();
+             // graba el xml
+             Future<String> gxml = cargaDoc.grabaXML44(valor, dInab);
+             
+             String r = gxml.get();
+             
+             // setea nombres
+             this.nomXML = dInab.getDictamenJuridicoModificacion().getVisor().getVista().getRutaPdf();
+             // String xq=UTILIDADES.Xquery.xmlConsultaDocumento(dInab.getExpediente(), nomXML);
+             
+             this.rutaNombre = this.nomXML;
+               
+             
+             // crea documento en vista preiva
+             Future<String> gs = cargaDoc.generarReporte(dInab.getDictamenJuridicoModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),valor,"044",dInab.getLicencia());             
+             String sp = gs.get();
+             System.out.println(sp);                                       
+             PrimeFaces.current().executeInitScript("PF('productDialog').show()");
+             
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+        }
        
        
     }

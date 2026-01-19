@@ -384,11 +384,21 @@ public class CargaDocumentos implements CargaDocumentosLocal, Serializable {
     }
 
     @Override
-    public Future<lire042.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, PefilInab per, List<LIRE044.Elemento> elementos) {
-       
-      String xml="";
-      lire044.DocumentoInab doc44= UTILIDADES.FacadeData.crea044(ru,per,elementos);                      
-      return  CompletableFuture.completedFuture(doc44);
+    public Future<lire044.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, PefilInab per, List<LIRE044.Elemento> antecedentes, List<LIRE044.Elemento> fundamentos, List<LIRE044.Elemento> analisis) {
+        String xml = "";
+        lire044.DocumentoInab doc44 = UTILIDADES.FacadeData.crea044(ru, per, antecedentes, fundamentos, analisis);
+        return CompletableFuture.completedFuture(doc44);
+    }
+
+    @Override
+    public Future<String> grabaXML44(String xml, lire044.DocumentoInab doc44) {
+    String r="";
+        
+        String index = doc44.getDictamenJuridicoModificacion().getVisor().getVista().getUrlDocumento();
+        String core = doc44.getExpediente();        
+        r = this.api.enviarApiMMCoreXML(xml,1,core,index);        
+        
+        return CompletableFuture.completedFuture(r);    
     }
   
     

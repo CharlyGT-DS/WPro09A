@@ -428,10 +428,10 @@ public class CreaDocumento implements Serializable{
         
         return  doc42;
     }
-     public lire044.DocumentoInab creaDoc44(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE044.Elemento> antecedentes, List<LIRE044.Elemento> fundamentoLegal,List<LIRE044.Elemento> analisisDocumento){
+     public lire044.DocumentoInab creaDoc44(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE044.Elemento> antecedentes, List<LIRE044.Elemento> fundamentos,List<LIRE044.Elemento> analisis){
         
         // atributos del documento 044 no master (DcoumentoInab)
-        lire042.DocumentoInab doc44 = new DocumentoInab();
+        lire044.DocumentoInab doc44 = new lire044.DocumentoInab();
         doc44.setVersion(BigDecimal.ONE);
         doc44.setExpediente("LI-RE-044.xsd");
         doc44.setEstado("Activo");
@@ -445,69 +445,96 @@ public class CreaDocumento implements Serializable{
         
         
         // nodo secundario (DictamenJuridicoModificacion)
-        lire042.DocumentoInab.SolicitudActualizacion SAC = new DocumentoInab.SolicitudActualizacion();
+        lire044.DocumentoInab.DictamenJuridicoModificacion SAC = new lire044.DocumentoInab.DictamenJuridicoModificacion();
         SAC.setID(UTILIDADES.FuncionesComunes.md5(String.valueOf(per.getLicencia().getGestion_id()))); // md5 del idGestion
         SAC.setFechaDocumento(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));        
         SAC.setTipoDocumento(Integer.valueOf("9001"));
         
-        // nodo General
-        lire042.DocumentoInab.SolicitudActualizacion.General gen = new DocumentoInab.SolicitudActualizacion.General();
-        gen.setTituloDocumento("SOLICITUD DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL");
-        gen.setFechaSolicitud(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
-        gen.setNombreSubregional(per.getListSubRegional().get(0).getUsuarioDesc());
-        gen.setDireccionSedeInab(per.getTcSubregion().getDireccion() +" - "+per.getTcSubregion().getSubregionDesc()+" - "+per.getTcSubregion().getAlias());
+        // nodo encabezado
+        lire044.DocumentoInab.DictamenJuridicoModificacion.Encabezado en = new lire044.DocumentoInab.DictamenJuridicoModificacion.Encabezado();
+         en.setMunicipioEncabezado(per.getTcSubregion().getDireccion() + " - " + per.getTcSubregion().getSubregionDesc() + " - " + per.getTcSubregion().getAlias());
+         en.setDepartamentoEncabezado("SOLICITUD DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL");
+         en.setFechaEncabezado(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+         en.setDirectorSubregional("sugregional");
+         en.setDireccionSede("direccion sede");
+
+        // nodo Asunto
+        lire044.DocumentoInab.DictamenJuridicoModificacion.Asunto as = new lire044.DocumentoInab.DictamenJuridicoModificacion.Asunto();
+        as.setNumeroResolucion(per.getLicencia().getNumero_licencia_poa());
+        as.setNumeroPlanOperativo("consulta donde esta en la base");
+        as.setNumeroExpediente(per.getLicencia().getExpediente());
         
-        // nodo Contenido
-        lire042.DocumentoInab.SolicitudActualizacion.Contenido con = new DocumentoInab.SolicitudActualizacion.Contenido();
-        con.setLicencia(per.getLicencia().getNumero_licencia_poa());
-        con.setResolucion("consulta donde esta en la base");
-        con.setExpediente(per.getLicencia().getExpediente());
-        
-        // nodo modifiaciones carga todos los detalles
+        // nodo antecedentes - detalles
         int total_antecedentes = antecedentes.size();
-        lire044.DocumentoInab.DictamenJuridicoModificacion.Antecedentes mod = new lire044.DocumentoInab.DictamenJuridicoModificacion.Antecedentes();
-        mod.setTotalAntecedentes(total_antecedentes);
+        lire044.DocumentoInab.DictamenJuridicoModificacion.Antecedentes an = new lire044.DocumentoInab.DictamenJuridicoModificacion.Antecedentes();
+        an.setTotalAntecedentes(total_antecedentes);
         int i=1;
-        for(Elemento el : elementos){
-            lire042.DocumentoInab.SolicitudActualizacion.Contenido.Modificaciones.Detalle de = new DocumentoInab.SolicitudActualizacion.Contenido.Modificaciones.Detalle();
-            de.setOrden(i);
-            de.setValue(el.getValor());
-            mod.getDetalle().add(de);
+        for(LIRE044.Elemento el : antecedentes){
+            lire044.DocumentoInab.DictamenJuridicoModificacion.Antecedentes.Antecedente anD = new lire044.DocumentoInab.DictamenJuridicoModificacion.Antecedentes.Antecedente();
+            anD.setOrdenAntecedentes(i);
+            anD.setValue(el.getValor());
+            an.getAntecedente().add(anD);
             i=i+1;            
         }
         
-        con.setModificaciones(mod);// carga modificaciones
+        // nodo fundamento legal - detalles
+        int total_fundamentos = fundamentos.size();
+        lire044.DocumentoInab.DictamenJuridicoModificacion.FundamentoLegal fun = new lire044.DocumentoInab.DictamenJuridicoModificacion.FundamentoLegal();
+        fun.setTotalFundamentos(total_fundamentos);
+        int f=1;
+        for(LIRE044.Elemento el : fundamentos){
+            lire044.DocumentoInab.DictamenJuridicoModificacion.FundamentoLegal.Fundamento funD = new lire044.DocumentoInab.DictamenJuridicoModificacion.FundamentoLegal.Fundamento();
+            funD.setOrdenFundamentos(f);
+            funD.setValue(el.getValor());
+            fun.getFundamento().add(funD);
+            f=f+1;            
+        }
+        
+        // nodo analisis - detalles
+        int total_analisis = antecedentes.size();
+        lire044.DocumentoInab.DictamenJuridicoModificacion.AnalisisDocumento anl = new lire044.DocumentoInab.DictamenJuridicoModificacion.AnalisisDocumento();
+        anl.setTotalAnalisis(total_analisis);
+        int a=1;
+        for(LIRE044.Elemento el : analisis){
+            lire044.DocumentoInab.DictamenJuridicoModificacion.AnalisisDocumento.Analisis anlD = new lire044.DocumentoInab.DictamenJuridicoModificacion.AnalisisDocumento.Analisis();
+            anlD.setOrdenAnalisis(a);
+            anlD.setValue(el.getValor());
+            anl.getAnalisis().add(anlD);
+            a=a+1;            
+        }
+        
+//        con.setModificaciones(mod);// carga modificaciones
         
         // nodo visor
         
         // primera firma quien elabora documento
-        lire042.Asociados.Firmantes.Firma firma1 = new Asociados.Firmantes.Firma();
+        lire044.Asociados.Firmantes.Firma firma1 = new lire044.Asociados.Firmantes.Firma();
         Long id= per.getTcUsuario().getUsuarioId();
         int idUsuario = Integer.parseInt(String.valueOf(id));
-        firma1.setIDUsuario(idUsuario);
+        firma1.setIdUsuario(idUsuario);
         firma1.setNombreQuienFirma(per.getTcUsuario().getUsuarioDesc());
         
         // segunda firma titular / regente
-        lire042.Asociados.Firmantes.Firma firma2 = new Asociados.Firmantes.Firma();   
+        lire044.Asociados.Firmantes.Firma firma2 = new lire044.Asociados.Firmantes.Firma();   
         
-        firma2.setNombreQuienFirma(ru.getTitulares().get(0).getPersona_desc());
-        firma2.setIDUsuario(ru.getTitulares().get(0).getTipo_propietario_id()); // pendiente este id
+        firma2.setNombreQuienFirma("test firma1");
+        firma2.setIdUsuario(1); // pendiente este id
         
-        lire042.Asociados.Firmantes firmas = new lire042.Asociados.Firmantes();  
+        lire044.Asociados.Firmantes firmas = new lire044.Asociados.Firmantes();  
         firmas.getFirma().add(firma1);
         firmas.getFirma().add(firma2);
-        firmas.setTotal(firmas.getTotal());
+        firmas.setTotalFirmantes(firmas.getTotalFirmantes());
         
-        lire042.Asociados asoc = new Asociados();
+        lire044.Asociados asoc = new lire044.Asociados();
         
         asoc.setFirmantes(firmas);
-        SAC.setGeneral(gen);    // carga general
-        SAC.setContenido(con);  // carga contenido
+        SAC.setEncabezado(en);    // carga general
+        SAC.setAsunto(as);  // carga contenido
         SAC.setVisor(asoc);// carga los asociados        
-        doc42.setSolicitudActualizacion(SAC);
+        doc44.setDictamenJuridicoModificacion(SAC);
         
         //String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc48);        
         
-        return  doc42;
+        return  doc44;
     }
 }

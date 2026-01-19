@@ -22,7 +22,7 @@ public interface CargaDocumentosLocal {
     
       public Future<lire042.DocumentoInab> creaDocumento042(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE042.Elemento> elementos);
       
-      public Future<lire042.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE044.Elemento> elementos);
+      public Future<lire044.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE044.Elemento> antecedentes,List<LIRE044.Elemento> fundamentos,List<LIRE044.Elemento> analisis);
     
       public Future<String> creaXML42(PefilInab per,String proceso, String paso, String documento,lire042.DocumentoInab doc42);
       
@@ -35,6 +35,8 @@ public interface CargaDocumentosLocal {
       public Future<String> creaXML81(PefilInab per,String proceso, String paso, String documento,lire081.DocumentoInab doc81);
       
       public Future<String> grabaXML42(String xml,lire042.DocumentoInab doc42);
+      
+      public Future<String> grabaXML44(String xml,lire044.DocumentoInab doc44);
       
       public Future<String> generarReporte(String index, String core, String param, String plantilla, String licencia);
       

@@ -2,7 +2,7 @@
 // Este archivo ha sido generado por la arquitectura JavaTM para la implantaci�n de la referencia de enlace (JAXB) XML v2.2.8-b130911.1802 
 // Visite <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Todas las modificaciones realizadas en este archivo se perder�n si se vuelve a compilar el esquema de origen. 
-// Generado el: 2026.01.18 a las 12:13:33 AM CST 
+// Generado el: 2026.01.20 a las 03:18:09 PM CST 
 //
 
 
@@ -59,7 +59,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *                         &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                           &lt;sequence>
  *                             &lt;element name="NumeroExpediente" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *                             &lt;element name="NumeroResolucion" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *                             &lt;element name="NumeroLicencia" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                             &lt;element name="NumeroPlanOperativo" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                           &lt;/sequence>
  *                         &lt;/restriction>
@@ -456,7 +456,7 @@ public class DocumentoInab {
      *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *                 &lt;sequence>
      *                   &lt;element name="NumeroExpediente" type="{http://www.w3.org/2001/XMLSchema}string"/>
-     *                   &lt;element name="NumeroResolucion" type="{http://www.w3.org/2001/XMLSchema}string"/>
+     *                   &lt;element name="NumeroLicencia" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *                   &lt;element name="NumeroPlanOperativo" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *                 &lt;/sequence>
      *               &lt;/restriction>
@@ -1198,7 +1198,7 @@ public class DocumentoInab {
          *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
          *       &lt;sequence>
          *         &lt;element name="NumeroExpediente" type="{http://www.w3.org/2001/XMLSchema}string"/>
-         *         &lt;element name="NumeroResolucion" type="{http://www.w3.org/2001/XMLSchema}string"/>
+         *         &lt;element name="NumeroLicencia" type="{http://www.w3.org/2001/XMLSchema}string"/>
          *         &lt;element name="NumeroPlanOperativo" type="{http://www.w3.org/2001/XMLSchema}string"/>
          *       &lt;/sequence>
          *     &lt;/restriction>
@@ -1211,15 +1211,15 @@ public class DocumentoInab {
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(name = "", propOrder = {
             "numeroExpediente",
-            "numeroResolucion",
+            "numeroLicencia",
             "numeroPlanOperativo"
         })
         public static class Asunto {
 
             @XmlElement(name = "NumeroExpediente", required = true)
             protected String numeroExpediente;
-            @XmlElement(name = "NumeroResolucion", required = true)
-            protected String numeroResolucion;
+            @XmlElement(name = "NumeroLicencia", required = true)
+            protected String numeroLicencia;
             @XmlElement(name = "NumeroPlanOperativo", required = true)
             protected String numeroPlanOperativo;
 
@@ -1248,27 +1248,27 @@ public class DocumentoInab {
             }
 
             /**
-             * Obtiene el valor de la propiedad numeroResolucion.
+             * Obtiene el valor de la propiedad numeroLicencia.
              * 
              * @return
              *     possible object is
              *     {@link String }
              *     
              */
-            public String getNumeroResolucion() {
-                return numeroResolucion;
+            public String getNumeroLicencia() {
+                return numeroLicencia;
             }
 
             /**
-             * Define el valor de la propiedad numeroResolucion.
+             * Define el valor de la propiedad numeroLicencia.
              * 
              * @param value
              *     allowed object is
              *     {@link String }
              *     
              */
-            public void setNumeroResolucion(String value) {
-                this.numeroResolucion = value;
+            public void setNumeroLicencia(String value) {
+                this.numeroLicencia = value;
             }
 
             /**

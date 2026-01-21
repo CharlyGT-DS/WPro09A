@@ -342,24 +342,7 @@ public class LIRE044 implements Serializable {
 
     public void llamar() {
         try {
-            this.fechaFormateada = formato.format(hoy);
-            this.direccion = this.mhome.getPer().getCincoCampos().getDato4().toString();
-            this.partesDireccion = direccion.split("\\s*,\\s*");
-            this.subRegion = this.partesDireccion[0];
-            this.municipio = this.partesDireccion[1];
-            this.departamento = this.partesDireccion[2];
-            this.nombreDirectorSub = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
-            this.licencia = "LI-RE-0445-2024";
-            this.expediente = "EXP-INAB-2023-01872";
-            this.planOperativo = "POA-2024-00631";
             
-            antecedentes = new ArrayList<>();
-            antecedentes.add(new LIRE044.Elemento("Antecedente-11"));
-            antecedentes.add(new LIRE044.Elemento("Antecedente-2"));
-            
-            fundamentos.add(new Elemento(""));
-            analisis.add(new Elemento(""));
-
             System.out.println("licencia :" + mhome.getPer().getLicencia().getNumero_licencia_poa());
             System.out.println("datos de subregion : " + mhome.getPer().getCincoCampos().getDato1());
 
@@ -383,6 +366,27 @@ public class LIRE044 implements Serializable {
             this.mhome.getPer().setPplanM(pl);// carga el plan a la session
 
             InitialContext ctx = new InitialContext();
+            
+            this.fechaFormateada = formato.format(hoy);
+            this.departamento = mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getTcDepartamento().getDepartamentoDesc();
+            this.municipio = mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getMunicipioDesc();
+            this.subRegion = mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                             mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getSubregionDesc();
+            this.direccion = this.municipio +", "+ this.departamento +", "+ this.subRegion;
+           
+            this.nombreDirectorSub = this.mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcSubregional().getPersonaDesc();
+            this.licencia = "LI-RE-0445-2024";
+            this.expediente = this.mhome.getPer().getPplanM().getData().get(0).getExpediente();
+            this.planOperativo = "POA-2024-00631";
+            
+            antecedentes = new ArrayList<>();
+            antecedentes.add(new LIRE044.Elemento("Antecedente-11"));
+            antecedentes.add(new LIRE044.Elemento("Antecedente-2"));
+            
+            fundamentos.add(new Elemento(""));
+            analisis.add(new Elemento(""));
+
+            
 
             this.ir = (EJBGestionREDLocal) ctx.lookup("java:global/WPro09A/EJBGestionRED!PERFIL.EJBGestionREDLocal");
         } catch (NamingException ex) {
@@ -414,11 +418,11 @@ public class LIRE044 implements Serializable {
             // activarBoton();
             
             // creadocumento 044
-            Future<lire044.DocumentoInab> dc = cargaDoc.creaDocumento044(mhome.getRu(),mhome.getPer(),this.antecedentes,this.fundamentos,this.analisis);
+            Future<lire044.DocumentoInab> dc = cargaDoc.creaDocumento044(mhome.getRu(),mhome.getPer(),this.antecedentes,this.fundamentos,this.analisis,this.validezDocumento,this.noDictamen);
             
             this.dInab = dc.get();
             //crea xml 
-             Future<String> xml = cargaDoc.creaXML44(mhome.getPer(),"PRO09","P1","044", dInab);
+             Future<String> xml = cargaDoc.creaXML44(mhome.getPer(),"PRO09","P5","044", dInab);
              
              String valor = xml.get();
              // graba el xml

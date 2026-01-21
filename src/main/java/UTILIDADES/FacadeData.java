@@ -45,9 +45,9 @@ public class FacadeData {
         return crea.creaDoc(ru, per,elementos);
     }
     
-    public static lire044.DocumentoInab crea044(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE044.Elemento> antecedentes,List<LIRE044.Elemento> fundamentos,List<LIRE044.Elemento> analisis){       
+    public static lire044.DocumentoInab crea044(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE044.Elemento> antecedentes,List<LIRE044.Elemento> fundamentos,List<LIRE044.Elemento> analisis, boolean validarDocumento, String noDictamen){       
         CreaDocumento crea = new CreaDocumento();          
-        return crea.creaDoc44(ru, per, antecedentes, fundamentos, analisis); 
+        return crea.creaDoc44(ru, per, antecedentes, fundamentos, analisis, validarDocumento, noDictamen); 
     }
     
     

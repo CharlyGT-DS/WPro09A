@@ -22,7 +22,7 @@ public interface CargaDocumentosLocal {
     
       public Future<lire042.DocumentoInab> creaDocumento042(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE042.Elemento> elementos);
       
-      public Future<lire044.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE044.Elemento> antecedentes,List<LIRE044.Elemento> fundamentos,List<LIRE044.Elemento> analisis);
+      public Future<lire044.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE044.Elemento> antecedentes,List<LIRE044.Elemento> fundamentos,List<LIRE044.Elemento> analisis, boolean validarDocumento, String noDictamen);
     
       public Future<String> creaXML42(PefilInab per,String proceso, String paso, String documento,lire042.DocumentoInab doc42);
       

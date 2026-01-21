@@ -384,9 +384,9 @@ public class CargaDocumentos implements CargaDocumentosLocal, Serializable {
     }
 
     @Override
-    public Future<lire044.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, PefilInab per, List<LIRE044.Elemento> antecedentes, List<LIRE044.Elemento> fundamentos, List<LIRE044.Elemento> analisis) {
+    public Future<lire044.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, PefilInab per, List<LIRE044.Elemento> antecedentes, List<LIRE044.Elemento> fundamentos, List<LIRE044.Elemento> analisis, boolean validarDocumento, String noDictamen) {
         String xml = "";
-        lire044.DocumentoInab doc44 = UTILIDADES.FacadeData.crea044(ru, per, antecedentes, fundamentos, analisis);
+        lire044.DocumentoInab doc44 = UTILIDADES.FacadeData.crea044(ru, per, antecedentes, fundamentos, analisis, validarDocumento, noDictamen);
         return CompletableFuture.completedFuture(doc44);
     }
 
@@ -400,6 +400,8 @@ public class CargaDocumentos implements CargaDocumentosLocal, Serializable {
         
         return CompletableFuture.completedFuture(r);    
     }
+
+ 
   
     
     

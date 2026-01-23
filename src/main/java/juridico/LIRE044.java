@@ -4,10 +4,13 @@
  */
 package juridico;
 
+import HILOS.Historico;
 import MANEJADORES.MHHome;
 import PERFIL.CargaDocumentosLocal;
 import PERFIL.EJBGestionREDLocal;
 import com.google.gson.Gson;
+import estructuras.GEnericaCincoCampos;
+
 import inab.pro.wpro09.resources.VerificaUsuario;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -26,6 +29,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.xml.bind.JAXBException;
 import lire044.DocumentoInab;
 import org.primefaces.PF;
 import org.primefaces.PrimeFaces;
@@ -321,21 +325,21 @@ public class LIRE044 implements Serializable {
         this.bot1 = true;
         this.bot2 = true;
 
-        PrimeFaces.current().executeScript(
-                "Swal.fire({"
-                + "title: 'Su solicitud fue enviado al INAB',"
-                + "text: 'Serás redirigido al inicio',"
-                + "icon: 'warning',"
-                + "showCancelButton: true,"
-                + "confirmButtonText: 'Ir ahora',"
-                + "}).then((result) => {"
-                + "if (result.isConfirmed) {"
-                + "window.location.href = '/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a; "
-                + "}"
-                + "});"
-        );
-
-        this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a';");
+//        PrimeFaces.current().executeScript(
+//                "Swal.fire({"
+//                + "title: 'Su solicitud fue enviado al INAB',"
+//                + "text: 'Serás redirigido al inicio',"
+//                + "icon: 'warning',"
+//                + "showCancelButton: true,"
+//                + "confirmButtonText: 'Ir ahora',"
+//                + "}).then((result) => {"
+//                + "if (result.isConfirmed) {"
+//                + "window.location.href = '/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a; "
+//                + "}"
+//                + "});"
+//        );
+//
+//        this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a';");
     }
 
    
@@ -453,6 +457,73 @@ public class LIRE044 implements Serializable {
     }
 
     public void generarDocumento044Final() {
+        try {
+            // nombre de archivo temporal
+            String n = this.dInab.getDictamenJuridicoModificacion().getVisor().getVista().getUrlDocumento();
+            // consulta de documento xml previo inactivo
+            String xq = UTILIDADES.Xquery.xmlConsultaDocumento(this.dInab.getExpediente(), n);
+            // obtiene documento xml de vista previa
+            String xml = this.mhome.getApi().enviarApiMMCoreXMLGet(xq.replaceAll(".pdf",".xml"),this.dInab.getExpediente(), n.replaceAll(".pdf",".xml"));
+            // convierte el objecto
+            DocumentoInab temp =  UTILIDADES.FuncionesComunes.fromXml(xml, DocumentoInab.class);
+            // cambia a Generado el estado del xml
+            temp.setEstado("Generado");
+            // crea nuevamente el xml uno nuevo con el estado finalizado
+            Future<String> xmlfin = cargaDoc.creaXML44(mhome.getPer(),"PRO09","P5","044", temp);
+            // obtiene el xml final
+            String valor = xmlfin.get();
+            // graba xml final
+            Future<String> gxml = cargaDoc.grabaXML44(valor, temp);
+            // obteine respuesta
+            String r = gxml.get();
+            // desaciva boton generar documento
+            this.bot2=true;
+            // registra en el historico en segundo plano
+            Historico hiloHistorico = new Historico();
+            hiloHistorico.setPer(this.mhome.getPer());
+            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 044 con estado finalizado
+            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
+//            
+//            String sql= UTILIDADES.SQL.insertaGestion(temp);
+//            
+//            estructuras.RespuestaInsert ri = (estructuras.RespuestaInsert) mhome.getApi().repuestaApi(new estructuras.RespuestaInsert(),
+//                    "JSON", sql);
+//            
+//            if(ri.fila_afectada>0){// verifica la insernción en la tabla de control
+//                
+//                DocumentoInab c=  UTILIDADES.FuncionesComunes.fromXml(valor,DocumentoInab.class);
+//                this.rutaNombre = c.getDictamenJuridicoModificacion().getVisor().getVista().getRutaPdf();
+//                
+//                sql  =   UTILIDADES.SQL.insertaGestionDetalle(c,this.rutaNombre,mhome.getPer());
+//                ri = (estructuras.RespuestaInsert) mhome.getApi().repuestaApi(new estructuras.RespuestaInsert(),
+//                        "JSON", sql);
+//                
+//                if(ri.fila_afectada>0){
+//                    Future<String> gs = cargaDoc.generarReporte(c.getDictamenJuridicoModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),valor,"042",dInab.getLicencia());
+//                    String sp = gs.get();
+//                    System.out.println(sp);
+//                }
+//                
+//            }
+            
+            GEnericaCincoCampos cinco = this.mhome.getPer().getCincoCampos();
+            System.out.println("Esto es el subregional : "+cinco.getDato1());
+            
+            
+            System.out.println("secretaria 1 :"+ this.mhome.getPer().getListSecretarias().get(0).getUsuarioDesc());
+            
+            cargaDoc.trazladaExpedinte(Integer.parseInt(this.mhome.getPer().getTcUsuario().getUsuarioId().toString()),  this.mhome.getPer().getListSecretarias().get(0).getUsuarioId(),3,2);
+            
+            // inicializa
+            //this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra="+mhome.getPer().getTcUsuario().getUsuarioId()+"&rx=a';");
+        } catch (JAXBException ex) {
+            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+        }
+             
 
     }
 

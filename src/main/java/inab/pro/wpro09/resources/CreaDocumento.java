@@ -433,16 +433,15 @@ public class CreaDocumento implements Serializable{
         
         // atributos del documento 044 no master (DcoumentoInab)
         lire044.DocumentoInab doc44 = new lire044.DocumentoInab();
-        doc44.setVersion(BigDecimal.ONE);
-        doc44.setExpediente("LI-RE-044.xsd");
+        doc44.setVersion(new BigDecimal("1.0"));
+        doc44.setNombreEsquema("LI-RE-044.xsd");
         doc44.setEstado("Activo");
         doc44.setOrden("1");
         doc44.setProceso("PROC9");
         doc44.setPaso("PASO5");
         doc44.setIdGestion(per.getLicencia().getGestion_id());
         doc44.setExpediente(per.getPplanM().getData().get(0).getExpediente());
-        doc44.setLicencia("LI-RE-0445-2024");
-        doc44.setNombreEsquema("LI-RE-044.xsd");
+        doc44.setLicencia("LI-RE-044-2024");
         
         
         // nodo secundario (DictamenJuridicoModificacion)
@@ -463,7 +462,7 @@ public class CreaDocumento implements Serializable{
 
         // nodo Asunto
         lire044.DocumentoInab.DictamenJuridicoModificacion.Asunto as = new lire044.DocumentoInab.DictamenJuridicoModificacion.Asunto();
-        as.setNumeroLicencia("LI-RE-0445-2024");
+        as.setNumeroLicencia("LI-RE-044-2024");
         as.setNumeroPlanOperativo("po-454494949");
         as.setNumeroExpediente(per.getPplanM().getData().get(0).getExpediente());
         

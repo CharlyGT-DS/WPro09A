@@ -58,14 +58,17 @@
                                     <p:inputText id="noDic" required="true" requiredMessage="Ingrese número de Dictamen" 
                                                  value="#{lire043.noDictamen}" style="width: 30%" />
                                 </div>
-                                <div class="col-12 md:col-10">
+                                
+                                <div class="col-12 md:col-10" style="margin-top: 25px;">
                                 <p:outputLabel value="Señor(a): " style="font-weight:bold;" />
-                                <p:outputLabel value="#{lire043.nombreDirectorSub}" />
+                                <p:outputLabel value="#{lire043.nombreDirectorSub}" style="font-weight:bold;"/>
                                 </div>
-
+                                <div class="col-12 md:col-10">
+                                <p:outputLabel value="Director (a) Subregional" style="font-weight:bold;" />
+                                </div>
                                 <div class="col-12 md:col-10">                                
-                                <p:outputLabel value="Sede de INAB: " style="font-weight:bold;" />
-                                <p:outputLabel value="#{lire043.subRegion}" />
+                                <p:outputLabel value="INAB,  " style="font-weight:bold;" />
+                                <p:outputLabel value="#{lire043.subRegion}" style="font-weight:bold;"/>
                                 </div>
 
                             </div>
@@ -80,11 +83,41 @@
                                         <h5>Datos que integran el Documento</h5>
 
                                         <div class="field grid">
+                                            <p:outputLabel for="nomF" styleClass="col-12 mb-2 md:col-2 mb-md-0">Nombre Finca</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="nomF" disabled="true" value="#{lire043.nombreFinca}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="ub" styleClass="col-12 mb-2 md:col-2 mb-md-0">Ubicacion</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="ub" disabled="true" value="#{lire043.ubicacionFinca}" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="field grid">
+                                            <p:outputLabel for="pro" styleClass="col-12 mb-2 md:col-2 mb-md-0">Propietario Finca</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="pro" disabled="true" value="#{lire043.propietario}" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="field grid">
                                             <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Licencia</p:outputLabel>
                                             <div class="col-12 md:col-10">
                                                 <p:inputText id="lic" disabled="true" value="#{lire043.licencia}" />
                                             </div>
                                         </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="po" styleClass="col-12 mb-2 md:col-2 mb-md-0">Plan Operativo</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="po" disabled="true" value="#{lire043.planOperativo}" />
+                                            </div>
+                                        </div>
+                                        
+                                        
 
                                         <div class="field grid">
                                             <p:outputLabel for="exp" styleClass="col-12 mb-2 md:col-2 mb-md-0">Expediente</p:outputLabel>
@@ -93,33 +126,19 @@
                                             </div>
                                         </div>
 
-                                        <div class="field grid">
-                                            <p:outputLabel for="ela" styleClass="col-12 mb-2 md:col-2 mb-md-0">Elaborador</p:outputLabel>
-                                            <div class="col-12 md:col-10">
-                                                <p:inputText id="ela" disabled="true" value="#{lire043.elaborador}" />
-                                            </div>
-                                        </div>
-
-                                        <div class="field grid">
-                                            <p:outputLabel for="rege" styleClass="col-12 mb-2 md:col-2 mb-md-0">Regente</p:outputLabel>
-                                            <div class="col-12 md:col-10">
-                                                <p:inputText id="rege" disabled="true" value="#{lire043.regente}" />
-                                            </div>
-                                        </div>
-
                                     </div>
                                 </div>
                             </h:panelGroup>
 
                             <h:panelGroup id="secConclusiones">
-                                <p:outputLabel value="CONCLUSIONES" style="display:block;text-align:justify;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
+                                <p:outputLabel value=" - Conclusiones" style="display:block;text-align:justify;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
                                 <ui:repeat id="bot4" value="#{lire043.conclusiones}" var="conclusion">
                                     <table width="100%" border="0">
                                         <tr style="vertical-align: middle;">
 
                                             <td width="10%">
                                                 <p:commandButton value="Quitar" actionListener="#{lire043.eliminarConclusion(conclusion)}"
-                                                                 process="@this" update="form043" rendered="#{not empty lire043.conclusiones}" styleClass="rounded-button ui-button-danger" />
+                                                                 process="@this" update="form043:secConclusiones" rendered="#{not empty lire043.conclusiones}" styleClass="rounded-button ui-button-danger" />
                                             </td>
 
                                             <td width="70%">
@@ -129,7 +148,33 @@
 
                                             <td width="10%">
                                                 <p:commandButton value="Agregar Elemento" actionListener="#{lire043.agregarConclusion}"
-                                                                 process="form043:secConclusiones" update="form043" styleClass="rounded-button ui-button-success" />
+                                                                 process="form043:secConclusiones" update="form043:secConclusiones" styleClass="rounded-button ui-button-success" />
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </ui:repeat>
+                            </h:panelGroup>
+                            
+                            <h:panelGroup id="secDecisiones">
+                                <p:outputLabel value=" - Decisiones del Dictamen" style="display:block;text-align:justify;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
+                                <ui:repeat id="bot5" value="#{lire043.conclusiones}" var="conclusion">
+                                    <table width="100%" border="0">
+                                        <tr style="vertical-align: middle;">
+
+                                            <td width="10%">
+                                                <p:commandButton value="Quitar" actionListener="#{lire043.eliminarConclusion(conclusion)}"
+                                                                 process="@this" update="form043:secDecisiones" rendered="#{not empty lire043.conclusiones}" styleClass="rounded-button ui-button-danger" />
+                                            </td>
+
+                                            <td width="70%">
+                                                <p:inputText value="#{conclusion.valor}" required="true" requiredMessage="Ingrese decisión"
+                                                             placeholder="Ingrese su decisión" style="width:100%;" />
+                                            </td>
+
+                                            <td width="10%">
+                                                <p:commandButton value="Agregar Elemento" actionListener="#{lire043.agregarConclusion}"
+                                                                 process="form043:secDecisiones" update="form043:secDecisiones" styleClass="rounded-button ui-button-success" />
                                             </td>
 
                                         </tr>
@@ -208,7 +253,7 @@
                                     <table width="50%">
                                         <tr>                                                  
                                             <td style="width: 50%;text-align: center">
-                                                <p:commandButton value="Cerrar" update="bot1,bot2" actionListener="#{lire043.desactivaAmbosBotones()}" oncomplete="PF('productDialog2').hide()" />
+                                                <p:commandButton value="Cerrar" update="bot1,bot2,bot4,bot5" actionListener="#{lire043.desactivaAmbosBotones()}" oncomplete="PF('productDialog2').hide()" />
                                             </td>
                                         </tr>
                                     </table>

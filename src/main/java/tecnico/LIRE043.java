@@ -7,6 +7,7 @@ package tecnico;
 import MANEJADORES.MHHome;
 import PERFIL.EJBGestionREDLocal;
 import com.google.gson.Gson;
+import dta.json.plan.Propietario;
 import dta.json.plan.TcUsuario;
 import inab.pro.wpro09.resources.VerificaUsuario;
 import java.io.Serializable;
@@ -60,22 +61,32 @@ public class LIRE043 implements Serializable {
     private String tipoActualizacion = "0";
     private String noDictamen;
     private String direccion = "";
-    private String[] partesDireccion;
     private String subRegion;
     private String Sede;
     private String municipio;
     private String departamento;
     private String nombreDirectorSub = "";
     private String expediente;
-    private String regente;
-    private String elaborador;
+    private String propietario;
+    private String nombreFinca;
+    private String ubicacionFinca;
     private String licencia;
     private String planOperativo;
-    private List<LIRE043.Elemento> antecedentes = new ArrayList<>();
     private List<LIRE043.Elemento> conclusiones = new ArrayList<>();
-    private List<LIRE043.Elemento> fundamentos = new ArrayList<>();
-    private List<LIRE043.Elemento> analisis = new ArrayList<>();
+    private List<LIRE043.Elemento> decisiones = new ArrayList<>();
+    private List<Propietario> propietarios = new ArrayList<>();
+ 
     private boolean validezDocumento;
+
+    public List<Propietario> getPropietarios() {
+        return propietarios;
+    }
+
+    public void setPropietarios(List<Propietario> propietarios) {
+        this.propietarios = propietarios;
+    }
+    
+    
 
     public String getExpediente() {
         return expediente;
@@ -85,20 +96,28 @@ public class LIRE043 implements Serializable {
         return licencia;
     }
 
-    public String getElaborador() {
-        return elaborador;
+    public String getPropietario() {
+        return propietario;
     }
 
-    public void setElaborador(String elaborador) {
-        this.elaborador = elaborador;
+    public void setPropietario(String propietario) {
+        this.propietario = propietario;
     }
 
-    public String getRegente() {
-        return regente;
+    public String getNombreFinca() {
+        return nombreFinca;
     }
 
-    public void setRegente(String regente) {
-        this.regente = regente;
+    public void setNombreFinca(String nombreFinca) {
+        this.nombreFinca = nombreFinca;
+    }
+
+    public String getUbicacionFinca() {
+        return ubicacionFinca;
+    }
+
+    public void setUbicacionFinca(String ubicacionFinca) {
+        this.ubicacionFinca = ubicacionFinca;
     }
     
     public String getPlanOperativo() {
@@ -115,14 +134,6 @@ public class LIRE043 implements Serializable {
 
     public String getNoDictamen() {
         return noDictamen;
-    }
-
-    public String[] getPartesDireccion() {
-        return partesDireccion;
-    }
-
-    public void setPartesDireccion(String[] partesDireccion) {
-        this.partesDireccion = partesDireccion;
     }
 
     public String getSubRegion() {
@@ -251,31 +262,13 @@ public class LIRE043 implements Serializable {
         this.conclusiones = conclusiones;
     }
 
-    public List<Elemento> getAntecedentes() {
-        return antecedentes;
+    public List<Elemento> getDecisiones() {
+        return decisiones;
     }
 
-    public void setAntecedentes(List<Elemento> antecedentes) {
-        this.antecedentes = antecedentes;
+    public void setDecisiones(List<Elemento> decisiones) {
+        this.decisiones = decisiones;
     }
-
-    public List<Elemento> getFundamentos() {
-        return fundamentos;
-    }
-
-    public void setFundamentos(List<Elemento> fundamentos) {
-        this.fundamentos = fundamentos;
-    }
-
-    public List<Elemento> getAnalisis() {
-        return analisis;
-    }
-
-    public void setAnalisis(List<Elemento> analisis) {
-        this.analisis = analisis;
-    }
-    
-    
 
     @PostConstruct
     public void init() {
@@ -293,13 +286,13 @@ public class LIRE043 implements Serializable {
         return "li-re-043?faces-redirect=true&tipo=" + valor;
     }
 
-    public void agregarAntecedente() {
-        antecedentes.add(new LIRE043.Elemento(""));
+    public void agregarDecision() {
+        decisiones.add(new LIRE043.Elemento(""));
     }
 
-    public void eliminarAntecedente(LIRE043.Elemento elemento) {
-        if (antecedentes.size() > 1) {
-            antecedentes.remove(elemento);
+    public void eliminarDecision(LIRE043.Elemento elemento) {
+        if (decisiones.size() > 1) {
+            decisiones.remove(elemento);
         }
     }
     
@@ -313,33 +306,12 @@ public class LIRE043 implements Serializable {
         }
     }
 
-    public void agregarFundamento() {
-        fundamentos.add(new LIRE043.Elemento(""));
-    }
-
-    public void eliminarFundamento(LIRE043.Elemento elemento) {
-        if (fundamentos.size() > 1) {
-            fundamentos.remove(elemento);
-        }
-    }
-
-    public void agregarAnalisis() {
-        analisis.add(new LIRE043.Elemento(""));
-    }
-
-    public void eliminarAnalisis(LIRE043.Elemento elemento) {
-        if (analisis.size() > 1) {
-            analisis.remove(elemento);
-        }
-    }
-
     public void activarBoton() {
         this.bot1 = true;
         this.bot2 = false;
         this.bot4 = true;// desactiva ingreso para cambiar el texto de la solicitud
         this.bot5 = true;
-        this.bot6 = true;
-        PF.current().ajax().update(":bot1,:bot2,:bot4,:bot5,:bot6");
+        PF.current().ajax().update(":bot1,:bot2,:bot4,:bot5");
     }
 
     public void activarBotonVistaPrevia() {
@@ -370,7 +342,7 @@ public class LIRE043 implements Serializable {
 
     public void generarDocumento043() {
         System.out.println("validez :" + this.validezDocumento);
-        System.out.println("subRegion :"+this.partesDireccion[0]+"Municipio :"+this.partesDireccion[1]+"Departamento :"+this.partesDireccion[2]);
+
     }
 
     public void generarDocumento043Final() {
@@ -379,24 +351,7 @@ public class LIRE043 implements Serializable {
 
     public void llamar() {
         try {
-            this.fechaFormateada = formato.format(hoy);
-            this.direccion = this.mhome.getPer().getCincoCampos().getDato4().toString();
-            this.partesDireccion = direccion.split("\\s*,\\s*");
-            this.subRegion = this.partesDireccion[0];
-            this.municipio = this.partesDireccion[1];
-            this.departamento = this.partesDireccion[2];
-            this.nombreDirectorSub = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
-            this.licencia = "LI-RE-0435-2024";
-            this.expediente = "EXP-INAB-2023-01872";
-            this.planOperativo = "POA-2024-00631";
-            this.regente = "Nombre de Regente";
-            this.elaborador = this.mhome.getPer().getTcUsuario().getUsuarioDesc();
             
-            antecedentes.add(new LIRE043.Elemento(""));
-            conclusiones.add(new LIRE043.Elemento(""));
-            fundamentos.add(new Elemento(""));
-            analisis.add(new Elemento(""));
-
             System.out.println("licencia :" + mhome.getPer().getLicencia().getNumero_licencia_poa());
             System.out.println("datos de subregion : " + mhome.getPer().getCincoCampos().getDato1());
 
@@ -420,6 +375,26 @@ public class LIRE043 implements Serializable {
             this.mhome.getPer().setPplanM(pl);// carga el plan a la session
 
             InitialContext ctx = new InitialContext();
+            this.fechaFormateada = formato.format(hoy);
+            this.departamento = mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getTcDepartamento().getDepartamentoDesc();
+            this.municipio = mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getMunicipioDesc();
+            this.subRegion = mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                             mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getSubregionDesc();
+            this.direccion = this.municipio +", "+ this.departamento +", "+ this.subRegion;
+            this.nombreDirectorSub = this.mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcSubregional().getPersonaDesc();
+            this.propietario = this.mhome.getPer().getPplanM().getData().get(0).getFincas().get(0).getPropietarios().get(0).getTcPersona().getPersonaDesc();
+            this.nombreFinca = this.mhome.getPer().getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getFincaDesc();
+            this.ubicacionFinca = this.mhome.getPer().getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getDireccion() + ", " +
+                                  this.mhome.getPer().getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getTcMunicipio().getMunicipioDesc() + ", " +
+                                  this.mhome.getPer().getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getTcMunicipio().getTcDepartamento().getDepartamentoDesc();
+            this.licencia = "LI-RE-0445-2024";
+            this.expediente = this.mhome.getPer().getPplanM().getData().get(0).getExpediente();
+            this.planOperativo = "POA-2024-00631";
+            
+            decisiones.add(new LIRE043.Elemento(""));
+            conclusiones.add(new LIRE043.Elemento(""));
+      
+            
 
             this.ir = (EJBGestionREDLocal) ctx.lookup("java:global/WPro09A/EJBGestionRED!PERFIL.EJBGestionREDLocal");
         } catch (NamingException ex) {

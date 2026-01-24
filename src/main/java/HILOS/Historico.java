@@ -79,6 +79,11 @@ public class Historico extends Thread implements Serializable{
           System.out.println("entro a 079");
       }
       
+      if(name.contains("lire044")){
+          tipoDoc =4;
+          System.out.println("entro a 044");
+      }
+      
       
      his =   UTILIDADES.FacadeData.creaHistorioData(this.per,this.documentoRegistrar, tipoDoc);
      

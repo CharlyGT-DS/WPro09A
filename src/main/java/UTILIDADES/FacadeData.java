@@ -17,6 +17,7 @@ import juridico.LIRE044;
 import secretaria.LIRE080;
 import solicitante.LIRE042;
 import secretaria.LIRE079;
+import subregional.LIRE045;
 
 /**
  *
@@ -50,7 +51,10 @@ public class FacadeData {
         return crea.creaDoc44(ru, per, antecedentes, fundamentos, analisis, validarDocumento, noDictamen); 
     }
     
-    
+    public static lire045.DocumentoInab crea045(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE045.Elemento> razones, String noOficio){       
+        CreaDocumento crea = new CreaDocumento();          
+        return crea.creaDoc45(ru, per, razones, noOficio); 
+    }
     
     // para registrar historico 
     public static estructuras.HISTORICO.DocumentoInab creaHistorioData(estructuras.PefilInab per, Object documento, int tipoDoc){

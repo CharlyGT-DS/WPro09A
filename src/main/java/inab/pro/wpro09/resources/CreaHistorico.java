@@ -94,6 +94,31 @@ public class CreaHistorico implements Serializable{
             
             
         }
+         
+         if(tipoDoc==4){
+        lire044.DocumentoInab doc =  UTILIDADES.FuncionesComunes.convierteObjeto(documento, lire044.DocumentoInab.class);
+        
+        
+        // CARGA actual documento 044
+        actual.setIdUsuarioActual(Integer.parseInt(String.valueOf(per.getTcUsuario().getUsuarioId())));
+        actual.setIdUsuarioAnterior(0);
+        actual.setIdUsuarioHistorico(0);
+        actual.setEstado(1);
+        actual.setEsquema(doc.getNombreEsquema());
+        actual.setPaso(doc.getPaso());        
+        actual.setExpediente(doc.getExpediente());
+        actual.setDescripcion("Se creo la Solicitud 044 (Actualización al PLAN MF) por:"+per.getTcUsuario().getUsuarioDesc());
+        actual.setFecha(doc.getDictamenJuridicoModificacion().getFechaDocumento());
+        actual.setLicencia(doc.getLicencia());
+        actual.setGestionId(doc.getIdGestion());
+        actual.setPersonalizado("P1");
+        actual.setProceso(doc.getProceso());
+        String urlDoc = doc.getDictamenJuridicoModificacion().getVisor().getVista().getRutaPdf();
+        actual.setUrlDocumento(urlDoc);
+        actual.setTipoAccion("Creado");
+        actual.setPersonalizado(per.getTcPersona().getPersonaDesc());
+        r.setActual(actual);// carga el actual
+        }
         
         
         return r;

@@ -6,6 +6,7 @@ package subregional;
 
 import juridico.*;
 import MANEJADORES.MHHome;
+import PERFIL.CargaDocumentosLocal;
 import PERFIL.EJBGestionREDLocal;
 import com.google.gson.Gson;
 import dta.json.plan.TcUsuario;
@@ -16,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -26,6 +29,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import lire045.DocumentoInab;
 import org.primefaces.PF;
 import org.primefaces.PrimeFaces;
 import redis.clients.jedis.Jedis;
@@ -40,6 +44,9 @@ public class LIRE045 implements Serializable {
 
     @Inject
     private MHHome mhome;
+    
+    @Inject
+    private CargaDocumentosLocal cargaDoc;
 
     @EJB
     private PERFIL.EJBGestionREDLocal ir = null;
@@ -49,6 +56,8 @@ public class LIRE045 implements Serializable {
     private Date hoy = new Date();
 
     private SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+    
+    private  DocumentoInab  dInab = new  DocumentoInab();
 
     private String fechaFormateada = "";
     private boolean bot = false;
@@ -330,7 +339,36 @@ public class LIRE045 implements Serializable {
     }
 
     public void generarDocumento045() {
-     activarBoton();
+        try {
+            // creadocumento 045
+            Future<lire045.DocumentoInab> of = cargaDoc.creaDocumento045(mhome.getRu(),mhome.getPer(),this.razones,this.noOficio);
+            
+            this.dInab = of.get();
+            //crea xml 
+             Future<String> xml = cargaDoc.creaXML45(mhome.getPer(),"PRO09","P5","045", dInab);
+             
+             String valor = xml.get();
+             // graba el xml
+             Future<String> gxml = cargaDoc.grabaXML45(valor, dInab);
+             
+             String r = gxml.get();
+             
+             // setea nombres
+             this.nomXML = dInab.getOficioAprobacionModificacion().getVisor().getVista().getRutaPdf();
+             // String xq=UTILIDADES.Xquery.xmlConsultaDocumento(dInab.getExpediente(), nomXML);
+             
+             this.rutaNombre = this.nomXML;
+               
+             
+             // crea documento en vista preiva
+             Future<String> gs = cargaDoc.generarReporte(dInab.getOficioAprobacionModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"045",dInab.getLicencia());             
+             String sp = gs.get();
+             System.out.println(sp);                                       
+             PrimeFaces.current().executeInitScript("PF('productDialog').show()");
+             
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(LIRE045.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void generarDocumento045Final() {
@@ -339,6 +377,31 @@ public class LIRE045 implements Serializable {
 
     public void llamar() {
         try {
+            
+            System.out.println("licencia :" + mhome.getPer().getLicencia().getNumero_licencia_poa());
+            System.out.println("datos de subregion : " + mhome.getPer().getCincoCampos().getDato1());
+
+            Jedis JD = this.ir.obtieneConeccionRedis();
+            System.out.println("llave para token: " + "USU-" + mhome.getPer().getTcUsuario().getUsuarioId());
+            String token = JD.hget("USU-" + mhome.getPer().getTcUsuario().getUsuarioId(), "token");
+
+            int gestion_id = mhome.getPer().getLicencia().getGestion_id();
+            System.out.println("gestion id :" + gestion_id);
+            VerificaUsuario ver = new VerificaUsuario();
+            String json = ver.obtienePlan(gestion_id, token);
+
+            dta.json.plan.Plan pl = this.gs.fromJson(json, dta.json.plan.Plan.class);
+
+            System.out.println("Valores del Obj dirección: " + pl.getData().get(0).getFincas().get(0).getTcFinca().getDireccion());
+            pl.getData().get(0).getPersonas().get(0).getTcPersona().getTcIdioma().getIdiomaDesc();
+            JD.set("PLAN-" + mhome.getPer().getTcUsuario().getUsuarioId(), json);
+
+            JD.close();
+
+            this.mhome.getPer().setPplanM(pl);// carga el plan a la session
+
+            InitialContext ctx = new InitialContext();
+
             this.fechaFormateada = formato.format(hoy);
             this.nombreDirectorReg = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
             this.direccion = this.mhome.getPer().getCincoCampos().getDato4().toString();
@@ -369,30 +432,7 @@ public class LIRE045 implements Serializable {
 
             razones.add(new LIRE045.Elemento(""));
 
-            System.out.println("licencia :" + mhome.getPer().getLicencia().getNumero_licencia_poa());
-            System.out.println("datos de subregion : " + mhome.getPer().getCincoCampos().getDato1());
-
-            Jedis JD = this.ir.obtieneConeccionRedis();
-            System.out.println("llave para token: " + "USU-" + mhome.getPer().getTcUsuario().getUsuarioId());
-            String token = JD.hget("USU-" + mhome.getPer().getTcUsuario().getUsuarioId(), "token");
-
-            int gestion_id = mhome.getPer().getLicencia().getGestion_id();
-            System.out.println("gestion id :" + gestion_id);
-            VerificaUsuario ver = new VerificaUsuario();
-            String json = ver.obtienePlan(gestion_id, token);
-
-            dta.json.plan.Plan pl = this.gs.fromJson(json, dta.json.plan.Plan.class);
-
-            System.out.println("Valores del Obj dirección: " + pl.getData().get(0).getFincas().get(0).getTcFinca().getDireccion());
-            pl.getData().get(0).getPersonas().get(0).getTcPersona().getTcIdioma().getIdiomaDesc();
-            JD.set("PLAN-" + mhome.getPer().getTcUsuario().getUsuarioId(), json);
-
-            JD.close();
-
-            this.mhome.getPer().setPplanM(pl);// carga el plan a la session
-
-            InitialContext ctx = new InitialContext();
-
+            
             this.ir = (EJBGestionREDLocal) ctx.lookup("java:global/WPro09A/EJBGestionRED!PERFIL.EJBGestionREDLocal");
         } catch (NamingException ex) {
             Logger.getLogger(LIRE045.class.getName()).log(Level.SEVERE, null, ex);

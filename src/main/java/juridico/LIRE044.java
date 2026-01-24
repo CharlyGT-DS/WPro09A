@@ -70,7 +70,7 @@ public class LIRE044 implements Serializable {
     private String tipoActualizacion = "0";
     private String noDictamen;
     private String direccion = "";
-    private String[] partesDireccion;
+   
     private String subRegion;
     private String municipio;
     private String departamento;
@@ -117,14 +117,6 @@ public class LIRE044 implements Serializable {
 
     public String getNoDictamen() {
         return noDictamen;
-    }
-
-    public String[] getPartesDireccion() {
-        return partesDireccion;
-    }
-
-    public void setPartesDireccion(String[] partesDireccion) {
-        this.partesDireccion = partesDireccion;
     }
 
     public String getsSubRegion() {
@@ -419,8 +411,6 @@ public class LIRE044 implements Serializable {
     
      public void generarDocumento044() {
         try {
-            // activarBoton();
-            
             // creadocumento 044
             Future<lire044.DocumentoInab> dc = cargaDoc.creaDocumento044(mhome.getRu(),mhome.getPer(),this.antecedentes,this.fundamentos,this.analisis,this.validezDocumento,this.noDictamen);
             
@@ -442,14 +432,12 @@ public class LIRE044 implements Serializable {
                
              
              // crea documento en vista preiva
-             Future<String> gs = cargaDoc.generarReporte(dInab.getDictamenJuridicoModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),valor,"044",dInab.getLicencia());             
+             Future<String> gs = cargaDoc.generarReporte(dInab.getDictamenJuridicoModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"044",dInab.getLicencia());             
              String sp = gs.get();
              System.out.println(sp);                                       
              PrimeFaces.current().executeInitScript("PF('productDialog').show()");
              
-        } catch (InterruptedException ex) {
-            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
         }
        
@@ -479,10 +467,19 @@ public class LIRE044 implements Serializable {
             // desaciva boton generar documento
             this.bot2=true;
             // registra en el historico en segundo plano
-            Historico hiloHistorico = new Historico();
-            hiloHistorico.setPer(this.mhome.getPer());
-            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 044 con estado finalizado
-            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
+//            Historico hiloHistorico = new Historico();
+//            hiloHistorico.setPer(this.mhome.getPer());
+//            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 044 con estado finalizado
+//            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
+            
+            // crea documento en final
+             Future<String> gs = cargaDoc.generarReporte(dInab.getDictamenJuridicoModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"044",dInab.getLicencia());             
+             String sp = gs.get();
+             System.out.println(sp);               
+             
+             
+//             PrimeFaces.current().executeInitScript("PF('productDialog').show()");
+             
 //            
 //            String sql= UTILIDADES.SQL.insertaGestion(temp);
 //            
@@ -506,14 +503,14 @@ public class LIRE044 implements Serializable {
 //                
 //            }
             
-            GEnericaCincoCampos cinco = this.mhome.getPer().getCincoCampos();
-            System.out.println("Esto es el subregional : "+cinco.getDato1());
+//            GEnericaCincoCampos cinco = this.mhome.getPer().getCincoCampos();
+//            System.out.println("Esto es el subregional : "+cinco.getDato1());
+//            
             
-            
-            System.out.println("secretaria 1 :"+ this.mhome.getPer().getListSecretarias().get(0).getUsuarioDesc());
-            
-            cargaDoc.trazladaExpedinte(Integer.parseInt(this.mhome.getPer().getTcUsuario().getUsuarioId().toString()),  this.mhome.getPer().getListSecretarias().get(0).getUsuarioId(),3,2);
-            
+//            System.out.println("secretaria 1 :"+ this.mhome.getPer().getListSecretarias().get(0).getUsuarioDesc());
+//            
+//            cargaDoc.trazladaExpedinte(Integer.parseInt(this.mhome.getPer().getTcUsuario().getUsuarioId().toString()),  this.mhome.getPer().getListSecretarias().get(0).getUsuarioId(),3,2);
+//            
             // inicializa
             //this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra="+mhome.getPer().getTcUsuario().getUsuarioId()+"&rx=a';");
         } catch (JAXBException ex) {

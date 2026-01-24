@@ -12,6 +12,7 @@ import javax.ejb.Local;
 import juridico.LIRE044;
 import redis.clients.jedis.Jedis;
 import solicitante.LIRE042;
+import subregional.LIRE045;
 
 /**
  *
@@ -24,9 +25,13 @@ public interface CargaDocumentosLocal {
       
       public Future<lire044.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE044.Elemento> antecedentes,List<LIRE044.Elemento> fundamentos,List<LIRE044.Elemento> analisis, boolean validarDocumento, String noDictamen);
     
+      public Future<lire045.DocumentoInab> creaDocumento045(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE045.Elemento> razones, String noOficio);
+
       public Future<String> creaXML42(PefilInab per,String proceso, String paso, String documento,lire042.DocumentoInab doc42);
       
       public Future<String> creaXML44(PefilInab per,String proceso, String paso, String documento,lire044.DocumentoInab doc44);
+      
+      public Future<String> creaXML45(PefilInab per,String proceso, String paso, String documento,lire045.DocumentoInab doc45);
       
       public Future<String> creaXML79(PefilInab per, String proceso, String paso, String documento, lire079.DocumentoInab doc79);
       
@@ -37,6 +42,8 @@ public interface CargaDocumentosLocal {
       public Future<String> grabaXML42(String xml,lire042.DocumentoInab doc42);
       
       public Future<String> grabaXML44(String xml,lire044.DocumentoInab doc44);
+      
+      public Future<String> grabaXML45(String xml,lire045.DocumentoInab doc45);
       
       public Future<String> generarReporte(String index, String core, String param, String plantilla, String licencia);
       

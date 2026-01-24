@@ -29,6 +29,7 @@ import juridico.LIRE044;
 import lire042.Asociados;
 import redis.clients.jedis.Jedis;
 import solicitante.LIRE042;
+import subregional.LIRE045;
 
 /**
  *
@@ -361,7 +362,7 @@ public class CargaDocumentos implements CargaDocumentosLocal, Serializable {
         String xml="";
         //long l = JD.incrBy("D-"+proceso+"-"+paso+"-"+documento, 1);
         long l =1;
-        if(doc44.getEstado().compareTo("Finalizado")==0){            
+        if(doc44.getEstado().compareTo("Generadod")==0){            
             l = JD.incrBy("D-"+proceso+"-"+paso+"-"+documento, 1);
         }
         
@@ -399,6 +400,51 @@ public class CargaDocumentos implements CargaDocumentosLocal, Serializable {
         r = this.api.enviarApiMMCoreXML(xml,1,core,index);        
         
         return CompletableFuture.completedFuture(r);    
+    }
+
+    @Override
+    public Future<lire045.DocumentoInab> creaDocumento045(RespuestaSeccionUNO ru, PefilInab per, List<LIRE045.Elemento> razones, String noDictamen) {
+        String xml = "";
+        lire045.DocumentoInab doc45 = UTILIDADES.FacadeData.crea045(ru, per, razones, noDictamen);
+        return CompletableFuture.completedFuture(doc45);
+    }
+
+    @Override
+    public Future<String> creaXML45(PefilInab per, String proceso, String paso, String documento, lire045.DocumentoInab doc45) {
+        Jedis JD = ir.obtieneConeccionRedis();
+        String xml = "";
+        //long l = JD.incrBy("D-"+proceso+"-"+paso+"-"+documento, 1);
+        long l = 1;
+        if (doc45.getEstado().compareTo("Generado") == 0) {
+            l = JD.incrBy("D-" + proceso + "-" + paso + "-" + documento, 1);
+        }
+
+        String id = doc45.getOficioAprobacionModificacion().getID();
+
+        String nombrePDF = "PRO-09-P-" + paso + "-DOC-" + l + "-" + id;
+
+        lire045.Asociados.Vista vista = new lire045.Asociados.Vista();
+        vista.setRutaPdf("/home/server/pdf/licencia/" + doc45.getLicencia() + "/documentos/" + doc45.getNombreEsquema().replaceAll(".xsd", "") + "/" + nombrePDF + ".pdf");
+        vista.setUrlDocumento(nombrePDF + ".xml");
+        lire045.Asociados as = new lire045.Asociados();
+        as = doc45.getOficioAprobacionModificacion().getVisor();
+        as.setVista(vista);
+        doc45.getOficioAprobacionModificacion().setVisor(as);
+        xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc45);
+        ir.retornRecursoRedis(JD);
+
+        return CompletableFuture.completedFuture(xml);
+    }
+
+    @Override
+    public Future<String> grabaXML45(String xml, lire045.DocumentoInab doc45) {
+        String r="";
+        
+        String index = doc45.getOficioAprobacionModificacion().getVisor().getVista().getUrlDocumento();
+        String core = doc45.getExpediente();
+        r = this.api.enviarApiMMCoreXML(xml, 1, core, index);
+
+        return CompletableFuture.completedFuture(r);
     }
 
  

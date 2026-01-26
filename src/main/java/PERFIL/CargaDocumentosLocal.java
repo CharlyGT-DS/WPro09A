@@ -13,6 +13,7 @@ import juridico.LIRE044;
 import redis.clients.jedis.Jedis;
 import solicitante.LIRE042;
 import subregional.LIRE045;
+import subregional.LIRE046;
 
 /**
  *
@@ -20,47 +21,53 @@ import subregional.LIRE045;
  */
 @Local
 public interface CargaDocumentosLocal {
-    
-      public Future<lire042.DocumentoInab> creaDocumento042(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE042.Elemento> elementos);
-      
-      public Future<lire044.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE044.Elemento> antecedentes,List<LIRE044.Elemento> fundamentos,List<LIRE044.Elemento> analisis, boolean validarDocumento, String noDictamen);
-    
-      public Future<lire045.DocumentoInab> creaDocumento045(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE045.Elemento> razones, String noOficio);
 
-      public Future<String> creaXML42(PefilInab per,String proceso, String paso, String documento,lire042.DocumentoInab doc42);
-      
-      public Future<String> creaXML44(PefilInab per,String proceso, String paso, String documento,lire044.DocumentoInab doc44);
-      
-      public Future<String> creaXML45(PefilInab per,String proceso, String paso, String documento,lire045.DocumentoInab doc45);
-      
-      public Future<String> creaXML79(PefilInab per, String proceso, String paso, String documento, lire079.DocumentoInab doc79);
-      
-      public Future<String> creaXML80(PefilInab per,String proceso, String paso, String documento,lire080.DocumentoInab doc80);
-      
-      public Future<String> creaXML81(PefilInab per,String proceso, String paso, String documento,lire081.DocumentoInab doc81);
-      
-      public Future<String> grabaXML42(String xml,lire042.DocumentoInab doc42);
-      
-      public Future<String> grabaXML44(String xml,lire044.DocumentoInab doc44);
-      
-      public Future<String> grabaXML45(String xml,lire045.DocumentoInab doc45);
-      
-      public Future<String> generarReporte(String index, String core, String param, String plantilla, String licencia);
-      
-      public Jedis obtieneRedis();
-      
-      public Future<String> grabaXML42Final(String xml,lire042.DocumentoInab doc48,String index);
-      
-      public void trazladaExpedinte(int idUsarioActual,int idUsuarioSiguiente, int tipo, int paso );
-      
-      public Future<String> grabaXML079(String xml,lire079.DocumentoInab doc079);
-      
-      public Future<String> grabaXML080(String xml,lire080.DocumentoInab doc080);
-      
-      public Future<String> grabaXML081(String xml,lire081.DocumentoInab doc081);
-      
-      public long ejecutarCadaMinuto();
-      
-      public Future<String> grabaPLANPorUsuarioID(String json,String expediente,long idUsuario);
-      
+    public Future<lire042.DocumentoInab> creaDocumento042(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE042.Elemento> elementos);
+
+    public Future<lire044.DocumentoInab> creaDocumento044(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE044.Elemento> antecedentes, List<LIRE044.Elemento> fundamentos, List<LIRE044.Elemento> analisis, boolean validarDocumento, String noDictamen);
+
+    public Future<lire045.DocumentoInab> creaDocumento045(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE045.Elemento> razones, String noOficio);
+
+    public Future<lire046.DocumentoInab> creaDocumento046(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE046.Elemento> razones, String noOficio);
+
+    public Future<String> creaXML42(PefilInab per, String proceso, String paso, String documento, lire042.DocumentoInab doc42);
+
+    public Future<String> creaXML44(PefilInab per, String proceso, String paso, String documento, lire044.DocumentoInab doc44);
+
+    public Future<String> creaXML45(PefilInab per, String proceso, String paso, String documento, lire045.DocumentoInab doc45);
+    
+    public Future<String> creaXML46(PefilInab per, String proceso, String paso, String documento, lire046.DocumentoInab doc46);
+
+    public Future<String> creaXML79(PefilInab per, String proceso, String paso, String documento, lire079.DocumentoInab doc79);
+
+    public Future<String> creaXML80(PefilInab per, String proceso, String paso, String documento, lire080.DocumentoInab doc80);
+
+    public Future<String> creaXML81(PefilInab per, String proceso, String paso, String documento, lire081.DocumentoInab doc81);
+
+    public Future<String> grabaXML42(String xml, lire042.DocumentoInab doc42);
+
+    public Future<String> grabaXML44(String xml, lire044.DocumentoInab doc44);
+
+    public Future<String> grabaXML45(String xml, lire045.DocumentoInab doc45);
+    
+    public Future<String> grabaXML46(String xml, lire046.DocumentoInab doc46);
+
+    public Future<String> generarReporte(String index, String core, String param, String plantilla, String licencia);
+
+    public Jedis obtieneRedis();
+
+    public Future<String> grabaXML42Final(String xml, lire042.DocumentoInab doc48, String index);
+
+    public void trazladaExpedinte(int idUsarioActual, int idUsuarioSiguiente, int tipo, int paso);
+
+    public Future<String> grabaXML079(String xml, lire079.DocumentoInab doc079);
+
+    public Future<String> grabaXML080(String xml, lire080.DocumentoInab doc080);
+
+    public Future<String> grabaXML081(String xml, lire081.DocumentoInab doc081);
+
+    public long ejecutarCadaMinuto();
+
+    public Future<String> grabaPLANPorUsuarioID(String json, String expediente, long idUsuario);
+
 }

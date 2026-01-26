@@ -135,7 +135,7 @@
 
                                             <td width="10%">
                                                 <p:commandButton value="Quitar" actionListener="#{lire045.eliminarRazon(razon)}"
-                                                                 process="@this" update="form045" rendered="#{not empty lire045.razones}" styleClass="rounded-button ui-button-danger" />
+                                                                 process="@this" update="form045:secRazones" rendered="#{not empty lire045.razones}" styleClass="rounded-button ui-button-danger" />
                                             </td>
 
                                             <td width="70%">
@@ -145,7 +145,7 @@
 
                                             <td width="10%">
                                                 <p:commandButton value="Agregar Elemento" actionListener="#{lire045.agregarRazon}"
-                                                                 process="form045:secRazones" update="form045" styleClass="rounded-button ui-button-success" />
+                                                                 process="form045:secRazones" update="form045:secRazones" styleClass="rounded-button ui-button-success" />
                                             </td>
 
                                         </tr>

@@ -18,6 +18,7 @@ import secretaria.LIRE080;
 import solicitante.LIRE042;
 import secretaria.LIRE079;
 import subregional.LIRE045;
+import subregional.LIRE046;
 
 /**
  *
@@ -54,6 +55,11 @@ public class FacadeData {
     public static lire045.DocumentoInab crea045(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE045.Elemento> razones, String noOficio){       
         CreaDocumento crea = new CreaDocumento();          
         return crea.creaDoc45(ru, per, razones, noOficio); 
+    }
+    
+    public static lire046.DocumentoInab crea046(RespuestaSeccionUNO ru, estructuras.PefilInab per,List<LIRE046.Elemento> razones, String noOficio){       
+        CreaDocumento crea = new CreaDocumento();          
+        return crea.creaDoc46(ru, per, razones, noOficio); 
     }
     
     // para registrar historico 

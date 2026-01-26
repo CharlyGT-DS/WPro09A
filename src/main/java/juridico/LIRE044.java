@@ -57,7 +57,7 @@ public class LIRE044 implements Serializable {
     private Date hoy = new Date();
 
     private SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-
+    
     private String fechaFormateada = "";
     private boolean bot = false;
     private boolean bot1 = false;
@@ -92,8 +92,6 @@ public class LIRE044 implements Serializable {
     public void setdInab(DocumentoInab dInab) {
         this.dInab = dInab;
     }
-    
-    
 
     public String getExpediente() {
         return expediente;
@@ -312,6 +310,7 @@ public class LIRE044 implements Serializable {
         this.bot1 = false;
         this.bot2 = true;
     }
+    
 
     public void desactivaAmbosBotones() {
         this.bot1 = true;
@@ -422,18 +421,21 @@ public class LIRE044 implements Serializable {
              // graba el xml
              Future<String> gxml = cargaDoc.grabaXML44(valor, dInab);
              
-             String r = gxml.get();
-             
+            String r = gxml.get();
+
              // setea nombres
              this.nomXML = dInab.getDictamenJuridicoModificacion().getVisor().getVista().getRutaPdf();
              // String xq=UTILIDADES.Xquery.xmlConsultaDocumento(dInab.getExpediente(), nomXML);
+
              
              this.rutaNombre = this.nomXML;
                
              
              // crea documento en vista preiva
              Future<String> gs = cargaDoc.generarReporte(dInab.getDictamenJuridicoModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"044",dInab.getLicencia());             
+             
              String sp = gs.get();
+             System.out.println(gs);
              System.out.println(sp);                                       
              PrimeFaces.current().executeInitScript("PF('productDialog').show()");
              

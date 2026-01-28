@@ -110,6 +110,32 @@
                                     </div>
                                 </div>
                             </h:panelGroup>
+                            
+                            <h:panelGroup id="secSolicitud">
+                                <p:outputLabel value="EVALUACIÓN DE LA SOLUCITUD DE MODIFICACIÓN" style="display:block;text-align:justify;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
+                                <ui:repeat id="bot3" value="#{lire043.analisis}" var="an">
+                                    <table width="100%" border="0">
+                                        <tr style="vertical-align: middle;">
+
+                                            <td width="10%">
+                                                <p:commandButton value="Quitar" actionListener="#{lire043.eliminarAnalisis(an) }"
+                                                                 process="@this" update="form043" rendered="#{not empty lire043.analisis}" styleClass="rounded-button ui-button-danger" />
+                                            </td>
+
+                                            <td width="70%">
+                                                <p:inputText value="#{an.valor}" required="true" requiredMessage="Ingrese Evaluación de la solicitud de modificación"
+                                                             placeholder="Ingrese su Evaluación de Solicitud de Modificación" style="width:100%;" />
+                                            </td>
+
+                                            <td width="10%">
+                                                <p:commandButton value="Agregar Elemento" actionListener="#{lire043.agregarAnalisis}"
+                                                                 process="form043:secSolicitud" update="form043" styleClass="rounded-button ui-button-success" />
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </ui:repeat>
+                            </h:panelGroup>
 
                             <h:panelGroup id="secConclusiones">
                                 <p:outputLabel value="CONCLUSIONES" style="display:block;text-align:justify;font-weight:bold;font-size:1.2rem;margin-top:40px;" />

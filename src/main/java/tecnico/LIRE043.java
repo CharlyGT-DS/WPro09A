@@ -52,6 +52,7 @@ public class LIRE043 implements Serializable {
     private boolean bot = false;
     private boolean bot1 = false;
     private boolean bot2 = true;
+    private boolean bot3 = true;
     private boolean bot4 = false;
     private boolean bot5 = false;
     private boolean bot6 = false;
@@ -203,6 +204,14 @@ public class LIRE043 implements Serializable {
         this.bot2 = bot2;
     }
 
+    public boolean isBot3() {
+        return bot3;
+    }
+
+    public void setBot3(boolean bot3) {
+        this.bot3 = bot3;
+    }
+    
     public boolean isBot4() {
         return bot4;
     }

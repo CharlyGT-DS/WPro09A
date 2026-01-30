@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -115,17 +116,25 @@ public class lire006 implements Serializable {
             // ====== Valores por defecto / precarga de "Datos que integran el documento" ======
             // Sustituye por lo que corresponda en tu servicio
             this.noProvidencia = (this.noProvidencia == null) ? "PROV-2026-0001" : this.noProvidencia;
-            this.expediente    = (this.expediente == null)    ? "EXP-2026-01234" : this.expediente;
-            this.licencia      = (this.licencia == null)      ? "LIC-2026-00099" : this.licencia;
-            this.solicitante   = (this.solicitante == null)   ? "Nombre del Solicitante" : this.solicitante;
-            this.finca         = (this.finca == null)         ? "Finca Ejemplo" : this.finca;
-            this.ubicacionFinca= (this.ubicacionFinca == null)? "Ubicación completa de la finca" : this.ubicacionFinca;
+            this.expediente = (this.expediente == null) ? "EXP-2026-01234" : this.expediente;
+            this.licencia = (this.licencia == null) ? "LIC-2026-00099" : this.licencia;
+            this.solicitante = (this.solicitante == null) ? "Nombre del Solicitante" : this.solicitante;
+            this.finca = (this.finca == null) ? "Finca Ejemplo" : this.finca;
+            this.ubicacionFinca = (this.ubicacionFinca == null) ? "Ubicación completa de la finca" : this.ubicacionFinca;
 
             // Inicializa listas con un elemento vacío para la UI
-            if (antecedentes.isEmpty()) antecedentes.add(new Elemento(""));
-            if (fundamentos.isEmpty())  fundamentos.add(new Elemento(""));
-            if (analisis.isEmpty())     analisis.add(new Elemento(""));
-            if (conclusiones.isEmpty()) conclusiones.add(new Elemento(""));
+            if (antecedentes.isEmpty()) {
+                antecedentes.add(new Elemento(""));
+            }
+            if (fundamentos.isEmpty()) {
+                fundamentos.add(new Elemento(""));
+            }
+            if (analisis.isEmpty()) {
+                analisis.add(new Elemento(""));
+            }
+            if (conclusiones.isEmpty()) {
+                conclusiones.add(new Elemento(""));
+            }
 
         } catch (Exception ex) {
             Logger.getLogger(lire006.class.getName()).log(Level.SEVERE, "Error en llamar()", ex);
@@ -133,25 +142,44 @@ public class lire006 implements Serializable {
     }
 
     // ====== Acciones UI ======
+    public void agregarAntecedente() {
+        antecedentes.add(new Elemento(""));
+    }
 
-    public void agregarAntecedente() { antecedentes.add(new Elemento("")); }
     public void eliminarAntecedente(Elemento e) {
-        if (antecedentes.size() > 1) antecedentes.remove(e);
+        if (antecedentes.size() > 1) {
+            antecedentes.remove(e);
+        }
     }
 
-    public void agregarFundamento() { fundamentos.add(new Elemento("")); }
+    public void agregarFundamento() {
+        fundamentos.add(new Elemento(""));
+    }
+
     public void eliminarFundamento(Elemento e) {
-        if (fundamentos.size() > 1) fundamentos.remove(e);
+        if (fundamentos.size() > 1) {
+            fundamentos.remove(e);
+        }
     }
 
-    public void agregarAnalisis() { analisis.add(new Elemento("")); }
+    public void agregarAnalisis() {
+        analisis.add(new Elemento(""));
+    }
+
     public void eliminarAnalisis(Elemento e) {
-        if (analisis.size() > 1) analisis.remove(e);
+        if (analisis.size() > 1) {
+            analisis.remove(e);
+        }
     }
 
-    public void agregarConclusion() { conclusiones.add(new Elemento("")); }
+    public void agregarConclusion() {
+        conclusiones.add(new Elemento(""));
+    }
+
     public void eliminarConclusion(Elemento e) {
-        if (conclusiones.size() > 1) conclusiones.remove(e);
+        if (conclusiones.size() > 1) {
+            conclusiones.remove(e);
+        }
     }
 
     public void activarBoton() {
@@ -171,24 +199,63 @@ public class lire006 implements Serializable {
     public void desactivaAmbosBotones() {
         this.bot1 = true;
         this.bot2 = true;
+        /** mensaje correcto
+            PrimeFaces.current().executeScript(
+                "Swal.fire({"
+                + "title: 'Su solicitud fue enviada al INAB',"
+                + "text: 'Serás redirigido al inicio',"
+                + "icon: 'success',"
+                + "confirmButtonText: 'Ir ahora'"
+                + "}).then((result)=>{ if(result.isConfirmed){ window.location.href='/WPro09/pages/inicio.xhtml?ra="
+                + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a'; } });"
+        );
+        */
         PrimeFaces.current().executeScript(
-            "Swal.fire({"
-            + "title: 'Su solicitud fue enviada al INAB',"
-            + "text: 'Serás redirigido al inicio',"
-            + "icon: 'success',"
-            + "confirmButtonText: 'Ir ahora'"
-            + "}).then((result)=>{ if(result.isConfirmed){ window.location.href='/WPro09/pages/inicio.xhtml?ra="
-            + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a'; } });"
+                "Swal.fire({"
+                + "title:'Resolución registrada',"
+                + "text:'Será redirigido al inicio',"
+                + "icon:'success'"
+                + "});"
         );
     }
 
     public void generarDocumento006() {
-        // TODO: Genera el reporte de vista previa y asigna la ruta
-        // this.rutaNombre = "ruta/archivo/previa.pdf";
-        System.out.println("Vista previa: validez=" + validezDocumento
-                + " | subRegion=" + subRegion
-                + " | municipio=" + municipio
-                + " | departamento=" + departamento);
+        boolean ok = true;
+
+        if (noDictamen == null || noDictamen.trim().isEmpty()) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Falta dato", "Ingrese el número de Dictamen."));
+            ok = false;
+        }
+        if (antecedentes.isEmpty() || antecedentes.stream().allMatch(e -> e.getValor() == null || e.getValor().trim().isEmpty())) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Falta ANTECEDENTE", "Agregue al menos un antecedente."));
+            ok = false;
+        }
+        if (fundamentos.isEmpty() || fundamentos.stream().allMatch(e -> e.getValor() == null || e.getValor().trim().isEmpty())) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Falta FUNDAMENTO", "Agregue al menos un fundamento legal."));
+            ok = false;
+        }
+        if (analisis.isEmpty() || analisis.stream().allMatch(e -> e.getValor() == null || e.getValor().trim().isEmpty())) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Falta ANÁLISIS", "Agregue al menos un análisis."));
+            ok = false;
+        }
+
+        if (!ok) {
+            PF.current().ajax().update("form006:msg");
+            return;
+        }
+
+        // TODO: Genera tu documento real y asigna rutaNombre
+        //this.rutaNombre = "ruta/archivo/previa.pdf";
+
+        // Abre el diálogo de Vista Previa
+        PrimeFaces.current().executeScript("PF('productDialog').show();");
+
+        // Opcional: bloquear edición y habilitar botón de generar
+        activarBoton();
     }
 
     public void generarDocumento006Final() {
@@ -199,15 +266,26 @@ public class lire006 implements Serializable {
 
     // ====== Clase auxiliar para secciones dinámicas ======
     public static class Elemento implements Serializable {
+
         private String valor;
-        public Elemento() {}
-        public Elemento(String valor) { this.valor = valor; }
-        public String getValor() { return valor; }
-        public void setValor(String valor) { this.valor = valor; }
+
+        public Elemento() {
+        }
+
+        public Elemento(String valor) {
+            this.valor = valor;
+        }
+
+        public String getValor() {
+            return valor;
+        }
+
+        public void setValor(String valor) {
+            this.valor = valor;
+        }
     }
 
     // ====== Getters / Setters ======
-
     public boolean isBot() {
         return bot;
     }

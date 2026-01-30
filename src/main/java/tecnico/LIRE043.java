@@ -7,7 +7,6 @@ package tecnico;
 import MANEJADORES.MHHome;
 import PERFIL.EJBGestionREDLocal;
 import com.google.gson.Gson;
-import dta.json.plan.TcUsuario;
 import inab.pro.wpro09.resources.VerificaUsuario;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -18,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -101,7 +101,7 @@ public class LIRE043 implements Serializable {
     public void setRegente(String regente) {
         this.regente = regente;
     }
-    
+
     public String getPlanOperativo() {
         return planOperativo;
     }
@@ -142,8 +142,6 @@ public class LIRE043 implements Serializable {
         this.Sede = Sede;
     }
 
-
-    
     public String getMunicipio() {
         return municipio;
     }
@@ -159,7 +157,7 @@ public class LIRE043 implements Serializable {
     public void setDepartamento(String departamento) {
         this.departamento = departamento;
     }
-    
+
     public void setNoDictamen(String noDictamen) {
         this.noDictamen = noDictamen;
     }
@@ -211,7 +209,7 @@ public class LIRE043 implements Serializable {
     public void setBot3(boolean bot3) {
         this.bot3 = bot3;
     }
-    
+
     public boolean isBot4() {
         return bot4;
     }
@@ -283,21 +281,19 @@ public class LIRE043 implements Serializable {
     public void setAnalisis(List<Elemento> analisis) {
         this.analisis = analisis;
     }
-    
-    
 
     @PostConstruct
     public void init() {
         String tipo = FacesContext.getCurrentInstance()
-            .getExternalContext()
-            .getRequestParameterMap()
-            .get("tipo");
+                .getExternalContext()
+                .getRequestParameterMap()
+                .get("tipo");
 
         if (tipo != null) {
             validezDocumento = Boolean.parseBoolean(tipo);
         }
     }
-    
+
     public String irFormulario(boolean valor) {
         return "li-re-043?faces-redirect=true&tipo=" + valor;
     }
@@ -311,7 +307,7 @@ public class LIRE043 implements Serializable {
             antecedentes.remove(elemento);
         }
     }
-    
+
     public void agregarConclusion() {
         conclusiones.add(new LIRE043.Elemento(""));
     }
@@ -360,6 +356,7 @@ public class LIRE043 implements Serializable {
         this.bot1 = true;
         this.bot2 = true;
 
+        /*
         PrimeFaces.current().executeScript(
                 "Swal.fire({"
                 + "title: 'Su solicitud fue enviado al INAB',"
@@ -375,15 +372,53 @@ public class LIRE043 implements Serializable {
         );
 
         this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a';");
+        */
+        PrimeFaces.current().executeScript(
+                "Swal.fire({"
+                + "title:'Resolución registrada',"
+                + "text:'Será redirigido al inicio',"
+                + "icon:'success'"
+                + "});"
+        );
+        
     }
 
     public void generarDocumento043() {
-        System.out.println("validez :" + this.validezDocumento);
-        System.out.println("subRegion :"+this.partesDireccion[0]+"Municipio :"+this.partesDireccion[1]+"Departamento :"+this.partesDireccion[2]);
+        boolean ok = true;
+
+        if (noDictamen == null || noDictamen.trim().isEmpty()) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Falta dato", "Ingrese el número de Dictamen."));
+            ok = false;
+        }
+        if (analisis.isEmpty() || analisis.stream().allMatch(e -> e.getValor() == null || e.getValor().trim().isEmpty())) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Falta Evaluación", "Agregue al menos una Evaluación de la solicitud de modificación."));
+            ok = false;
+        }
+        if (conclusiones.isEmpty() || conclusiones.stream().allMatch(e -> e.getValor() == null || e.getValor().trim().isEmpty())) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Falta Conclusión", "Agregue al menos una conclusión."));
+            ok = false;
+        }
+
+        if (!ok) {
+            PF.current().ajax().update("form043:msg");
+            return;
+        }
+
+        // TODO: Genera tu documento real y asigna rutaNombre
+        //this.rutaNombre = "ruta/archivo/previa.pdf";
+
+        // Abre el diálogo de Vista Previa
+        PrimeFaces.current().executeScript("PF('productDialog').show();");
+
+        // Opcional: bloquear edición y habilitar botón de generar
+        activarBoton();
     }
 
     public void generarDocumento043Final() {
-
+        this.bot2 = true;
     }
 
     public void llamar() {
@@ -400,7 +435,7 @@ public class LIRE043 implements Serializable {
             this.planOperativo = "POA-2024-00631";
             this.regente = "Nombre de Regente";
             this.elaborador = this.mhome.getPer().getTcUsuario().getUsuarioDesc();
-            
+
             antecedentes.add(new LIRE043.Elemento(""));
             conclusiones.add(new LIRE043.Elemento(""));
             fundamentos.add(new Elemento(""));

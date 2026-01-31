@@ -1,5 +1,6 @@
 package juridico;
 
+import HILOS.Historico;
 import MANEJADORES.MHHome;
 import PERFIL.CargaDocumentosLocal;
 import PERFIL.EJBGestionREDLocal;
@@ -191,15 +192,15 @@ public class LIRE006 implements Serializable {
     public void desactivaAmbosBotones() {
         this.bot1 = true;
         this.bot2 = true;
-        PrimeFaces.current().executeScript(
-            "Swal.fire({"
-            + "title: 'Su solicitud fue enviada al INAB',"
-            + "text: 'Serás redirigido al inicio',"
-            + "icon: 'success',"
-            + "confirmButtonText: 'Ir ahora'"
-            + "}).then((result)=>{ if(result.isConfirmed){ window.location.href='/WPro09/pages/inicio.xhtml?ra="
-            + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a'; } });"
-        );
+//        PrimeFaces.current().executeScript(
+//            "Swal.fire({"
+//            + "title: 'Su solicitud fue enviada al INAB',"
+//            + "text: 'Serás redirigido al inicio',"
+//            + "icon: 'success',"
+//            + "confirmButtonText: 'Ir ahora'"
+//            + "}).then((result)=>{ if(result.isConfirmed){ window.location.href='/WPro09/pages/inicio.xhtml?ra="
+//            + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a'; } });"
+//        );
     }
 
     public void generarDocumento006() {
@@ -261,10 +262,10 @@ public class LIRE006 implements Serializable {
             // desaciva boton generar documento
             this.bot2=true;
             // registra en el historico en segundo plano
-//            Historico hiloHistorico = new Historico();
-//            hiloHistorico.setPer(this.mhome.getPer());
-//            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 044 con estado finalizado
-//            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
+            Historico hiloHistorico = new Historico();
+            hiloHistorico.setPer(this.mhome.getPer());
+            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 006 con estado finalizado
+            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
             
             // crea documento en final
              Future<String> gs = cargaDoc.generarReporte(dInab.getDictamenJuridicoEnmiendas().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"006",dInab.getLicencia());             

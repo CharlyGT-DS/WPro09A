@@ -1,5 +1,6 @@
 package solicitante;
 
+import HILOS.Historico;
 import MANEJADORES.MHHome;
 import PERFIL.CargaDocumentosLocal;
 import PERFIL.EJBGestionREDLocal;
@@ -254,10 +255,10 @@ public class LIRE010 implements Serializable {
             // desaciva boton generar documento
             this.bot2=true;
             // registra en el historico en segundo plano
-//            Historico hiloHistorico = new Historico();
-//            hiloHistorico.setPer(this.mhome.getPer());
-//            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 044 con estado finalizado
-//            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
+            Historico hiloHistorico = new Historico();
+            hiloHistorico.setPer(this.mhome.getPer());
+            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 044 con estado finalizado
+            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
             
             // crea documento en final
              Future<String> gs = cargaDoc.generarReporte(dInab.getOficioEntregaEnmiendas().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"010",dInab.getLicencia());             

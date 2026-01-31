@@ -80,10 +80,49 @@ public class Historico extends Thread implements Serializable{
       }
       
       if(name.contains("lire044")){
-          tipoDoc =4;
+          tipoDoc = 44;
           System.out.println("entro a 044");
       }
       
+      if(name.contains("lire006")){
+          tipoDoc = 6;
+          System.out.println("entro a 006");
+      }
+      
+      if(name.contains("lire009")){
+          tipoDoc = 9;
+          System.out.println("entro a 009");
+      }
+      
+      if(name.contains("lire010")){
+          tipoDoc = 10;
+          System.out.println("entro a 010");
+      }
+      
+      if(name.contains("lire022")){
+          tipoDoc = 22;
+          System.out.println("entro a 022");
+      }
+      
+      if(name.contains("lire043")){
+          tipoDoc = 43;
+          System.out.println("entro a 043");
+      }
+      
+      if(name.contains("lire045")){
+          tipoDoc = 45;
+          System.out.println("entro a 045");
+      }
+      
+      if(name.contains("lire046")){
+          tipoDoc = 46;
+          System.out.println("entro a 046");
+      }
+      
+      if(name.contains("lire047")){
+          tipoDoc = 47;
+          System.out.println("entro a 047");
+      }
       
      his =   UTILIDADES.FacadeData.creaHistorioData(this.per,this.documentoRegistrar, tipoDoc);
      

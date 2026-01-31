@@ -1,5 +1,6 @@
 package juridico;
 
+import HILOS.Historico;
 import MANEJADORES.MHHome;
 import PERFIL.CargaDocumentosLocal;
 import PERFIL.EJBGestionREDLocal;
@@ -168,18 +169,6 @@ public class LIRE047 implements Serializable {
             this.noDictamenJ = "DJ-2026-00047";
             this.nombreDirectorSub = this.mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcSubregional().getPersonaDesc();
             this.OficioSubR = "OFSB-4554545";
-           
-//
-//            // Defaults razonables si algo viene nulo
-//            if (this.sede == null || this.sede.isEmpty()) this.sede = this.subRegion;
-//            if (this.departamentoSede == null || this.departamentoSede.isEmpty()) this.departamentoSede = this.departamento;
-//            if (this.licencia == null || this.licencia.isEmpty()) this.licencia = "LI-RE-047-2026";
-//            if (this.expediente == null || this.expediente.isEmpty()) this.expediente = "EXP-INAB-047-2026";
-//            if (this.planOperativo == null || this.planOperativo.isEmpty()) this.planOperativo = "POA-047-2026";
-//            if (this.solicitud == null) this.solicitud = "Solicitud de Resolución de Modificación";
-//            if (this.dpi == null) this.dpi = "0000000000000";
-
-        
 
         } catch (Exception ex) {
             Logger.getLogger(LIRE047.class.getName()).log(Level.SEVERE, "Error general en llamar()", ex);
@@ -297,10 +286,10 @@ public class LIRE047 implements Serializable {
             // desaciva boton generar documento
             this.bot2=true;
             // registra en el historico en segundo plano
-//            Historico hiloHistorico = new Historico();
-//            hiloHistorico.setPer(this.mhome.getPer());
-//            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 044 con estado finalizado
-//            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
+            Historico hiloHistorico = new Historico();
+            hiloHistorico.setPer(this.mhome.getPer());
+            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 044 con estado finalizado
+            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
             
             // crea documento en final
              Future<String> gs = cargaDoc.generarReporte(dInab.getResolucionModificacionPlan().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"047",dInab.getLicencia());             

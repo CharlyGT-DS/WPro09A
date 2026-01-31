@@ -95,7 +95,7 @@ public class CreaHistorico implements Serializable{
             
         }
          
-         if(tipoDoc==4){
+         if(tipoDoc==44){
         lire044.DocumentoInab doc =  UTILIDADES.FuncionesComunes.convierteObjeto(documento, lire044.DocumentoInab.class);
         
         
@@ -119,7 +119,207 @@ public class CreaHistorico implements Serializable{
         actual.setPersonalizado(per.getTcPersona().getPersonaDesc());
         r.setActual(actual);// carga el actual
         }
+         
+         if(tipoDoc==6){
+        lire006.DocumentoInab doc =  UTILIDADES.FuncionesComunes.convierteObjeto(documento, lire006.DocumentoInab.class);
         
+        
+        // CARGA actual documento 006
+        actual.setIdUsuarioActual(Integer.parseInt(String.valueOf(per.getTcUsuario().getUsuarioId())));
+        actual.setIdUsuarioAnterior(0);
+        actual.setIdUsuarioHistorico(0);
+        actual.setEstado(1);
+        actual.setEsquema(doc.getNombreEsquema());
+        actual.setPaso(doc.getPaso());        
+        actual.setExpediente(doc.getExpediente());
+        actual.setDescripcion("Se creo la Solicitud 006 (Dictamen Juridico Enmiendas) por:"+per.getTcUsuario().getUsuarioDesc());
+        actual.setFecha(doc.getDictamenJuridicoEnmiendas().getFechaDocumento());
+        actual.setLicencia(doc.getLicencia());
+        actual.setGestionId(doc.getIdGestion());
+        actual.setPersonalizado("P1");
+        actual.setProceso(doc.getProceso());
+        String urlDoc = doc.getDictamenJuridicoEnmiendas().getVisor().getVista().getRutaPdf();
+        actual.setUrlDocumento(urlDoc);
+        actual.setTipoAccion("Creado");
+        actual.setPersonalizado(per.getTcPersona().getPersonaDesc());
+        r.setActual(actual);// carga el actual
+        }
+         
+         if(tipoDoc==9){
+        lire009.DocumentoInab doc =  UTILIDADES.FuncionesComunes.convierteObjeto(documento, lire009.DocumentoInab.class);
+        
+        
+        // CARGA actual documento 009
+        actual.setIdUsuarioActual(Integer.parseInt(String.valueOf(per.getTcUsuario().getUsuarioId())));
+        actual.setIdUsuarioAnterior(0);
+        actual.setIdUsuarioHistorico(0);
+        actual.setEstado(1);
+        actual.setEsquema(doc.getNombreEsquema());
+        actual.setPaso(doc.getPaso());        
+        actual.setExpediente(doc.getExpediente());
+        actual.setDescripcion("Se creo la Solicitud 009 (Oficio Enmiendas) por:"+per.getTcUsuario().getUsuarioDesc());
+        actual.setFecha(doc.getOficioEnmiendas().getFechaDocumento());
+        actual.setLicencia(doc.getLicencia());
+        actual.setGestionId(doc.getIdGestion());
+        actual.setPersonalizado("P1");
+        actual.setProceso(doc.getProceso());
+        String urlDoc = doc.getOficioEnmiendas().getVisor().getVista().getRutaPdf();
+        actual.setUrlDocumento(urlDoc);
+        actual.setTipoAccion("Creado");
+        actual.setPersonalizado(per.getTcPersona().getPersonaDesc());
+        r.setActual(actual);// carga el actual
+        }
+         
+         if(tipoDoc==10){
+        lire010.DocumentoInab doc =  UTILIDADES.FuncionesComunes.convierteObjeto(documento, lire010.DocumentoInab.class);
+        
+        
+        // CARGA actual documento 010
+        actual.setIdUsuarioActual(Integer.parseInt(String.valueOf(per.getTcUsuario().getUsuarioId())));
+        actual.setIdUsuarioAnterior(0);
+        actual.setIdUsuarioHistorico(0);
+        actual.setEstado(1);
+        actual.setEsquema(doc.getNombreEsquema());
+        actual.setPaso(doc.getPaso());        
+        actual.setExpediente(doc.getExpediente());
+        actual.setDescripcion("Se creo la Solicitud 010 (Oficio Entrega Enmiendas) por:"+per.getTcUsuario().getUsuarioDesc());
+        actual.setFecha(doc.getOficioEntregaEnmiendas().getFechaDocumento());
+        actual.setLicencia(doc.getLicencia());
+        actual.setGestionId(doc.getIdGestion());
+        actual.setPersonalizado("P1");
+        actual.setProceso(doc.getProceso());
+        String urlDoc = doc.getOficioEntregaEnmiendas().getVisor().getVista().getRutaPdf();
+        actual.setUrlDocumento(urlDoc);
+        actual.setTipoAccion("Creado");
+        actual.setPersonalizado(per.getTcPersona().getPersonaDesc());
+        r.setActual(actual);// carga el actual
+        }
+         
+         if(tipoDoc==22){
+        lire022.DocumentoInab doc =  UTILIDADES.FuncionesComunes.convierteObjeto(documento, lire022.DocumentoInab.class);
+        
+        
+        // CARGA actual documento 022
+        actual.setIdUsuarioActual(Integer.parseInt(String.valueOf(per.getTcUsuario().getUsuarioId())));
+        actual.setIdUsuarioAnterior(0);
+        actual.setIdUsuarioHistorico(0);
+        actual.setEstado(1);
+        actual.setEsquema(doc.getNombreEsquema());
+        actual.setPaso(doc.getPaso());        
+        actual.setExpediente(doc.getExpediente());
+        actual.setDescripcion("Se creo la Solicitud 022 (Cedula de Notificacion) por:"+per.getTcUsuario().getUsuarioDesc());
+        actual.setFecha(doc.getCedulaNotificacion().getFechaDocumento());
+        actual.setLicencia(doc.getLicencia());
+        actual.setGestionId(doc.getIdGestion());
+        actual.setPersonalizado("P1");
+        actual.setProceso(doc.getProceso());
+        String urlDoc = doc.getCedulaNotificacion().getVisor().getVista().getRutaPdf();
+        actual.setUrlDocumento(urlDoc);
+        actual.setTipoAccion("Creado");
+        actual.setPersonalizado(per.getTcPersona().getPersonaDesc());
+        r.setActual(actual);// carga el actual
+        }
+         
+         if(tipoDoc==43){
+        lire043.DocumentoInab doc =  UTILIDADES.FuncionesComunes.convierteObjeto(documento, lire043.DocumentoInab.class);
+        
+        
+        // CARGA actual documento 043
+        actual.setIdUsuarioActual(Integer.parseInt(String.valueOf(per.getTcUsuario().getUsuarioId())));
+        actual.setIdUsuarioAnterior(0);
+        actual.setIdUsuarioHistorico(0);
+        actual.setEstado(1);
+        actual.setEsquema(doc.getNombreEsquema());
+        actual.setPaso(doc.getPaso());        
+        actual.setExpediente(doc.getExpediente());
+        actual.setDescripcion("Se creo la Solicitud 043 (Dictamen Tecnico Modificacion) por:"+per.getTcUsuario().getUsuarioDesc());
+        actual.setFecha(doc.getDictamenTecnicoModificacion().getFechaDocumento());
+        actual.setLicencia(doc.getLicencia());
+        actual.setGestionId(doc.getIdGestion());
+        actual.setPersonalizado("P1");
+        actual.setProceso(doc.getProceso());
+        String urlDoc = doc.getDictamenTecnicoModificacion().getVisor().getVista().getRutaPdf();
+        actual.setUrlDocumento(urlDoc);
+        actual.setTipoAccion("Creado");
+        actual.setPersonalizado(per.getTcPersona().getPersonaDesc());
+        r.setActual(actual);// carga el actual
+        }
+         
+         if(tipoDoc==45){
+        lire045.DocumentoInab doc =  UTILIDADES.FuncionesComunes.convierteObjeto(documento, lire045.DocumentoInab.class);
+        
+        
+        // CARGA actual documento 045
+        actual.setIdUsuarioActual(Integer.parseInt(String.valueOf(per.getTcUsuario().getUsuarioId())));
+        actual.setIdUsuarioAnterior(0);
+        actual.setIdUsuarioHistorico(0);
+        actual.setEstado(1);
+        actual.setEsquema(doc.getNombreEsquema());
+        actual.setPaso(doc.getPaso());        
+        actual.setExpediente(doc.getExpediente());
+        actual.setDescripcion("Se creo la Solicitud 045 (Oficio Aprobacion Modificacion) por:"+per.getTcUsuario().getUsuarioDesc());
+        actual.setFecha(doc.getOficioAprobacionModificacion().getFechaDocumento());
+        actual.setLicencia(doc.getLicencia());
+        actual.setGestionId(doc.getIdGestion());
+        actual.setPersonalizado("P1");
+        actual.setProceso(doc.getProceso());
+        String urlDoc = doc.getOficioAprobacionModificacion().getVisor().getVista().getRutaPdf();
+        actual.setUrlDocumento(urlDoc);
+        actual.setTipoAccion("Creado");
+        actual.setPersonalizado(per.getTcPersona().getPersonaDesc());
+        r.setActual(actual);// carga el actual
+        }
+         
+         if(tipoDoc==46){
+        lire046.DocumentoInab doc =  UTILIDADES.FuncionesComunes.convierteObjeto(documento, lire046.DocumentoInab.class);
+        
+        
+        // CARGA actual documento 046
+        actual.setIdUsuarioActual(Integer.parseInt(String.valueOf(per.getTcUsuario().getUsuarioId())));
+        actual.setIdUsuarioAnterior(0);
+        actual.setIdUsuarioHistorico(0);
+        actual.setEstado(1);
+        actual.setEsquema(doc.getNombreEsquema());
+        actual.setPaso(doc.getPaso());        
+        actual.setExpediente(doc.getExpediente());
+        actual.setDescripcion("Se creo la Solicitud 046 (Oficio Denegacion Modificacion) por:"+per.getTcUsuario().getUsuarioDesc());
+        actual.setFecha(doc.getOficioDenegacionModificacion().getFechaDocumento());
+        actual.setLicencia(doc.getLicencia());
+        actual.setGestionId(doc.getIdGestion());
+        actual.setPersonalizado("P1");
+        actual.setProceso(doc.getProceso());
+        String urlDoc = doc.getOficioDenegacionModificacion().getVisor().getVista().getRutaPdf();
+        actual.setUrlDocumento(urlDoc);
+        actual.setTipoAccion("Creado");
+        actual.setPersonalizado(per.getTcPersona().getPersonaDesc());
+        r.setActual(actual);// carga el actual
+        }
+         
+         if(tipoDoc==47){
+        lire047.DocumentoInab doc =  UTILIDADES.FuncionesComunes.convierteObjeto(documento, lire047.DocumentoInab.class);
+        
+        
+        // CARGA actual documento 047
+        actual.setIdUsuarioActual(Integer.parseInt(String.valueOf(per.getTcUsuario().getUsuarioId())));
+        actual.setIdUsuarioAnterior(0);
+        actual.setIdUsuarioHistorico(0);
+        actual.setEstado(1);
+        actual.setEsquema(doc.getNombreEsquema());
+        actual.setPaso(doc.getPaso());        
+        actual.setExpediente(doc.getExpediente());
+        actual.setDescripcion("Se creo la Solicitud 044 (Actualización al PLAN MF) por:"+per.getTcUsuario().getUsuarioDesc());
+        actual.setFecha(doc.getResolucionModificacionPlan().getFechaDocumento());
+        actual.setLicencia(doc.getLicencia());
+        actual.setGestionId(doc.getIdGestion());
+        actual.setPersonalizado("P1");
+        actual.setProceso(doc.getProceso());
+        String urlDoc = doc.getResolucionModificacionPlan().getVisor().getVista().getRutaPdf();
+        actual.setUrlDocumento(urlDoc);
+        actual.setTipoAccion("Creado");
+        actual.setPersonalizado(per.getTcPersona().getPersonaDesc());
+        r.setActual(actual);// carga el actual
+        }
+    
         
         return r;
     }

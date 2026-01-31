@@ -422,6 +422,8 @@ public class LIRE044 implements Serializable {
              Future<String> gxml = cargaDoc.grabaXML44(valor, dInab);
              
             String r = gxml.get();
+            
+            System.out.println("Este es el xml = "+ r);
 
              // setea nombres
              this.nomXML = dInab.getDictamenJuridicoModificacion().getVisor().getVista().getRutaPdf();

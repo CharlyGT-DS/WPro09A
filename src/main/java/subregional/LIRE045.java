@@ -376,14 +376,7 @@ public class LIRE045 implements Serializable {
             this.municipio = this.partesDireccion[1];
             this.departamento = this.partesDireccion[2];
             
-         
-            try {
-                fechaSolicitud = new SimpleDateFormat("dd/MM/yyyy").parse("15/01/2026");
-            } catch (ParseException ex) {
-                Logger.getLogger(LIRE045.class.getName()).log(Level.SEVERE, null, ex);
-            }
-   
-           
+            this.fechaSolicitud = hoy;    
             this.solicitante = "Pedro Lopez";
             this.licencia = "LI-RE-0445-2024";
             this.planOperativo = "POA-2024-00631";
@@ -470,7 +463,7 @@ public class LIRE045 implements Serializable {
             // cambia a Generado el estado del xml
             temp.setEstado("Generado");
             // crea nuevamente el xml uno nuevo con el estado finalizado
-            Future<String> xmlfin = cargaDoc.creaXML45(mhome.getPer(),"PRO09","P5","045", temp);
+            Future<String> xmlfin = cargaDoc.creaXML45(mhome.getPer(),"PRO09","P6","045", temp);
             // obtiene el xml final
             String valor = xmlfin.get();
             // graba xml final
@@ -486,7 +479,7 @@ public class LIRE045 implements Serializable {
 //            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
             
             // crea documento en final
-             Future<String> gs = cargaDoc.generarReporte(dInab.getOficioAprobacionModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"044",dInab.getLicencia());             
+             Future<String> gs = cargaDoc.generarReporte(dInab.getOficioAprobacionModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"045",dInab.getLicencia());             
              String sp = gs.get();
              System.out.println(sp);               
              
@@ -527,11 +520,11 @@ public class LIRE045 implements Serializable {
             // inicializa
             //this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra="+mhome.getPer().getTcUsuario().getUsuarioId()+"&rx=a';");
         } catch (JAXBException ex) {
-            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LIRE045.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
-            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LIRE045.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
-            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LIRE045.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

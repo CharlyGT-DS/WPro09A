@@ -270,23 +270,6 @@ public class LIRE046 implements Serializable {
 
     public void llamar() {
         try {
-            this.fechaFormateada = formato.format(hoy);
-            this.nombreDirectorSub = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
-            this.direccion = this.mhome.getPer().getCincoCampos().getDato4().toString();
-            this.partesDireccion = direccion.split("\\s*,\\s*");
-            this.subRegion = this.partesDireccion[0];
-            this.municipio = this.partesDireccion[1];
-            this.departamento = this.partesDireccion[2];
-            
-            this.solicitante = "Pedro Lopez";   
-            this.licencia = "LI-RE-0445-2024";
-            this.planOperativo = "POA-2024-00631";
-            
-            razones.add(new LIRE046.Elemento(""));
-
-            System.out.println("licencia :" + mhome.getPer().getLicencia().getNumero_licencia_poa());
-            System.out.println("datos de subregion : " + mhome.getPer().getCincoCampos().getDato1());
-
             Jedis JD = this.ir.obtieneConeccionRedis();
             System.out.println("llave para token: " + "USU-" + mhome.getPer().getTcUsuario().getUsuarioId());
             String token = JD.hget("USU-" + mhome.getPer().getTcUsuario().getUsuarioId(), "token");
@@ -307,6 +290,22 @@ public class LIRE046 implements Serializable {
             this.mhome.getPer().setPplanM(pl);// carga el plan a la session
 
             InitialContext ctx = new InitialContext();
+            
+            this.fechaFormateada = formato.format(hoy);
+            this.nombreDirectorSub = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
+            this.direccion = this.mhome.getPer().getCincoCampos().getDato4().toString();
+            this.partesDireccion = direccion.split("\\s*,\\s*");
+            this.subRegion = this.partesDireccion[0];
+            this.municipio = this.partesDireccion[1];
+            this.departamento = this.partesDireccion[2];
+            
+            this.solicitante = "Pedro Lopez";   
+            this.licencia = "LI-RE-0445-2024";
+            this.planOperativo = "POA-2024-00631";
+            
+            razones.add(new LIRE046.Elemento(""));
+
+            
 
             this.ir = (EJBGestionREDLocal) ctx.lookup("java:global/WPro09A/EJBGestionRED!PERFIL.EJBGestionREDLocal");
         } catch (NamingException ex) {
@@ -360,7 +359,7 @@ public class LIRE046 implements Serializable {
                
              
              // crea documento en vista preiva
-             Future<String> gs = cargaDoc.generarReporte(dInab.getOficioDenegacionModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"044",dInab.getLicencia());             
+             Future<String> gs = cargaDoc.generarReporte(dInab.getOficioDenegacionModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"046",dInab.getLicencia());             
              
              String sp = gs.get();
              System.out.println(gs);
@@ -386,7 +385,7 @@ public class LIRE046 implements Serializable {
             // cambia a Generado el estado del xml
             temp.setEstado("Generado");
             // crea nuevamente el xml uno nuevo con el estado finalizado
-            Future<String> xmlfin = cargaDoc.creaXML46(mhome.getPer(),"PRO09","P4","046", temp);
+            Future<String> xmlfin = cargaDoc.creaXML46(mhome.getPer(),"PRO09","P6","046", temp);
             // obtiene el xml final
             String valor = xmlfin.get();
             // graba xml final
@@ -402,7 +401,7 @@ public class LIRE046 implements Serializable {
 //            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
             
             // crea documento en final
-             Future<String> gs = cargaDoc.generarReporte(dInab.getOficioDenegacionModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"044",dInab.getLicencia());             
+             Future<String> gs = cargaDoc.generarReporte(dInab.getOficioDenegacionModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"046",dInab.getLicencia());             
              String sp = gs.get();
              System.out.println(sp);               
              
@@ -443,11 +442,11 @@ public class LIRE046 implements Serializable {
             // inicializa
             //this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra="+mhome.getPer().getTcUsuario().getUsuarioId()+"&rx=a';");
         } catch (JAXBException ex) {
-            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LIRE046.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
-            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LIRE046.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
-            Logger.getLogger(LIRE044.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LIRE046.class.getName()).log(Level.SEVERE, null, ex);
         }
 
 

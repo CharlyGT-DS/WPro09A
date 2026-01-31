@@ -1,0 +1,160 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- Optional
+            <style></style>
+            <script></script>
+        -->
+
+        <f:metadata>
+
+            <f:viewAction action="#{lire022.llamar()}"  />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                    <p:panel header="CÉDULA DE NOTIFICACIÓN">
+                
+
+                        <h:form id="form022">
+
+                            <p:growl id="msg" showDetail="true" life="2500" />
+
+             
+                          
+                     
+                            <p:panelGrid columns="3" style="width: 100%;" layout="grid" styleClass="ui-fluid">
+
+                                <p:column colspan="2" class="col-12 lg:col-8">
+                                    <p:outputLabel value="Lugar y Fecha de Documento: " style="font-weight:bold;" />
+                                    <p:outputLabel value="#{lire022.direccion}, #{lire022.fechaFormateada}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Ver datos ocultos: " style="font-weight:bold;" />
+                                    <p:toggleSwitch   value="#{lire022.bot}">
+                                        <p:ajax update=":form022:datos"  />  
+                                    </p:toggleSwitch> 
+                                </p:column>
+                            </p:panelGrid>
+                            
+
+                            <h:panelGroup id="datos" layout="block" style="display: #{lire022.bot ? 'block' : 'none'};">
+
+                                <p:divider />
+                                <div class="col-12 md:col-7" >
+                                    <div class="card ui-fluid">
+                                        <h5>Datos que integran el Documento</h5>
+
+                                        <div class="field grid">
+                                            <p:outputLabel styleClass="col-12 mb-2 md:col-4 mb-md-0">Persona a notificar</p:outputLabel>
+                                            <div class="col-12 md:col-8">
+                                                <p:inputText disabled="true" value="#{lire022.personaNotificada}" />
+                                            </div>
+                                        </div>
+                                        <div class="field grid">
+                                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-4 mb-md-0">Calidad</p:outputLabel>
+                                            <div class="col-12 md:col-8">
+                                                <p:inputText id="lic" disabled="true" value="#{lire022.tipoPersona}" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="field grid">
+                                            <p:outputLabel value="No. de identidicación:" styleClass="col-12 mb-2 md:col-4 mb-md-0"/>
+                                            <div class="col-12 md:col-8">
+                                                <p:inputText  disabled="true" value="#{lire022.noPersonaNotificada}" />
+                                            </div>
+                                        </div>
+                                        <div class="field grid">
+                                            <p:outputLabel for="planO" value="Persona que recibe" styleClass="col-12 mb-2 md:col-4 mb-md-0"/>
+                                            <div class="col-12 md:col-8">
+                                                <p:inputText id="planO" disabled="true" value="#{lire022.personsaRecibe}" />
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+
+
+
+
+                            <p:panelGrid columns="2" style="width:40%;margin-top:30px;" styleClass="ui-fluid">
+                                <p:commandButton id="bot1" disabled="#{lire022.bot1}"  
+                                                 actionListener="#{lire022.generarDocumento022()}"
+                                                 update=":form022:productDetail,:form022:msg,:form022" 
+                                                 icon="pi pi-search" title="Vista Previa"  value="Vista Previa" />
+
+                                <p:commandButton oncomplete="PF('productDialog2').show()" id='bot2'
+                                                 actionListener="#{lire022.generarDocumento022Final()}" 
+                                                 disabled="#{lire022.bot2}" update="productDetail2" value="Generar Documento" />
+                            </p:panelGrid>
+
+
+                            <p:dialog header="Vista Previa del Documento" widgetVar="productDialog" modal="true" showEffect="fade"
+                                      hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                <p:outputPanel id="productDetail" style="text-align:center;">
+
+                                    <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire022.rutaNombre}" 
+                                            width="900px" 
+                                            height="600px" 
+                                            style="border:none;">
+                                    </iframe>
+
+
+                                </p:outputPanel>
+                                <center>
+                                    <p:commandButton value="Cerrar" update="bot1,bot2" actionListener="#{lire022.activarBoton()}" oncomplete="PF('productDialog').hide()" />
+                                </center>
+
+                            </p:dialog>
+
+                            <p:dialog header="Documento Creado" widgetVar="productDialog2" modal="true" showEffect="fade"
+                                      hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                <p:outputPanel id="productDetail2" style="text-align:center;">
+                                    <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire022.rutaNombre}" 
+                                            width="900px" 
+                                            height="600px" 
+                                            style="border:none;">
+                                    </iframe>
+
+                                </p:outputPanel>
+                                <center>
+                                    <table width="50%">
+                                        <tr>                                                  
+                                            <td style="width: 50%;text-align: center">
+                                                <p:commandButton value="Cerrar" update="bot1,bot2" actionListener="#{lire022.desactivaAmbosBotones()}" oncomplete="PF('productDialog2').hide()" />
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </center>
+                            </p:dialog>
+
+                        </h:form>
+                        
+                       
+                    </p:panel>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

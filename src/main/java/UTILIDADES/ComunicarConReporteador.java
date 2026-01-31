@@ -24,7 +24,7 @@ public class ComunicarConReporteador implements  Serializable{
         String resultado="";
          try {
             // URL del endpoint donde quieres enviar el POST
-            URL url = new URL("http://24.199.121.192/Report/reporte2.jsp");
+            URL url = new URL("http://24.199.121.192/Report/reporte10.jsp");
 
             // Crear conexión
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

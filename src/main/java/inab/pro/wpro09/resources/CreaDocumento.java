@@ -15,17 +15,24 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+import juridico.LIRE006;
 import juridico.LIRE044;
+import juridico.LIRE047;
 import lire042.Asociados;
 import lire042.Asociados.Firmantes.Firma;
 import lire042.DocumentoInab;
 import lire080.DocumentoInab.ConstanciaRecepcion.Generales.Nombres;
 import secretaria.LIRE080;
 import secretaria.LIRE079;
+import solicitante.LIRE010;
 import solicitante.LIRE042;
 import solicitante.LIRE042.Elemento;
+import subregional.LIRE009;
 import subregional.LIRE045;
 import subregional.LIRE046;
+import tecnico.LIRE043;
 
 /**
  *
@@ -434,6 +441,528 @@ public class CreaDocumento implements Serializable{
         
         return  doc42;
     }
+    
+    public lire009.DocumentoInab creaDoc009(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE009.Elemento> enmiendas, String noOficio){
+        
+        // atributos del documento 046 no master (DcoumentoInab)
+        lire009.DocumentoInab doc009 = new lire009.DocumentoInab();
+        doc009.setVersion(new BigDecimal("1.0"));
+        doc009.setNombreEsquema("LI-RE-009.xsd");
+        doc009.setEstado("Activo");
+        doc009.setOrden("1");
+        doc009.setProceso("PROC9");
+        doc009.setPaso("PASO6");
+        doc009.setIdGestion(per.getLicencia().getGestion_id());
+        doc009.setExpediente(per.getPplanM().getData().get(0).getExpediente());
+        doc009.setLicencia("LI-RE-009-2026");
+        
+        
+        // nodo secundario (DictamenJuridicoModificacion)
+        lire009.DocumentoInab.OficioEnmiendas SAC = new lire009.DocumentoInab.OficioEnmiendas();
+        SAC.setID(UTILIDADES.FuncionesComunes.md5(String.valueOf(per.getLicencia().getGestion_id()))); // md5 del idGestion
+        SAC.setFechaDocumento(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));        
+        SAC.setTipoDocumento(Integer.valueOf("9001"));
+        
+        // nodo encabezado
+        lire009.DocumentoInab.OficioEnmiendas.Encabezado en = new lire009.DocumentoInab.OficioEnmiendas.Encabezado();
+        en.setNumeroOficio(noOficio);
+        en.setFechaEncabezado(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+        //lista de SOLICITANTES en el encabezado
+        ArrayList<Propietario> solicitantes = per.getPplanM().getData().get(0).getFincas().get(0).getPropietarios();
+        int total_solicitantes = solicitantes.size();
+        lire009.DocumentoInab.OficioEnmiendas.Encabezado.Solicitantes sol = new lire009.DocumentoInab.OficioEnmiendas.Encabezado.Solicitantes();
+        sol.setTotalSolicitantes(total_solicitantes);
+        int s=1;
+        for(Propietario el : solicitantes){
+            lire009.DocumentoInab.OficioEnmiendas.Encabezado.Solicitantes.Solicitante  solD = new lire009.DocumentoInab.OficioEnmiendas.Encabezado.Solicitantes.Solicitante();
+            solD.setOrdenSolicitantes(s);
+            solD.setValue(el.getTcPersona().getPersonaDesc());
+            sol.getSolicitante().add(solD);
+            s=s+1;            
+        }
+        en.setSolicitantes(sol);
+        en.setNombreElaborador("Persona que elabora");
+        
+        // nodo Asunto
+        lire009.DocumentoInab.OficioEnmiendas.Asunto as = new lire009.DocumentoInab.OficioEnmiendas.Asunto();
+        as.setNumeroLicencia("LI-RE-009-2026");
+        as.setNumeroExpediente("po-2026045");
+        as.setNombreTecnicoForestal("Luis Ortega");
+        as.setNombreDelegadoJuridico("Pedro Lopez");
+       
+        
+        //nodo Cierre Oficio
+        lire009.DocumentoInab.OficioEnmiendas.CierreOficio ci = new lire009.DocumentoInab.OficioEnmiendas.CierreOficio();
+        // conclusiones - detalles
+        int total_enmiendas = enmiendas.size();
+        lire009.DocumentoInab.OficioEnmiendas.CierreOficio.Enmiendas cns = new lire009.DocumentoInab.OficioEnmiendas.CierreOficio.Enmiendas();
+        cns.setTotalEnmiendas(total_enmiendas);
+        int c=1;
+        for(LIRE009.Elemento el : enmiendas){
+            lire009.DocumentoInab.OficioEnmiendas.CierreOficio.Enmiendas.Enmienda cn = new lire009.DocumentoInab.OficioEnmiendas.CierreOficio.Enmiendas.Enmienda();
+            cn.setOrdenEnmiendas(c);
+            cn.setValue(el.getValor());
+            cns.getEnmienda().add(cn);
+            c=c+1;            
+        }
+        ci.setEnmiendas(cns);
+        ci.setDirectorSubregional(per.getListaTcUsuario().get(0).getUsuarioDesc());
+        ci.setObservaciones("");
+        
+        
+//        con.setModificaciones(mod);// carga modificaciones
+        
+        // nodo visor
+        
+        // primera firma quien elabora documento
+        lire009.Asociados.Firmantes.Firma firma1 = new lire009.Asociados.Firmantes.Firma();
+        Long id = per.getTcUsuario().getUsuarioId();
+        int idUsuario = Integer.parseInt(String.valueOf(id));
+        firma1.setIdUsuario(idUsuario);
+        firma1.setNombreQuienFirma(per.getTcUsuario().getUsuarioDesc());
+        
+        // segunda firma titular / regente
+        lire009.Asociados.Firmantes.Firma firma2 = new lire009.Asociados.Firmantes.Firma();   
+        
+        firma2.setNombreQuienFirma(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaDesc());
+        firma2.setIdUsuario(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaId()); // pendiente este id
+        
+        lire009.Asociados.Firmantes firmas = new lire009.Asociados.Firmantes();  
+        firmas.getFirma().add(firma1);
+        firmas.getFirma().add(firma2);
+        firmas.setTotalFirmantes(firmas.getTotalFirmantes());
+        
+        lire009.Asociados asoc = new lire009.Asociados();
+        asoc.setFirmantes(firmas);
+        
+        SAC.setEncabezado(en);    // carga encabezado
+        SAC.setAsunto(as);  // carga asunto
+        SAC.setCierreOficio(ci); // carga cierre oficio
+        SAC.setVisor(asoc);// carga los asociados        
+        doc009.setOficioEnmiendas(SAC);
+        
+        //String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc48);        
+        
+        return  doc009;
+    }
+    
+    public lire006.DocumentoInab creaDoc006(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE006.Elemento> enmiendas, String noDictamen){
+        
+        // atributos del documento 006 no master (DcoumentoInab)
+        lire006.DocumentoInab doc006 = new lire006.DocumentoInab();
+        doc006.setVersion(new BigDecimal("1.0"));
+        doc006.setNombreEsquema("LI-RE-006.xsd");
+        doc006.setEstado("Activo");
+        doc006.setOrden("1");
+        doc006.setProceso("PROC9");
+        doc006.setPaso("PASO6");
+        doc006.setIdGestion(per.getLicencia().getGestion_id());
+        doc006.setExpediente(per.getPplanM().getData().get(0).getExpediente());
+        doc006.setLicencia("LI-RE-006-2026");
+        
+        
+        // nodo secundario (DictamenJuridicoModificacion)
+        lire006.DocumentoInab.DictamenJuridicoEnmiendas SAC = new lire006.DocumentoInab.DictamenJuridicoEnmiendas();
+        SAC.setID(UTILIDADES.FuncionesComunes.md5(String.valueOf(per.getLicencia().getGestion_id()))); // md5 del idGestion
+        SAC.setFechaDocumento(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));        
+        SAC.setTipoDocumento(Integer.valueOf("9001"));
+        
+        // nodo encabezado
+        lire006.DocumentoInab.DictamenJuridicoEnmiendas.Encabezado en = new lire006.DocumentoInab.DictamenJuridicoEnmiendas.Encabezado();
+        en.setNumeroDictamen(noDictamen);
+        en.setFechaEncabezado(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+        en.setDirectorSubregional(per.getListaTcUsuario().get(0).getUsuarioDesc());
+        en.setMunicipioEncabezado(per.getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getMunicipioDesc());
+        en.setDepartamentoEncabezado(per.getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getTcDepartamento().getDepartamentoDesc());
+        en.setDireccionSede(per.getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                            per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
+        
+        
+        //lista de SOLICITANTES - nodo solicitantes
+        ArrayList<Propietario> solicitantes = per.getPplanM().getData().get(0).getFincas().get(0).getPropietarios();
+        int total_solicitantes = solicitantes.size();
+        lire006.DocumentoInab.DictamenJuridicoEnmiendas.Solicitantes sol = new lire006.DocumentoInab.DictamenJuridicoEnmiendas.Solicitantes();
+        sol.setTotalSolicitantes(total_solicitantes);
+        int s=1;
+        for(Propietario el : solicitantes){
+            lire006.DocumentoInab.DictamenJuridicoEnmiendas.Solicitantes.Solicitante  solD = new lire006.DocumentoInab.DictamenJuridicoEnmiendas.Solicitantes.Solicitante();
+            solD.setOrdenSolicitantes(s);
+            solD.setValue(el.getTcPersona().getPersonaDesc());
+            sol.getSolicitante().add(solD);
+            s=s+1;            
+        }
+        
+        // nodo Asunto
+        lire006.DocumentoInab.DictamenJuridicoEnmiendas.Asunto as = new lire006.DocumentoInab.DictamenJuridicoEnmiendas.Asunto();
+        as.setNumeroProvidencia("prov-787878");
+        as.setNumeroExpediente("po-2026045");
+        as.setNumeroLicencia("LI-RE-006-2026");
+        as.setNombreFinca(per.getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getFincaDesc());
+        as.setNombreComunidad(per.getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getDireccion());
+        as.setMunicipioAsunto(per.getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getTcMunicipio().getMunicipioDesc());
+        as.setDepartamentoAsunto(per.getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getTcMunicipio().getTcDepartamento().getDepartamentoDesc());
+        
+        // nodo antecedentes
+        lire006.DocumentoInab.DictamenJuridicoEnmiendas.Antecedentes an = new lire006.DocumentoInab.DictamenJuridicoEnmiendas.Antecedentes();
+        an.setRepresentanteLegalAntecedentes(per.getPplanM().getData().get(0).getRepresentantes().get(0).getTcPersona().getPersonaDesc());
+        an.setTipoLicenciaAntecedentes(per.getPplanM().getData().get(0).getTcTipoGestion().getTcModulo().getModuloDesc());
+        an.setMunicipioAntecedentes(per.getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getTcMunicipio().getMunicipioDesc());
+        an.setDepartamentoAntecedentes(per.getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getTcMunicipio().getTcDepartamento().getDepartamentoDesc());
+        
+
+        // nodo analisis
+        lire006.DocumentoInab.DictamenJuridicoEnmiendas.AnalisisDocumento anl = new lire006.DocumentoInab.DictamenJuridicoEnmiendas.AnalisisDocumento();
+        anl.setRepresentateLegalAnalisis(per.getPplanM().getData().get(0).getRepresentantes().get(0).getTcPersona().getPersonaDesc());
+        anl.setTipoLicenciaAnalisis(per.getPplanM().getData().get(0).getTcTipoGestion().getTcModulo().getModuloDesc());
+        anl.setConclusionLegal("Procedente");
+        
+        // nodo pendientes - detalles
+        int total_enmiendas= enmiendas.size();
+        lire006.DocumentoInab.DictamenJuridicoEnmiendas.Pendientes pen = new lire006.DocumentoInab.DictamenJuridicoEnmiendas.Pendientes();
+        pen.setTotalDocumentos(total_enmiendas);
+        int i=1;
+        for(LIRE006.Elemento el : enmiendas){
+            lire006.DocumentoInab.DictamenJuridicoEnmiendas.Pendientes.Documento penD = new lire006.DocumentoInab.DictamenJuridicoEnmiendas.Pendientes.Documento();
+            penD.setOrdenDucumentos(i);
+            penD.setValue(el.getValor());
+            pen.getDocumento().add(penD);
+            i=i+1;            
+        }
+
+        // nodo cierre 
+        lire006.DocumentoInab.DictamenJuridicoEnmiendas.CierreDictamen ci = new lire006.DocumentoInab.DictamenJuridicoEnmiendas.CierreDictamen();
+        ci.setNombreDelegadoJuridico("Juan perez");
+        ci.setRegion(per.getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                            per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
+        
+        // nodo visor
+        
+        // primera firma quien elabora documento
+        lire006.Asociados.Firmantes.Firma firma1 = new lire006.Asociados.Firmantes.Firma();
+        Long id = per.getTcUsuario().getUsuarioId();
+        int idUsuario = Integer.parseInt(String.valueOf(id));
+        firma1.setIdUsuario(idUsuario);
+        firma1.setNombreQuienFirma(per.getTcUsuario().getUsuarioDesc());
+        
+        // segunda firma titular / regente
+        lire006.Asociados.Firmantes.Firma firma2 = new lire006.Asociados.Firmantes.Firma();   
+        
+        firma2.setNombreQuienFirma(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaDesc());
+        firma2.setIdUsuario(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaId()); // pendiente este id
+        
+        lire006.Asociados.Firmantes firmas = new lire006.Asociados.Firmantes();  
+        firmas.getFirma().add(firma1);
+        firmas.getFirma().add(firma2);
+        firmas.setTotalFirmantes(firmas.getTotalFirmantes());
+        
+        lire006.Asociados asoc = new lire006.Asociados();
+        asoc.setFirmantes(firmas);
+        
+        SAC.setEncabezado(en);    // carga encabezado
+        SAC.setSolicitantes(sol);
+        SAC.setAsunto(as);  // carga asunto
+        SAC.setAntecedentes(an);
+        SAC.setAnalisisDocumento(anl);
+        SAC.setPendientes(pen);
+        SAC.setCierreDictamen(ci); // carga cierre oficio
+        SAC.setVisor(asoc);// carga los asociados        
+        doc006.setDictamenJuridicoEnmiendas(SAC);
+        
+        //String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc48);        
+        
+        return  doc006;
+    }
+    
+    public lire010.DocumentoInab creaDoc10(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE010.Elemento> correcciones){
+        
+        // atributos del documento 010 no master (DcoumentoInab)
+        lire010.DocumentoInab doc10 = new lire010.DocumentoInab();
+        doc10.setVersion(new BigDecimal("1.0"));
+        doc10.setExpediente("LI-RE-010.xsd");
+        doc10.setEstado("Activo");
+        doc10.setOrden("1");
+        doc10.setProceso("PROC9");
+        doc10.setPaso("PASO8");
+        doc10.setIdGestion(per.getLicencia().getGestion_id());
+        doc10.setExpediente(per.getPplanM().getData().get(0).getExpediente());
+        doc10.setLicencia("LIC-010-2026");
+        doc10.setNombreEsquema("LI-RE-010.xsd");
+        
+        
+        // nodo secundario (SolicitudActualizacion)
+        lire010.DocumentoInab.OficioEntregaEnmiendas SAC = new lire010.DocumentoInab.OficioEntregaEnmiendas();
+        SAC.setID(UTILIDADES.FuncionesComunes.md5(String.valueOf(per.getLicencia().getGestion_id()))); // md5 del idGestion
+        SAC.setFechaDocumento(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));        
+        SAC.setTipoDocumento(Integer.valueOf("9001"));
+        
+        
+        // nodo encabezado
+        lire010.DocumentoInab.OficioEntregaEnmiendas.Encabezado en = new lire010.DocumentoInab.OficioEntregaEnmiendas.Encabezado();
+        en.setDirectorSubregional(per.getListaTcUsuario().get(0).getUsuarioDesc());
+        en.setFechaEncabezado(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+        en.setSubregionEncabezado(per.getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                                    per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
+        
+        // nodo asunto
+        lire010.DocumentoInab.OficioEntregaEnmiendas.Asunto as = new lire010.DocumentoInab.OficioEntregaEnmiendas.Asunto();
+        as.setNumeroOficioAsunto("OF-E-2012445");
+        as.setNumeroExpedienteAsunto(per.getPplanM().getData().get(0).getExpediente());
+        // nodo modifiaciones carga todos los detalles
+        int total_correcciones = correcciones.size();
+        lire010.DocumentoInab.OficioEntregaEnmiendas.Asunto.Correcciones cor = new lire010.DocumentoInab.OficioEntregaEnmiendas.Asunto.Correcciones();
+        cor.setTotalCorrecciones(total_correcciones);
+        int i=1;
+        for(LIRE010.Elemento el : correcciones){
+            lire010.DocumentoInab.OficioEntregaEnmiendas.Asunto.Correcciones.Correccion corD = new lire010.DocumentoInab.OficioEntregaEnmiendas.Asunto.Correcciones.Correccion();
+            corD.setOrdenCorrecciones(i);
+            corD.setValue(el.getValor());
+            cor.getCorreccion().add(corD);
+            i=i+1;            
+        }
+        as.setCorrecciones(cor);
+        
+        // nodo cierre oficio
+        lire010.DocumentoInab.OficioEntregaEnmiendas.CierreOficio ci = new lire010.DocumentoInab.OficioEntregaEnmiendas.CierreOficio();
+        //lista de SOLICITANTES - nodo solicitantes
+        ArrayList<Propietario> solicitantes = per.getPplanM().getData().get(0).getFincas().get(0).getPropietarios();
+        int total_solicitantes = solicitantes.size();
+        lire010.DocumentoInab.OficioEntregaEnmiendas.CierreOficio.Solicitantes sol = new lire010.DocumentoInab.OficioEntregaEnmiendas.CierreOficio.Solicitantes();
+        sol.setTotalSolicitantes(total_solicitantes);
+        int s=1;
+        for(Propietario el : solicitantes){
+            lire010.DocumentoInab.OficioEntregaEnmiendas.CierreOficio.Solicitantes.Solicitante  solD = new lire010.DocumentoInab.OficioEntregaEnmiendas.CierreOficio.Solicitantes.Solicitante();
+            solD.setOrdenSolicitantes(s);
+            solD.setValue(el.getTcPersona().getPersonaDesc());
+            sol.getSolicitante().add(solD);
+            s=s+1;            
+        }
+        ci.setSolicitantes(sol);
+        ci.setObservaciones("");
+                
+ 
+        
+        // nodo visor
+        
+        // primera firma quien elabora documento
+        lire010.Asociados.Firmantes.Firma firma1 = new lire010.Asociados.Firmantes.Firma();
+        Long id = per.getTcUsuario().getUsuarioId();
+        int idUsuario = Integer.parseInt(String.valueOf(id));
+        firma1.setIdUsuario(idUsuario);
+        firma1.setNombreQuienFirma(per.getTcUsuario().getUsuarioDesc());
+        
+        // segunda firma titular / regente
+        lire010.Asociados.Firmantes.Firma firma2 = new lire010.Asociados.Firmantes.Firma();   
+        
+        firma2.setNombreQuienFirma(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaDesc());
+        firma2.setIdUsuario(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaId()); // pendiente este id
+        
+        lire010.Asociados.Firmantes firmas = new lire010.Asociados.Firmantes();  
+        firmas.getFirma().add(firma1);
+        firmas.getFirma().add(firma2);
+        firmas.setTotalFirmantes(firmas.getTotalFirmantes());
+        
+        lire010.Asociados asoc = new lire010.Asociados();
+        
+        asoc.setFirmantes(firmas);
+        SAC.setEncabezado(en); // carga el encabezado
+        SAC.setAsunto(as); // carga el asunto 
+        SAC.setCierreOficio(ci); // caraga el nodo cierre
+        SAC.setVisor(asoc);// carga los asociados        
+        doc10.setOficioEntregaEnmiendas(SAC);
+        
+        //String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc48);        
+        
+        return  doc10;
+    }
+    
+    public lire022.DocumentoInab creaDoc22(RespuestaSeccionUNO ru, estructuras.PefilInab per){
+        
+        // atributos del documento 010 no master (DcoumentoInab)
+        lire022.DocumentoInab doc22 = new lire022.DocumentoInab();
+        doc22.setVersion(new BigDecimal("1.0"));
+        doc22.setEstado("Activo");
+        doc22.setOrden("1");
+        doc22.setProceso("PROC9");
+        doc22.setPaso("PASO12");
+        doc22.setIdGestion(per.getLicencia().getGestion_id());
+        doc22.setExpediente(per.getPplanM().getData().get(0).getExpediente());
+        doc22.setLicencia("LIC-022-2026");
+        doc22.setNombreEsquema("LI-RE-022.xsd");
+        
+        
+        // nodo secundario 
+        lire022.DocumentoInab.CedulaNotificacion SAC = new lire022.DocumentoInab.CedulaNotificacion();
+        SAC.setID(UTILIDADES.FuncionesComunes.md5(String.valueOf(per.getLicencia().getGestion_id()))); // md5 del idGestion
+        SAC.setFechaDocumento(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));        
+        SAC.setTipoDocumento(Integer.valueOf("9001"));
+        
+        
+        // nodo encabezado
+        lire022.DocumentoInab.CedulaNotificacion.Contenido con = new lire022.DocumentoInab.CedulaNotificacion.Contenido();
+        con.setMunicipio(per.getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getMunicipioDesc());
+        con.setDepartamento(per.getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getTcDepartamento().getDepartamentoDesc());
+        con.setFecha(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+        con.setDireccionSubregional(per.getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                                    per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
+        con.setPersonaNotificada(per.getPplanM().getData().get(0).getFincas().get(0).getPropietarios().get(0).getTcPersona().getPersonaDesc());
+        con.setTipoPersona("Propietario");
+        con.setNoPersonaNotificada(String.valueOf(per.getPplanM().getData().get(0).getFincas().get(0).getPropietarios().get(0).getTcPersona().getCui()));
+        con.setPersonaRecibe(per.getPplanM().getData().get(0).getFincas().get(0).getPropietarios().get(0).getTcPersona().getPersonaDesc());
+        con.setObservaciones("");
+      
+        
+        // nodo visor
+        
+        // primera firma quien elabora documento
+        lire022.Asociados.Firmantes.Firma firma1 = new lire022.Asociados.Firmantes.Firma();
+        Long id = per.getTcUsuario().getUsuarioId();
+        int idUsuario = Integer.parseInt(String.valueOf(id));
+        firma1.setIdUsuario(idUsuario);
+        firma1.setNombreQuienFirma(per.getTcUsuario().getUsuarioDesc());
+        
+        // segunda firma titular / regente
+        lire022.Asociados.Firmantes.Firma firma2 = new lire022.Asociados.Firmantes.Firma();   
+        
+        firma2.setNombreQuienFirma(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaDesc());
+        firma2.setIdUsuario(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaId()); // pendiente este id
+        
+        lire022.Asociados.Firmantes firmas = new lire022.Asociados.Firmantes();  
+        firmas.getFirma().add(firma1);
+        firmas.getFirma().add(firma2);
+        firmas.setTotalFirmantes(firmas.getTotalFirmantes());
+        
+        lire022.Asociados asoc = new lire022.Asociados();
+        
+        asoc.setFirmantes(firmas);
+        SAC.setContenido(con); // caraga el nodo contenido
+        SAC.setVisor(asoc);// carga los asociados        
+        doc22.setCedulaNotificacion(SAC);
+        
+        //String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc48);        
+        
+        return  doc22;
+    }
+    
+    public lire043.DocumentoInab creaDoc43(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE043.Elemento> conclusiones,List<LIRE043.Elemento> decisiones, boolean validarDocumento, String noDictamen){
+        
+        // atributos del documento 043 no master (DcoumentoInab)
+        lire043.DocumentoInab doc43 = new lire043.DocumentoInab();
+        doc43.setVersion(new BigDecimal("1.0"));
+        doc43.setNombreEsquema("LI-RE-043.xsd");
+        doc43.setEstado("Activo");
+        doc43.setOrden("1");
+        doc43.setProceso("PROC9");
+        doc43.setPaso("PASO4");
+        doc43.setIdGestion(per.getLicencia().getGestion_id());
+        doc43.setExpediente(per.getPplanM().getData().get(0).getExpediente());
+        doc43.setLicencia("LI-RE-043-2024");
+        
+        
+        // nodo secundario (DictamenJuridicoModificacion)
+        lire043.DocumentoInab.DictamenTecnicoModificacion SAC = new lire043.DocumentoInab.DictamenTecnicoModificacion();
+        SAC.setID(UTILIDADES.FuncionesComunes.md5(String.valueOf(per.getLicencia().getGestion_id()))); // md5 del idGestion
+        SAC.setFechaDocumento(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));        
+        SAC.setTipoDocumento(Integer.valueOf("9001"));
+        SAC.setValidarDocumento(validarDocumento);
+        
+        // nodo encabezado
+        lire043.DocumentoInab.DictamenTecnicoModificacion.Encabezado en = new lire043.DocumentoInab.DictamenTecnicoModificacion.Encabezado();
+        en.setNumeroDictamen(noDictamen);
+        en.setMunicipioEncabezado(per.getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getMunicipioDesc());
+        en.setDepartamentoEncabezado(per.getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getTcDepartamento().getDepartamentoDesc());
+        en.setFechaEncabezado(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+        en.setDirectorSubregional(per.getPplanM().getData().get(0).getTcSubregion().getTcSubregional().getPersonaDesc());
+        en.setDireccionSede(per.getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                                    per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
+
+        // nodo Asunto
+        lire043.DocumentoInab.DictamenTecnicoModificacion.Asunto as = new lire043.DocumentoInab.DictamenTecnicoModificacion.Asunto();
+        as.setNombreFinca(per.getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getFincaDesc());
+        as.setNombreComunidad(per.getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getDireccion());
+        as.setMunicipioAsunto(per.getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getTcMunicipio().getMunicipioDesc());
+        as.setDepartamentoAsunto(per.getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getTcMunicipio().getTcDepartamento().getDepartamentoDesc());
+        //lista de propietarios en el asusnto
+        ArrayList<Propietario> propietarios = per.getPplanM().getData().get(0).getFincas().get(0).getPropietarios();
+        int total_propietarios = propietarios.size();
+        lire043.DocumentoInab.DictamenTecnicoModificacion.Asunto.Propietarios pro = new lire043.DocumentoInab.DictamenTecnicoModificacion.Asunto.Propietarios();
+        pro.setTotalPropietarios(total_propietarios);
+        int s=1;
+        for(Propietario el : propietarios){
+            lire043.DocumentoInab.DictamenTecnicoModificacion.Asunto.Propietarios.Propietario proD = new lire043.DocumentoInab.DictamenTecnicoModificacion.Asunto.Propietarios.Propietario();
+            proD.setOrdenPropietarios(s);
+            proD.setValue(el.getTcPersona().getPersonaDesc());
+            pro.getPropietario().add(proD);
+            s=s+1;            
+        }
+        
+        
+        
+        as.setPropietarios(pro);
+        as.setNumeroLicencia("LI-RE-043-2024");
+        as.setNumeroPlanOperativo("po-454494949");
+        as.setNumeroExpediente(per.getPplanM().getData().get(0).getExpediente());
+        
+        // nodo conclusiones - detalles
+        int total_conclusiones = conclusiones.size();
+        lire043.DocumentoInab.DictamenTecnicoModificacion.EvaluacionModificacion con = new lire043.DocumentoInab.DictamenTecnicoModificacion.EvaluacionModificacion();
+        con.setTotalConclusiones(total_conclusiones);
+        int i=1;
+        for(LIRE043.Elemento el : conclusiones){
+            lire043.DocumentoInab.DictamenTecnicoModificacion.EvaluacionModificacion.Conclusion conD = new lire043.DocumentoInab.DictamenTecnicoModificacion.EvaluacionModificacion.Conclusion();
+            conD.setOrdenConclusiones(i);
+            conD.setValue(el.getValor());
+            con.getConclusion().add(conD);
+            i=i+1;            
+        }
+        
+        // nodo decisiones- detalles
+        int total_decisiones = decisiones.size();
+        lire043.DocumentoInab.DictamenTecnicoModificacion.DecisionDictamen de = new lire043.DocumentoInab.DictamenTecnicoModificacion.DecisionDictamen();
+        de.setTotalDecisiones(total_decisiones);
+        int f=1;
+        for(LIRE043.Elemento el : decisiones){
+            lire043.DocumentoInab.DictamenTecnicoModificacion.DecisionDictamen.Decision deD = new lire043.DocumentoInab.DictamenTecnicoModificacion.DecisionDictamen.Decision();
+            deD.setOrdenDecisiones(f);
+            deD.setValue(el.getValor());
+            de.getDecision().add(deD);
+            f=f+1;            
+        }
+        
+        // nodo visor
+        
+        // primera firma quien elabora documento
+        lire043.Asociados.Firmantes.Firma firma1 = new lire043.Asociados.Firmantes.Firma();
+        Long id = per.getTcUsuario().getUsuarioId();
+        int idUsuario = Integer.parseInt(String.valueOf(id));
+        firma1.setIdUsuario(idUsuario);
+        firma1.setNombreQuienFirma(per.getTcUsuario().getUsuarioDesc());
+        
+        // segunda firma titular / regente
+        lire043.Asociados.Firmantes.Firma firma2 = new lire043.Asociados.Firmantes.Firma();   
+        
+        firma2.setNombreQuienFirma(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaDesc());
+        firma2.setIdUsuario(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaId()); // pendiente este id
+        
+        lire043.Asociados.Firmantes firmas = new lire043.Asociados.Firmantes();  
+        firmas.getFirma().add(firma1);
+        firmas.getFirma().add(firma2);
+        firmas.setTotalFirmantes(firmas.getTotalFirmantes());
+        
+        lire043.Asociados asoc = new lire043.Asociados();
+        
+        asoc.setFirmantes(firmas);
+        SAC.setEncabezado(en);    // carga encabezado
+        SAC.setAsunto(as);  // carga asunto
+        SAC.setEvaluacionModificacion(con); // caraga coclusiones
+        SAC.setDecisionDictamen(de); // carga decisiones
+        SAC.setVisor(asoc);// carga los asociados        
+        doc43.setDictamenTecnicoModificacion(SAC);
+        
+        //String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc48);        
+        
+        return  doc43;
+    }
+    
      public lire044.DocumentoInab creaDoc44(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE044.Elemento> antecedentes, List<LIRE044.Elemento> fundamentos,List<LIRE044.Elemento> analisis, boolean validarDocumento, String noDictamen){
         
         // atributos del documento 044 no master (DcoumentoInab)
@@ -446,7 +975,7 @@ public class CreaDocumento implements Serializable{
         doc44.setPaso("PASO5");
         doc44.setIdGestion(per.getLicencia().getGestion_id());
         doc44.setExpediente(per.getPplanM().getData().get(0).getExpediente());
-        doc44.setLicencia("LI-RE-0445-2024");
+        doc44.setLicencia("LI-RE-044-2026");
         
         
         // nodo secundario (DictamenJuridicoModificacion)
@@ -463,11 +992,12 @@ public class CreaDocumento implements Serializable{
         en.setDepartamentoEncabezado(per.getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getTcDepartamento().getDepartamentoDesc());
         en.setFechaEncabezado(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
         en.setDirectorSubregional(per.getPplanM().getData().get(0).getTcSubregion().getTcSubregional().getPersonaDesc());
-        en.setDireccionSede(per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
+        en.setDireccionSede(per.getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                                    per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
 
         // nodo Asunto
         lire044.DocumentoInab.DictamenJuridicoModificacion.Asunto as = new lire044.DocumentoInab.DictamenJuridicoModificacion.Asunto();
-        as.setNumeroLicencia("LI-RE-0445-2024");
+        as.setNumeroLicencia("LI-RE-044-2026");
         as.setNumeroPlanOperativo("po-454494949");
         as.setNumeroExpediente(per.getPplanM().getData().get(0).getExpediente());
         
@@ -510,8 +1040,6 @@ public class CreaDocumento implements Serializable{
             a=a+1;            
         }
         
-//        con.setModificaciones(mod);// carga modificaciones
-        
         // nodo visor
         
         // primera firma quien elabora documento
@@ -550,14 +1078,14 @@ public class CreaDocumento implements Serializable{
      
      public lire045.DocumentoInab creaDoc45(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE045.Elemento> razones, String noOficio){
         
-        // atributos del documento 044 no master (DcoumentoInab)
+        // atributos del documento 045 (DocumentoInab)
         lire045.DocumentoInab doc45 = new lire045.DocumentoInab();
         doc45.setVersion(new BigDecimal("1.0"));
         doc45.setNombreEsquema("LI-RE-045.xsd");
-        doc45.setEstado("Generado");
+        doc45.setEstado("Activo");
         doc45.setOrden("1");
         doc45.setProceso("PROC9");
-        doc45.setPaso("PASO5");
+        doc45.setPaso("PASO6");
         doc45.setIdGestion(per.getLicencia().getGestion_id());
         doc45.setExpediente(per.getPplanM().getData().get(0).getExpediente());
         doc45.setLicencia("LI-RE-045-2026");
@@ -575,7 +1103,8 @@ public class CreaDocumento implements Serializable{
         en.setFechaEncabezado(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
         en.setMunicipioEncabezado(per.getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getMunicipioDesc());
         en.setDepartamentoEncabezado(per.getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getTcDepartamento().getDepartamentoDesc());
-        en.setDireccionSede(per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
+        en.setDireccionSede(per.getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                                    per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
         en.setDirectorRegionalEncabezado(per.getListaTcUsuario().get(0).getUsuarioDesc());
 
         // nodo Asunto
@@ -584,7 +1113,7 @@ public class CreaDocumento implements Serializable{
         as.setNumeroLicencia("LI-RE-045-2026");
         //lista de solicitantes en el asusnto
         ArrayList<Propietario> propietarios = per.getPplanM().getData().get(0).getFincas().get(0).getPropietarios();
-        int total_solicitantes = razones.size();
+        int total_solicitantes = propietarios.size();
         lire045.DocumentoInab.OficioAprobacionModificacion.Asunto.Solicitantes sol = new lire045.DocumentoInab.OficioAprobacionModificacion.Asunto.Solicitantes();
         sol.setTotalSolicitantes(total_solicitantes);
         int s=1;
@@ -597,10 +1126,10 @@ public class CreaDocumento implements Serializable{
         }
         as.setSolicitantes(sol);
         as.setNumeroPlanOperativo("po-2026045");
-        as.setNumeroDictamenJuridico(noOficio);
+        as.setNumeroDictamenJuridico("DJ-7412");
         as.setFechaDictamenJuridico(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
         as.setNombreAsesorJuridico("Luis lopez");
-        as.setNumeroDictamenTecnico(noOficio);
+        as.setNumeroDictamenTecnico("DT-963258");
         as.setFechaDictamenTecnico(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
         as.setNombreTecnicoForestal("Pedro Lopez");
         
@@ -666,10 +1195,10 @@ public class CreaDocumento implements Serializable{
         lire046.DocumentoInab doc46 = new lire046.DocumentoInab();
         doc46.setVersion(new BigDecimal("1.0"));
         doc46.setNombreEsquema("LI-RE-046.xsd");
-        doc46.setEstado("Generado");
+        doc46.setEstado("Activo");
         doc46.setOrden("1");
         doc46.setProceso("PROC9");
-        doc46.setPaso("PASO5");
+        doc46.setPaso("PASO6");
         doc46.setIdGestion(per.getLicencia().getGestion_id());
         doc46.setExpediente(per.getPplanM().getData().get(0).getExpediente());
         doc46.setLicencia("LI-RE-046-2026");
@@ -761,5 +1290,134 @@ public class CreaDocumento implements Serializable{
         //String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc48);        
         
         return  doc46;
+    }
+     
+     public lire047.DocumentoInab creaDoc47(RespuestaSeccionUNO ru, estructuras.PefilInab per, List<LIRE047.Elemento> conclusiones, String noResolucion, boolean validarDocumento){
+        
+        // atributos del documento 046 no master (DcoumentoInab)
+        lire047.DocumentoInab doc47 = new lire047.DocumentoInab();
+        doc47.setVersion(new BigDecimal("1.0"));
+        doc47.setNombreEsquema("LI-RE-047.xsd");
+        doc47.setEstado("Activo");
+        doc47.setOrden("1");
+        doc47.setProceso("PROC9");
+        doc47.setPaso("PASO11");
+        doc47.setIdGestion(per.getLicencia().getGestion_id());
+        doc47.setExpediente(per.getPplanM().getData().get(0).getExpediente());
+        doc47.setLicencia("LI-RE-047-2026");
+        
+        
+        // nodo secundario (DictamenJuridicoModificacion)
+        lire047.DocumentoInab.ResolucionModificacionPlan SAC = new lire047.DocumentoInab.ResolucionModificacionPlan();
+        SAC.setID(UTILIDADES.FuncionesComunes.md5(String.valueOf(per.getLicencia().getGestion_id()))); // md5 del idGestion
+        SAC.setFechaDocumento(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));        
+        SAC.setTipoDocumento(Integer.valueOf("9001"));
+        SAC.setValidarDocumento(validarDocumento);
+        
+        // nodo encabezado
+        lire047.DocumentoInab.ResolucionModificacionPlan.Encabezado en = new lire047.DocumentoInab.ResolucionModificacionPlan.Encabezado();
+         en.setNumeroResolucion(noResolucion);
+         en.setDepartamentoEncabezado(per.getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getTcDepartamento().getDepartamentoDesc());
+         en.setDireccionSubregionalEncabezado(per.getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                                                    per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
+         en.setFechaEncabezado(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+         
+        //lista de solicitanes - nodo solicitantes
+        ArrayList<Propietario> solicitates = per.getPplanM().getData().get(0).getFincas().get(0).getPropietarios();
+        int total_solicitantes = solicitates.size();
+        lire047.DocumentoInab.ResolucionModificacionPlan.Solicitantes sol = new lire047.DocumentoInab.ResolucionModificacionPlan.Solicitantes();
+        sol.setTotalSolicitantes(total_solicitantes);
+        int s=1;
+        // QName del elemento Solicitante
+        QName qNameSolicitante = new QName("", "Solicitante");
+         for (Propietario el : solicitates) {
+             lire047.DocumentoInab.ResolucionModificacionPlan.Solicitantes.Solicitante solD = new lire047.DocumentoInab.ResolucionModificacionPlan.Solicitantes.Solicitante();
+             solD.setOrdenSolicitantes(s);
+             solD.setNombreSolicitante(el.getTcPersona().getPersonaDesc());
+             solD.setCuiSolicitante(String.valueOf(el.getTcPersona().getCui()));
+             // Envolver en JAXBElement (OBLIGATORIO por @XmlElementRef)
+             JAXBElement<lire047.DocumentoInab.ResolucionModificacionPlan.Solicitantes.Solicitante> solicitanteElement = new JAXBElement<>(
+                     qNameSolicitante,
+                     lire047.DocumentoInab.ResolucionModificacionPlan.Solicitantes.Solicitante.class,
+                     solD
+             );
+             sol.getContent().add(solicitanteElement);
+             s = s + 1;
+         }
+        
+        // nodo Asunto
+        lire047.DocumentoInab.ResolucionModificacionPlan.Asunto as = new lire047.DocumentoInab.ResolucionModificacionPlan.Asunto();
+        as.setNumeroLicenciaAsunto("LI-RE-047-2026");
+        as.setNumeroPlanOperativoAsunto("po-2026045");
+        as.setNumeroExpediente(per.getPplanM().getData().get(0).getExpediente());
+       
+        // nodo condiderando
+        lire047.DocumentoInab.ResolucionModificacionPlan.Considerando con = new lire047.DocumentoInab.ResolucionModificacionPlan.Considerando();
+        con.setNombreTecnicoForestal("tecnico foresta");
+        con.setDireccionSubregionalConsiderando(per.getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                                                    per.getPplanM().getData().get(0).getTcSubregion().getSubregionDesc());
+        con.setNumeroDictamenTecnico("DT-12654");
+        con.setFechaDictamenTecnico(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+        con.setNumeroDictamenJuridico("DJ-7896325");
+        con.setFechaDictamenJuridico(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+        con.setNombreAsesorJuridico("Juan Perex");
+        con.setNombreDirectorSubregional(per.getListaTcUsuario().get(0).getUsuarioDesc());
+        con.setNumeroOficioSubregional("OSB-7891");
+        con.setFechaOficio(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+        
+        
+        //nodo Cierre Oficio
+        lire047.DocumentoInab.ResolucionModificacionPlan.CierreResolucion ci = new lire047.DocumentoInab.ResolucionModificacionPlan.CierreResolucion();
+        ci.setNumeroLicenciaCierre("LI-RE-047-2026");
+        ci.setNumeroPlanOperativoCierre("PO-787878787");
+        // conclusiones - detalles
+        int total_conclusiones = conclusiones.size();
+        lire047.DocumentoInab.ResolucionModificacionPlan.CierreResolucion.Conclusiones cns = new lire047.DocumentoInab.ResolucionModificacionPlan.CierreResolucion.Conclusiones();
+        cns.setTotalConclusiones(total_conclusiones);
+        int c=1;
+        for(LIRE047.Elemento el : conclusiones){
+            lire047.DocumentoInab.ResolucionModificacionPlan.CierreResolucion.Conclusiones.Conclusion cn = new lire047.DocumentoInab.ResolucionModificacionPlan.CierreResolucion.Conclusiones.Conclusion();
+            cn.setOrdenConclusiones(c);
+            cn.setValue(el.getValor());
+            cns.getConclusion().add(cn);
+            c=c+1;            
+        }
+        ci.setConclusiones(cns);
+        ci.setObservaciones("");
+        
+        // nodo visor
+        
+        // primera firma quien elabora documento
+        lire047.Asociados.Firmantes.Firma firma1 = new lire047.Asociados.Firmantes.Firma();
+        Long id = per.getTcUsuario().getUsuarioId();
+        int idUsuario = Integer.parseInt(String.valueOf(id));
+        firma1.setIdUsuario(idUsuario);
+        firma1.setNombreQuienFirma(per.getTcUsuario().getUsuarioDesc());
+        
+        // segunda firma titular / regente
+        lire047.Asociados.Firmantes.Firma firma2 = new lire047.Asociados.Firmantes.Firma();   
+        
+        firma2.setNombreQuienFirma(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaDesc());
+        firma2.setIdUsuario(per.getPplanM().getData().get(0).getTtResumenGestion().getTcRegente().getPersonaId()); // pendiente este id
+        
+        lire047.Asociados.Firmantes firmas = new lire047.Asociados.Firmantes();  
+        firmas.getFirma().add(firma1);
+        firmas.getFirma().add(firma2);
+        firmas.setTotalFirmantes(firmas.getTotalFirmantes());
+        
+        lire047.Asociados asoc = new lire047.Asociados();
+        asoc.setFirmantes(firmas);
+        
+        SAC.setEncabezado(en);    // carga encabezado
+        SAC.setSolicitantes(sol);
+        SAC.setAsunto(as);  // carga asunto
+        SAC.setConsiderando(con);
+        SAC.setCierreResolucion(ci); // carga cierre oficio
+        SAC.setVisor(asoc);// carga los asociados        
+        doc47.setResolucionModificacionPlan(SAC);
+        
+        //String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(doc48);        
+        
+        return  doc47;
     }
 }

@@ -13,10 +13,51 @@ import java.util.Date;
  */
 public class TcModulo implements Serializable{
     
-    public int moduloId;
-    public String moduloDesc;
-    public String codigo;
-    public int estadoId;
-    public Date fechaRegistro;
+   private int moduloId;
+   private String moduloDesc;
+   private String codigo;
+   private int estadoId;
+   private Date fechaRegistro;
+
+    public int getModuloId() {
+        return moduloId;
+    }
+
+    public void setModuloId(int moduloId) {
+        this.moduloId = moduloId;
+    }
+
+    public String getModuloDesc() {
+        return moduloDesc;
+    }
+
+    public void setModuloDesc(String moduloDesc) {
+        this.moduloDesc = moduloDesc;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public int getEstadoId() {
+        return estadoId;
+    }
+
+    public void setEstadoId(int estadoId) {
+        this.estadoId = estadoId;
+    }
+
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
     
+   
 }

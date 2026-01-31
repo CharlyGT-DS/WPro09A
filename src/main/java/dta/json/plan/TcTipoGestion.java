@@ -13,11 +13,61 @@ import java.util.Date;
  */
 public class TcTipoGestion implements Serializable{
     
-    public int tipoGestionId;
-    public String tipoGestionDesc;
-    public TcModulo tcModulo;
-    public String codigo;
-    public int estadoId;
-    public Date fechaRegistro;
+    private int tipoGestionId;
+    private String tipoGestionDesc;
+    private TcModulo tcModulo;
+    private String codigo;
+    private int estadoId;
+    private Date fechaRegistro;
+
+    public int getTipoGestionId() {
+        return tipoGestionId;
+    }
+
+    public void setTipoGestionId(int tipoGestionId) {
+        this.tipoGestionId = tipoGestionId;
+    }
+
+    public String getTipoGestionDesc() {
+        return tipoGestionDesc;
+    }
+
+    public void setTipoGestionDesc(String tipoGestionDesc) {
+        this.tipoGestionDesc = tipoGestionDesc;
+    }
+
+    public TcModulo getTcModulo() {
+        return tcModulo;
+    }
+
+    public void setTcModulo(TcModulo tcModulo) {
+        this.tcModulo = tcModulo;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public int getEstadoId() {
+        return estadoId;
+    }
+
+    public void setEstadoId(int estadoId) {
+        this.estadoId = estadoId;
+    }
+
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+    
+    
     
 }

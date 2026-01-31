@@ -139,8 +139,8 @@ public class VerificaUsuario implements Serializable{
                 .get()
                 .build();
 
-        try {
-               
+   //     try {
+               /*
                 Response response = client.newCall(request).execute();
                 
                  
@@ -173,7 +173,9 @@ public class VerificaUsuario implements Serializable{
 
                 
             }
-        } catch (IOException e) {
+
+*/
+       // } catch (Exception e) {
             
               try (InputStream is = Thread.currentThread()
                         .getContextClassLoader()
@@ -191,8 +193,8 @@ public class VerificaUsuario implements Serializable{
                 }       
 
             
-               e.printStackTrace();
-        }
+              // e.printStackTrace();
+        //}
 
         
         return responseBody;

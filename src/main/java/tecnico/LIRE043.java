@@ -5,6 +5,7 @@
 package tecnico;
 
 import MANEJADORES.MHHome;
+import PERFIL.CargaDocumentosLocal;
 import PERFIL.EJBGestionREDLocal;
 import com.google.gson.Gson;
 import dta.json.plan.Propietario;
@@ -15,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -25,9 +28,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.xml.bind.JAXBException;
+import lire043.DocumentoInab;
 import org.primefaces.PF;
 import org.primefaces.PrimeFaces;
 import redis.clients.jedis.Jedis;
+
 
 /**
  *
@@ -39,6 +45,9 @@ public class LIRE043 implements Serializable {
 
     @Inject
     private MHHome mhome;
+    
+    @Inject
+    private CargaDocumentosLocal cargaDoc;
 
     @EJB
     private PERFIL.EJBGestionREDLocal ir = null;
@@ -48,6 +57,8 @@ public class LIRE043 implements Serializable {
     private Date hoy = new Date();
 
     private SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+    
+    private  DocumentoInab  dInab = new  DocumentoInab();
 
     private String fechaFormateada = "";
     private boolean bot = false;
@@ -340,15 +351,6 @@ public class LIRE043 implements Serializable {
         this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a';");
     }
 
-    public void generarDocumento043() {
-        System.out.println("validez :" + this.validezDocumento);
-
-    }
-
-    public void generarDocumento043Final() {
-
-    }
-
     public void llamar() {
         try {
             
@@ -387,7 +389,7 @@ public class LIRE043 implements Serializable {
             this.ubicacionFinca = this.mhome.getPer().getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getDireccion() + ", " +
                                   this.mhome.getPer().getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getTcMunicipio().getMunicipioDesc() + ", " +
                                   this.mhome.getPer().getPplanM().getData().get(0).getFincas().get(0).getTcFinca().getTcMunicipio().getTcDepartamento().getDepartamentoDesc();
-            this.licencia = "LI-RE-0445-2024";
+            this.licencia = "LI-RE-043-2024";
             this.expediente = this.mhome.getPer().getPplanM().getData().get(0).getExpediente();
             this.planOperativo = "POA-2024-00631";
             
@@ -418,6 +420,119 @@ public class LIRE043 implements Serializable {
 
         public void setValor(String valor) {
             this.valor = valor;
+        }
+    }
+    
+     public void generarDocumento043() {
+        try {
+            // creadocumento 043
+            Future<lire043.DocumentoInab> of = cargaDoc.creaDocumento043(mhome.getRu(),mhome.getPer(),this.conclusiones,this.decisiones,this.validezDocumento,this.noDictamen);
+            
+            this.dInab = of.get();
+            //crea xml 
+             Future<String> xml = cargaDoc.creaXML43(mhome.getPer(),"PRO09","P4","043", dInab);
+             
+             String valor = xml.get();
+             // graba el xml
+             Future<String> gxml = cargaDoc.grabaXML43(valor, dInab);
+             
+             String r = gxml.get();
+             
+             // setea nombres
+             this.nomXML = dInab.getDictamenTecnicoModificacion().getVisor().getVista().getRutaPdf();
+             // String xq=UTILIDADES.Xquery.xmlConsultaDocumento(dInab.getExpediente(), nomXML);
+             
+             this.rutaNombre = this.nomXML;
+               
+             
+             // crea documento en vista preiva
+             Future<String> gs = cargaDoc.generarReporte(dInab.getDictamenTecnicoModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"043",dInab.getLicencia());             
+             String sp = gs.get();
+             System.out.println(sp);                                       
+             PrimeFaces.current().executeInitScript("PF('productDialog').show()");
+             
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(LIRE043.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void generarDocumento043Final() {
+
+        try {
+            // nombre de archivo temporal
+            String n = this.dInab.getDictamenTecnicoModificacion().getVisor().getVista().getUrlDocumento();
+            // consulta de documento xml previo inactivo
+            String xq = UTILIDADES.Xquery.xmlConsultaDocumento(this.dInab.getExpediente(), n);
+            // obtiene documento xml de vista previa
+            String xml = this.mhome.getApi().enviarApiMMCoreXMLGet(xq.replaceAll(".pdf",".xml"),this.dInab.getExpediente(), n.replaceAll(".pdf",".xml"));
+            // convierte el objecto
+            DocumentoInab temp =  UTILIDADES.FuncionesComunes.fromXml(xml, DocumentoInab.class);
+            // cambia a Generado el estado del xml
+            temp.setEstado("Generado");
+            // crea nuevamente el xml uno nuevo con el estado finalizado
+            Future<String> xmlfin = cargaDoc.creaXML43(mhome.getPer(),"PRO09","P4","043", temp);
+            // obtiene el xml final
+            String valor = xmlfin.get();
+            // graba xml final
+            Future<String> gxml = cargaDoc.grabaXML43(valor, temp);
+            // obteine respuesta
+            String r = gxml.get();
+            // desaciva boton generar documento
+            this.bot2=true;
+            // registra en el historico en segundo plano
+//            Historico hiloHistorico = new Historico();
+//            hiloHistorico.setPer(this.mhome.getPer());
+//            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 044 con estado finalizado
+//            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
+            
+            // crea documento en final
+             Future<String> gs = cargaDoc.generarReporte(dInab.getDictamenTecnicoModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"043",dInab.getLicencia());             
+             String sp = gs.get();
+             System.out.println(sp);               
+             
+             
+//             PrimeFaces.current().executeInitScript("PF('productDialog').show()");
+             
+//            
+//            String sql= UTILIDADES.SQL.insertaGestion(temp);
+//            
+//            estructuras.RespuestaInsert ri = (estructuras.RespuestaInsert) mhome.getApi().repuestaApi(new estructuras.RespuestaInsert(),
+//                    "JSON", sql);
+//            
+//            if(ri.fila_afectada>0){// verifica la insernción en la tabla de control
+//                
+//                DocumentoInab c=  UTILIDADES.FuncionesComunes.fromXml(valor,DocumentoInab.class);
+//                this.rutaNombre = c.getDictamenJuridicoModificacion().getVisor().getVista().getRutaPdf();
+//                
+//                sql  =   UTILIDADES.SQL.insertaGestionDetalle(c,this.rutaNombre,mhome.getPer());
+//                ri = (estructuras.RespuestaInsert) mhome.getApi().repuestaApi(new estructuras.RespuestaInsert(),
+//                        "JSON", sql);
+//                
+//                if(ri.fila_afectada>0){
+//                    Future<String> gs = cargaDoc.generarReporte(c.getDictamenJuridicoModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),valor,"042",dInab.getLicencia());
+//                    String sp = gs.get();
+//                    System.out.println(sp);
+//                }
+//                
+//            }
+            
+//            GEnericaCincoCampos cinco = this.mhome.getPer().getCincoCampos();
+//            System.out.println("Esto es el subregional : "+cinco.getDato1());
+//            
+            
+//            System.out.println("secretaria 1 :"+ this.mhome.getPer().getListSecretarias().get(0).getUsuarioDesc());
+//            
+//            cargaDoc.trazladaExpedinte(Integer.parseInt(this.mhome.getPer().getTcUsuario().getUsuarioId().toString()),  this.mhome.getPer().getListSecretarias().get(0).getUsuarioId(),3,2);
+//            
+            // inicializa
+            //this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra="+mhome.getPer().getTcUsuario().getUsuarioId()+"&rx=a';");
+        } catch (JAXBException ex) {
+            Logger.getLogger(LIRE043.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LIRE043.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(LIRE043.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

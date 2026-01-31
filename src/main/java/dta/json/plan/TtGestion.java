@@ -13,7 +13,7 @@ import java.util.Date;
  */
 public class TtGestion implements Serializable{
     
-     public int gestionId;
+    public int gestionId;
     public double area;
     public TcPersonaCrea tcPersonaCrea;
     public Date fechaRegistro;

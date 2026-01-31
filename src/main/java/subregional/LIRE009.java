@@ -6,6 +6,7 @@ package subregional;
 
 import juridico.*;
 import MANEJADORES.MHHome;
+import PERFIL.CargaDocumentosLocal;
 import PERFIL.EJBGestionREDLocal;
 import com.google.gson.Gson;
 import dta.json.plan.TcUsuario;
@@ -15,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -25,6 +28,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.xml.bind.JAXBException;
+import lire009.DocumentoInab;
 import org.primefaces.PF;
 import org.primefaces.PrimeFaces;
 import redis.clients.jedis.Jedis;
@@ -39,6 +44,9 @@ public class LIRE009 implements Serializable {
 
     @Inject
     private MHHome mhome;
+    
+    @Inject
+    private CargaDocumentosLocal cargaDoc;
 
     @EJB
     private PERFIL.EJBGestionREDLocal ir = null;
@@ -48,6 +56,8 @@ public class LIRE009 implements Serializable {
     private Date hoy = new Date();
 
     private SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+    
+    private  DocumentoInab  dInab = new  DocumentoInab();
 
     private String fechaFormateada = "";
     private boolean bot = false;
@@ -233,14 +243,6 @@ public class LIRE009 implements Serializable {
         this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a';");
     }
 
-    public void generarDocumento009() {
-     activarBoton();
-    }
-
-    public void generarDocumento009Final() {
-
-    }
-
     public void llamar() {
         try {
             this.fechaFormateada = formato.format(hoy);
@@ -305,6 +307,118 @@ public class LIRE009 implements Serializable {
         public void setValor(String valor) {
             this.valor = valor;
         }
+    }
+    
+    public void generarDocumento009() {
+     try {
+            // creadocumento 045
+            Future<lire009.DocumentoInab> of = cargaDoc.creaDocumento009(mhome.getRu(),mhome.getPer(),this.enmiendas,this.noOficio);
+            
+            this.dInab = of.get();
+            //crea xml 
+             Future<String> xml = cargaDoc.creaXML009(mhome.getPer(),"PRO09","P6","009", dInab);
+             
+             String valor = xml.get();
+             // graba el xml
+             Future<String> gxml = cargaDoc.grabaXML009(valor, dInab);
+             
+             String r = gxml.get();
+             
+             // setea nombres
+             this.nomXML = dInab.getOficioEnmiendas().getVisor().getVista().getRutaPdf();
+             // String xq=UTILIDADES.Xquery.xmlConsultaDocumento(dInab.getExpediente(), nomXML);
+             
+             this.rutaNombre = this.nomXML;
+               
+             
+             // crea documento en vista preiva
+             Future<String> gs = cargaDoc.generarReporte(dInab.getOficioEnmiendas().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"009",dInab.getLicencia());             
+             String sp = gs.get();
+             System.out.println(sp);                                       
+             PrimeFaces.current().executeInitScript("PF('productDialog').show()");
+             
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(LIRE009.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void generarDocumento009Final() {
+        try {
+            // nombre de archivo temporal
+            String n = this.dInab.getOficioEnmiendas().getVisor().getVista().getUrlDocumento();
+            // consulta de documento xml previo inactivo
+            String xq = UTILIDADES.Xquery.xmlConsultaDocumento(this.dInab.getExpediente(), n);
+            // obtiene documento xml de vista previa
+            String xml = this.mhome.getApi().enviarApiMMCoreXMLGet(xq.replaceAll(".pdf",".xml"),this.dInab.getExpediente(), n.replaceAll(".pdf",".xml"));
+            // convierte el objecto
+            DocumentoInab temp =  UTILIDADES.FuncionesComunes.fromXml(xml, DocumentoInab.class);
+            // cambia a Generado el estado del xml
+            temp.setEstado("Generado");
+            // crea nuevamente el xml uno nuevo con el estado finalizado
+            Future<String> xmlfin = cargaDoc.creaXML009(mhome.getPer(),"PRO09","P6","009", temp);
+            // obtiene el xml final
+            String valor = xmlfin.get();
+            // graba xml final
+            Future<String> gxml = cargaDoc.grabaXML009(valor, temp);
+            // obteine respuesta
+            String r = gxml.get();
+            // desaciva boton generar documento
+            this.bot2=true;
+            // registra en el historico en segundo plano
+//            Historico hiloHistorico = new Historico();
+//            hiloHistorico.setPer(this.mhome.getPer());
+//            hiloHistorico.setDocumentoRegistrar(temp); // registra documento 044 con estado finalizado
+//            hiloHistorico.start();// dispara en segundo plano registra historico para finalizados
+            
+            // crea documento en final
+             Future<String> gs = cargaDoc.generarReporte(dInab.getOficioEnmiendas().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),r,"009",dInab.getLicencia());             
+             String sp = gs.get();
+             System.out.println(sp);               
+             
+             
+//             PrimeFaces.current().executeInitScript("PF('productDialog').show()");
+             
+//            
+//            String sql= UTILIDADES.SQL.insertaGestion(temp);
+//            
+//            estructuras.RespuestaInsert ri = (estructuras.RespuestaInsert) mhome.getApi().repuestaApi(new estructuras.RespuestaInsert(),
+//                    "JSON", sql);
+//            
+//            if(ri.fila_afectada>0){// verifica la insernción en la tabla de control
+//                
+//                DocumentoInab c=  UTILIDADES.FuncionesComunes.fromXml(valor,DocumentoInab.class);
+//                this.rutaNombre = c.getDictamenJuridicoModificacion().getVisor().getVista().getRutaPdf();
+//                
+//                sql  =   UTILIDADES.SQL.insertaGestionDetalle(c,this.rutaNombre,mhome.getPer());
+//                ri = (estructuras.RespuestaInsert) mhome.getApi().repuestaApi(new estructuras.RespuestaInsert(),
+//                        "JSON", sql);
+//                
+//                if(ri.fila_afectada>0){
+//                    Future<String> gs = cargaDoc.generarReporte(c.getDictamenJuridicoModificacion().getVisor().getVista().getUrlDocumento().replaceAll(".xml",".pdf"), dInab.getExpediente(),valor,"042",dInab.getLicencia());
+//                    String sp = gs.get();
+//                    System.out.println(sp);
+//                }
+//                
+//            }
+            
+//            GEnericaCincoCampos cinco = this.mhome.getPer().getCincoCampos();
+//            System.out.println("Esto es el subregional : "+cinco.getDato1());
+//            
+            
+//            System.out.println("secretaria 1 :"+ this.mhome.getPer().getListSecretarias().get(0).getUsuarioDesc());
+//            
+//            cargaDoc.trazladaExpedinte(Integer.parseInt(this.mhome.getPer().getTcUsuario().getUsuarioId().toString()),  this.mhome.getPer().getListSecretarias().get(0).getUsuarioId(),3,2);
+//            
+            // inicializa
+            //this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra="+mhome.getPer().getTcUsuario().getUsuarioId()+"&rx=a';");
+        } catch (JAXBException ex) {
+            Logger.getLogger(LIRE009.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LIRE009.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(LIRE009.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
 }

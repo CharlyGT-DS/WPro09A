@@ -25,7 +25,7 @@ import tablas.MANEJO.TcUsuarioPerfilSistema;
  *
  * @author csandoval
  */
-public class PefilInab implements Serializable {
+public class PefilInabOriginal implements Serializable {
     
     private tablas.MANEJO.TcUsuario tcUsuario = new TcUsuario();
     private tablas.MANEJO.TcPersona tcPersona = new TcPersona();
@@ -40,7 +40,7 @@ public class PefilInab implements Serializable {
     private int hombres=0;
     private int mujeres=0;
     private  Point2D.Double centro;
-    private List<GenericoDos> listaEspecie = new ArrayList<>();
+    
     private List<tablas.MANEJO.TcUsuario> listaTcUsuario = new ArrayList();
 
     public List<TcUsuario> getListaTcUsuario() {
@@ -53,14 +53,6 @@ public class PefilInab implements Serializable {
     
     
 
-    public List<GenericoDos> getListaEspecie() {
-        return listaEspecie;
-    }
-
-    public void setListaEspecie(List<GenericoDos> listaEspecie) {
-        this.listaEspecie = listaEspecie;
-    }
-    
     public Point2D.Double getCentro() {
         return centro;
     }
@@ -337,7 +329,7 @@ public class PefilInab implements Serializable {
 
     
     
-    public PefilInab(){
+    public PefilInabOriginal(){
         
         
     }

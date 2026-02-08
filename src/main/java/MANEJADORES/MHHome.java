@@ -6,14 +6,17 @@ package MANEJADORES;
 
 
 import EJB.DBaseLocal;
-import PERFIL.CargaDocumentosLocal;
 import com.google.gson.Gson;
 import estructuras.GEnericaCincoCampos;
+import estructuras.GenericoDos;
 import estructuras.PefilInab;
 import estructuras.RespuestaSeccionUNO;
+import estructuras.RespuestaTareaSubRegion;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -25,12 +28,9 @@ import javax.el.ELContext;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import redis.clients.jedis.Jedis;
-import tablas.MANEJO.TcPerfil;
 import tablas.MANEJO.TcUsuario;
 
 /**
@@ -53,7 +53,6 @@ public class MHHome implements Serializable{
     private transient Gson gson = new Gson();
     private int entrada; 
     private RespuestaSeccionUNO  ru = new RespuestaSeccionUNO();
-    private String sql="";
 
     public int getEntrada() {
         return entrada;
@@ -101,51 +100,15 @@ public class MHHome implements Serializable{
             try {
                 InitialContext ctx = new InitialContext();
                 this.api =  (DBaseLocal) ctx.lookup("java:global/ComponenteCero-2.0/DBase!EJB.DBaseLocal");
-                carga2();
             } catch (NamingException ex) {
                 Logger.getLogger(MHHome.class.getName()).log(Level.SEVERE, null, ex);
             }
                 
         }
         
-        
-        public void carga2(){
-              per = new estructuras.PefilInab();
-              
-                try{
-                    
-
-                  // busqueda del componente por JNDI
-                  ctx = new InitialContext();
-                  this.api =  (DBaseLocal) ctx.lookup("java:global/ComponenteCero-2.0/DBase!EJB.DBaseLocal");
-                  
-                           // usuario origen
-                           sql=  UTILIDADES.SQL.busquedaUsuarioPorId(1150);
-                           this.per.setTcUsuario((TcUsuario) this.api.repuestaApi(new tablas.MANEJO.TcUsuario(),"JSON",sql));
-                           
-                           
-                           
-                           // busca el perfil por subregion por id
-                           sql = UTILIDADES.SQL.llamaJuridicoPorId(1150);
-                           this.per.setCincoCampos((GEnericaCincoCampos) this.api.repuestaApi(new estructuras.GEnericaCincoCampos(),"JSON",sql));
-                           System.out.println("dato 5 ="+ this.per.getCincoCampos().getDato5().toString());
-                           tablas.MANEJO.TcPerfil temPerfil = new tablas.MANEJO.TcPerfil();
-                           temPerfil.setPerfilDesc(this.per.getCincoCampos().getDato5().toString());
-                           this.per.setTcPerfil(temPerfil);
-                           
-                           // subregional el destino
-                             sql=  UTILIDADES.SQL.busquedaUsuarioPorId(3562);
-                             TcUsuario tmpU = (TcUsuario) this.api.repuestaApi(new tablas.MANEJO.TcUsuario(),"JSON",sql);
-                             this.per.getListaTcUsuario().add(tmpU);
-     
-            } catch (NamingException ex) {
-                Logger.getLogger(MHHome.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        }
        
         public void carga(){
-            
+            String sql="";
             Map<String, String> params=null;
             String json="";
             per = new estructuras.PefilInab();
@@ -166,8 +129,7 @@ public class MHHome implements Serializable{
                   if(ctx==null)
                   ctx = new InitialContext();
                   this.api = (DBaseLocal) ctx.lookup("java:global/ComponenteCero-2.0/DBase!EJB.DBaseLocal");
-                    
-                
+               
                 
                 if (this.ra != null && this.rx != null) {
                     this.ra = params.get("ra");
@@ -196,22 +158,40 @@ public class MHHome implements Serializable{
                      
                       try {
                           
-                         // Future<estructuras.PefilInab> tper=  fred.buscarUsuarioSubRegion(this.ra,per);
-                         // this.per = tper.get();
-                         // Future<estructuras.PefilInab> tper2 =   fred.buscaTecnicos(this.per);
-                         // this.per = tper2.get();
-                         // Future<estructuras.PefilInab> tper3 =   fred.buscaRegional(this.per);
-                         // this.per = tper3.get();
-                         // Future<estructuras.PefilInab> tper4 =   fred.buscaSubREgional(this.per);
-                         // this.per = tper4.get();
+                            Future<estructuras.PefilInab> tper=  fred.buscarUsuarioSubRegion(this.ra,per);
+                            this.per = tper.get();
+                            Future<estructuras.PefilInab> tper2 =   fred.buscaTecnicos(this.per,this.getPer().getResUsIdSubRegion().getSubregionId());
+                            this.per = tper2.get();
+                            Future<estructuras.PefilInab> tper3 =   fred.buscaRegional(this.per);
+                            this.per = tper3.get();
+                            Future<estructuras.PefilInab> tper4 =   fred.buscaSubREgional(this.per);
+                            this.per = tper4.get();
                           Future<estructuras.PefilInab> tper5 =   fred.buscaLicencias(this.ra,this.per);
                           this.per = tper5.get();
                           
                            Future<estructuras.PefilInab> tper6 = fred.buscaUsuario(ra, per);
                            this.per = tper6.get();
                            
+                          sql = UTILIDADES.SQL.especiesFormula();
+                          GenericoDos[] especies = this.api.respuestaApiVector(GenericoDos[].class,"JSON", sql);
+                          List<GenericoDos> listaEspecie =  Arrays.asList(especies);
+                          this.per.setListaEspecie(listaEspecie);
+                                                    
+                          RespuestaTareaSubRegion tar = this.per.getResUsIdSubRegion();
                           
-                           
+                          
+                          System.out.println("perfil ID :"+tar.getPerfilId()+"   usuario ID =  "+this.per.getResUsIdSubRegion().getUsuarioId());
+                          if(tar.getPerfilId()==6){
+                              sql = UTILIDADES.SQL.llamaJuridicoPorId(tar.getUsuarioId(),tar.getSubregionId(),tar.getPerfilId());
+                              this.per.setCincoCampos((GEnericaCincoCampos) this.api.repuestaApi(new estructuras.GEnericaCincoCampos(),"JSON",sql));
+                              
+                               // subregional el destino
+                             sql=  UTILIDADES.SQL.busquedaUsuarioPorId(this.per.getResUsIdSubRegion().getUsuarioId());
+                             TcUsuario tmpU = (TcUsuario) this.api.repuestaApi(new tablas.MANEJO.TcUsuario(),"JSON",sql);
+                             this.per.getListaTcUsuario().add(tmpU);
+                              
+                              
+                          }
                           
                           System.out.println(":::IINICIO-JSON:::");
                           System.out.println(gson.toJson(this.per));
@@ -229,7 +209,7 @@ public class MHHome implements Serializable{
                 }
                 if(this.ra.length()==0 || this.rx.length()==0){
                     
-                    this.api.llamaCualquierPagina("/WPro09/auth/error.xhtml");
+                    this.api.llamaCualquierPagina("/WPro09A/auth/error.xhtml");
                     
                 }
                 
@@ -256,10 +236,10 @@ public class MHHome implements Serializable{
         
         public void cerrarSesion(){         
             try{
-             this.api.cerrarSesion("/WPro09/");
+             this.api.cerrarSesion("/WPro09A/");
             }catch(Exception es){
              
-                    this.api.llamarPagina("/WPro09/");
+                    this.api.llamarPagina("/WPro09A/");
                     System.out.println("Error al cerrar sesión :"+es.getMessage());
                 
                 

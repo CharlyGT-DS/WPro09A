@@ -16,7 +16,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import redis.clients.jedis.Jedis;
 import EJB.DBaseLocal;
-import MANEJADORES.MHHome;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import estructuras.GEnericaCincoCampos;
@@ -28,11 +27,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.enterprise.inject.spi.CDI;
 
 /**
  *
@@ -55,7 +52,7 @@ public class FuncionesRedis implements Serializable, FuncionesRedisLocal{
             InitialContext ctx = new InitialContext();
             this.api = (DBaseLocal) ctx.lookup("java:global/ComponenteCero-2.0/DBase!EJB.DBaseLocal");
             
-            this.ir =  (EJBGestionREDLocal) ctx.lookup("java:global/WPro09/EJBGestionRED!PERFIL.EJBGestionREDLocal");
+            this.ir =  (EJBGestionREDLocal) ctx.lookup("java:global/WPro09A/EJBGestionRED!PERFIL.EJBGestionREDLocal");
             
                    
             
@@ -137,7 +134,8 @@ public class FuncionesRedis implements Serializable, FuncionesRedisLocal{
     public Future<estructuras.PefilInab> buscaRegional(estructuras.PefilInab per){
         
          //obtiene el de director regional del usuario conectado  solo existe un regional por cada subregion
-          String  json = UTILIDADES.JSON.consultaTecnticosPorSubregion("getDirectorRegionalPorSubregion", per.getResUsIdSubRegion().getSubregionId());
+          String  json = UTILIDADES.JSON.consultaTecnticosPorSubregion("getDirectorRegionalPorSubregion", 31);
+          System.out.println("Json Jonatan **************  " + json);
           String  res = this.api.envarApiMMFNuevo(json, "http://24.199.121.192/GeneraXMLProd/resources/javaee8/consultaDatos");
             RespuestaWSLicencias diretoresRegionales =this.gson.fromJson(res, RespuestaWSLicencias.class);
              if (diretoresRegionales != null) {
@@ -159,7 +157,7 @@ public class FuncionesRedis implements Serializable, FuncionesRedisLocal{
     @Asynchronous
     public Future<estructuras.PefilInab> buscaSubREgional(estructuras.PefilInab per){
         
-             String  json = UTILIDADES.JSON.consultaTecnticosPorSubregion("getDirectorSubregionalPorSubregion", Integer.parseInt(per.getCincoCampos().getDato1().toString().replace(".0", "")));
+             String  json = UTILIDADES.JSON.consultaTecnticosPorSubregion("getDirectorSubregionalPorSubregion", 31);
              String  res = this.api.envarApiMMFNuevo(json, "http://24.199.121.192/GeneraXMLProd/resources/javaee8/consultaDatos");
              RespuestaWSLicencias directorSubregionales =this.gson.fromJson(res, RespuestaWSLicencias.class);
              

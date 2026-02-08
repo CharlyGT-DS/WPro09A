@@ -344,12 +344,12 @@ public class LIRE043 implements Serializable {
                 + "confirmButtonText: 'Ir ahora',"
                 + "}).then((result) => {"
                 + "if (result.isConfirmed) {"
-                + "window.location.href = '/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a; "
+                + "window.location.href = '/WPro09A/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a; "
                 + "}"
                 + "});"
         );
 
-        this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a';");
+        this.mhome.getApi().llamaCualquierPagina("/WPro09A/pages/inicio.xhtml?ra=" + mhome.getPer().getTcUsuario().getUsuarioId() + "&rx=a';");
     }
 
     public void llamar() {

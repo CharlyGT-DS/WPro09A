@@ -16,25 +16,10 @@ import lire042.DocumentoInab.SolicitudActualizacion.Contenido.Modificaciones.Det
 
 
 
-public class SQL implements Serializable{
-    
-    
-    public static String listaTipoCobertura(){
-        return "select * from manejo2.tc_tipo_cobertura limit 200";
-    }
-    
-    public static String listaTratamientoSilvicultura(){
-        
-        return "select * from manejo2.tc_tratamiento_silvicultural limit 200";
-    }
-            
-            
-      public static String todosClaseDesarrollo(){          
-          return "  select clase_desarrollo_id clasedesarrolloid, clase_desarrollo_desc clasedesarrollodesc,\n" +
-"  codigo_clase codigoclase, estado_id estadoid, fecha_registro fecharegistro, ocultar ocultar   from tc_clase_desarrollo where ocultar =0 limit 500";
-      }
-    
-      public static String llamaJuridicoPorId(int id, int subregion, int idPerfil){
+public class SQLOriginal implements Serializable{
+
+
+    public static String llamaJuridicoPorId(int id){
 
       return "  select tu.usuario_id dato1,tu.usuario dato2,tu.usuario_desc dato3,CONCAT(tsr.alias,' ',tsr.subregion_desc,', ' ,tmun.municipio_desc,', ',tdep.departamento_desc) dato4 , \n" +
 "                 tpp.perfil_desc dato5 \n" +
@@ -47,35 +32,16 @@ public class SQL implements Serializable{
 "                 inner join  manejo2.tc_departamento tdep ON  tmun.departamento_id=tdep.departamento_id \n" +
 "                 inner join manejo2.tc_perfil tpp on tups.perfil_id = tpp.perfil_id\n" +
 "                 Where tu.estado_id=1 \n" +
-"                 and tups.perfil_id="+idPerfil +" \n" +
-"                 and tus.subregion_id="+subregion +" \n" +
-"                 and tu.usuario_id="+id + " \n "
-                + "limit 1" ;
+"                 and tups.perfil_id=7 \n" +
+"                 and tus.subregion_id=38\n" +
+"                 and tu.usuario_id="+id;
     }
-     
+    
     public static String busquedaUsuarioPorId(int id){
         
         return " select * from manejo2.tc_usuario where usuario_id ="+id;
     }
     
-    public static String especiesFormula(){
-        
-        return "select nombre_cientifico dato, ecuacion valor from manejo2.tc_especie  limit 2000";
-    }
-    
-    public static String listaTipoInventario(){
-        
-        return "select * from tc_tipo_inventario";
-    }
-
-    public static String origenCalculos(){
-     return "select * from tc_origen_calculo";
-    }
-    
-    public static String medidasProteccionGestionId(String gestion_id){
-        return "select area_critica dato1, combustible dato2, control_plaga dato3, cortafuego dato4,justificacion dato5, justificacion_pf dato6, monitoreo_plaga dato7, respuesta_if dato8, vigilancia dato9  from tt_proteccion_gestion where gestion_id="+gestion_id;
-    }
-
     public static String criterioProteccion(){
         return"select * from tc_criterio_proteccion limit 50;";
     }
@@ -96,6 +62,7 @@ public class SQL implements Serializable{
         
         return "select * from tc_tipo_garantia limit 200";
     }
+
     
     public static String consultaCentroFinca(String id_gestion){
         

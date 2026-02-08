@@ -314,7 +314,7 @@ public class LIRE022 implements Serializable {
 //            cargaDoc.trazladaExpedinte(Integer.parseInt(this.mhome.getPer().getTcUsuario().getUsuarioId().toString()),  this.mhome.getPer().getListSecretarias().get(0).getUsuarioId(),3,2);
 //            
             // inicializa
-            //this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra="+mhome.getPer().getTcUsuario().getUsuarioId()+"&rx=a';");
+            //this.mhome.getApi().llamaCualquierPagina("/WPro09A/pages/inicio.xhtml?ra="+mhome.getPer().getTcUsuario().getUsuarioId()+"&rx=a';");
         } catch (JAXBException ex) {
             Logger.getLogger(LIRE022.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {

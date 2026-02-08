@@ -220,7 +220,7 @@ public class LIRE080 implements Serializable{
                  this.elementos.add(el);
                  
              }
-             this.ir =  (EJBGestionREDLocal) ctx.lookup("java:global/WPro09/EJBGestionRED!PERFIL.EJBGestionREDLocal");
+             this.ir =  (EJBGestionREDLocal) ctx.lookup("java:global/WPro09A/EJBGestionRED!PERFIL.EJBGestionREDLocal");
              this.documentos.clear();
             
              String[] vac = this.mhome.getPer().getDoc080().split(",");
@@ -268,13 +268,13 @@ public class LIRE080 implements Serializable{
                
             "}).then((result) => {" +
                 "if (result.isConfirmed) {" +
-                    "window.location.href = '/WPro09/pages/inicio.xhtml?ra=" +mhome.getPer().getTcUsuario().getUsuarioId() +"&rx=a; "+
+                    "window.location.href = '/WPro09A/pages/inicio.xhtml?ra=" +mhome.getPer().getTcUsuario().getUsuarioId() +"&rx=a; "+
                 "}" +
             "});"
         );
         
         
-       this.mhome.getApi().llamaCualquierPagina("/WPro09/pages/inicio.xhtml?ra="+mhome.getPer().getTcUsuario().getUsuarioId()+"&rx=a';");
+       this.mhome.getApi().llamaCualquierPagina("/WPro09A/pages/inicio.xhtml?ra="+mhome.getPer().getTcUsuario().getUsuarioId()+"&rx=a';");
     }
       
     

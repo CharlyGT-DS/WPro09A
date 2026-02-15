@@ -370,12 +370,12 @@ public class LIRE045 implements Serializable {
             InitialContext ctx = new InitialContext();
 
             this.fechaFormateada = formato.format(hoy);
-            this.nombreDirectorReg = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
-            this.direccion = this.mhome.getPer().getCincoCampos().getDato4().toString();
-            this.partesDireccion = direccion.split("\\s*,\\s*");
-            this.subRegion = this.partesDireccion[0];
-            this.municipio = this.partesDireccion[1];
-            this.departamento = this.partesDireccion[2];
+            this.nombreDirectorReg = "Jesús Antonio Camposeco López";
+            this.departamento = mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getTcDepartamento().getDepartamentoDesc();
+            this.municipio = mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcMunicipio().getMunicipioDesc();
+            this.subRegion = mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
+                             mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getSubregionDesc();
+            this.direccion = this.municipio +", "+ this.departamento +", "+ this.subRegion;
             
             this.fechaSolicitud = hoy;    
             this.solicitante = "Pedro Lopez";

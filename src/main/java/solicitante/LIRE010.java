@@ -132,7 +132,7 @@ public class LIRE010 implements Serializable {
             this.subRegion = mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getAlias() + " " + 
                              mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getSubregionDesc();
             this.direccion = this.municipio +", "+ this.departamento +", "+ this.subRegion;
-            this.nombreDirectorSub = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
+            this.nombreDirectorSub = this.mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcSubregional().getPersonaDesc();
             this.noOficioPrev = "OF-E-45454848484";
             this.expediente = this.mhome.getPer().getPplanM().getData().get(0).getExpediente();
 

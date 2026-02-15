@@ -246,24 +246,6 @@ public class LIRE009 implements Serializable {
 
     public void llamar() {
         try {
-            this.fechaFormateada = formato.format(hoy);
-            this.nombreDirectorSub = this.mhome.getPer().getListaTcUsuario().get(0).getUsuarioDesc();
-            
-            this.solicitante = "Pedro Lopez";
-            this.elaborador = "Maria Lopez";
-            this.tecnico = "Juan Perez";
-            this.juridico = "Juan Lopez";
-            
-            this.licencia = "LI-RE-0445-2024";
-            this.expediente = "EXP-INAB-2023-01872";
-            
-            
-
-            enmiendas.add(new LIRE009.Elemento(""));
-
-            System.out.println("licencia :" + mhome.getPer().getLicencia().getNumero_licencia_poa());
-            System.out.println("datos de subregion : " + mhome.getPer().getCincoCampos().getDato1());
-
             Jedis JD = this.ir.obtieneConeccionRedis();
             System.out.println("llave para token: " + "USU-" + mhome.getPer().getTcUsuario().getUsuarioId());
             String token = JD.hget("USU-" + mhome.getPer().getTcUsuario().getUsuarioId(), "token");
@@ -284,6 +266,22 @@ public class LIRE009 implements Serializable {
             this.mhome.getPer().setPplanM(pl);// carga el plan a la session
 
             InitialContext ctx = new InitialContext();
+            
+            this.fechaFormateada = formato.format(hoy);
+            this.nombreDirectorSub = this.mhome.getPer().getPplanM().getData().get(0).getTcSubregion().getTcSubregional().getPersonaDesc();
+            System.out.println(nombreDirectorSub+"-------------------------------------------------");
+            
+            this.solicitante = "Pedro Lopez";
+            this.elaborador = "Maria Lopez";
+            this.tecnico = "Juan Perez";
+            this.juridico = "Juan Lopez";
+            
+            this.licencia = "LI-RE-0445-2024";
+            this.expediente = "EXP-INAB-2023-01872";
+            
+            
+
+            enmiendas.add(new LIRE009.Elemento(""));
 
             this.ir = (EJBGestionREDLocal) ctx.lookup("java:global/WPro09A/EJBGestionRED!PERFIL.EJBGestionREDLocal");
         } catch (NamingException ex) {

@@ -1,0 +1,219 @@
+<html  xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:gis="http://gisfaces.com"> 
+    
+     <cc:interface>
+        <!-- Atributos que se pueden pasar al componente -->
+        <cc:attribute name="gestion_id" type="java.lang.String" required="false" />
+     </cc:interface>
+
+    <!-- ✅ Esta sección va después, y JSF la enlaza con la interfaz -->
+    <cc:implementation>
+        
+       
+        <p:outputPanel id="frm">
+        <p:outputPanel id="baseT">
+        <div class="card" style="width: 100%; min-height: 250px;">
+            
+            <table width="80%" border="0">
+                <tr>
+                    <td with="20%">
+                        
+                        
+                    </td>
+                     <td with="20%">
+                        
+                        
+                    </td>
+                        <td with="20%">
+                        
+                        
+                    </td>
+                    <td colspan="2" style="text-align: center; margin-left:150px;">
+                        
+                               <p:inputText id="cp" style="display:none" />
+                            <p:commandButton title="Agregar Documento" ajax="true" 
+                                          
+                                              actionListener ="#{componenteFinca.agregaDocumento()}" 
+                                             icon="pi pi-plus" 
+                                             update="cp"
+                                             styleClass="rounded-button ui-button-secondary mr-2 mb-2" />
+                       
+                    </td>
+                    
+                </tr>
+                <tr style="background-color: #90ccf5;">
+                    <td width="20%">
+                        Finca
+                    </td>
+                    <td width="20%">
+                        Dirección
+                    </td>
+                    <td width="20%">
+                        Coordenadas GTM X/Y
+                    </td>
+                    <td width="20%">
+                        Área(ha)
+                    </td>
+                    <td width="20%">
+                        Correltativo
+                    </td>
+                </tr>
+                <tr>
+                    <td width="20%">
+                        <p:outputLabel value="#{componenteFinca.tcFinca.fincaDesc}"/>
+                    </td>
+                    <td width="20%">
+                        <p:outputLabel value="#{componenteFinca.tcFinca.direccion}, #{componenteFinca.tcFinca.tcMunicipio.municipioDesc}, #{componenteFinca.tcFinca.tcMunicipio.tcDepartamento.departamentoDesc}"/>
+                    </td>
+                    <td width="20%" style="text-align: center;">
+                        <p:outputLabel value="#{componenteFinca.tcFinca.gtmX} / #{componenteFinca.tcFinca.gtmY} "/>
+                    </td>
+                    <td width="20%">
+                        <p:outputLabel value="#{componenteFinca.tcFinca.area}"/>
+                    </td>
+                    <td width="20%">
+                        <p:outputLabel value="#{componenteFinca.listaFincas.size()}"/>
+                    </td>
+                    
+                </tr>
+                <tr style="background-color: #90ccf5;">
+                     <td width="20%" colspan="5">
+                      Colindancias  
+                    </td>
+                   
+                </tr>
+                <tr>
+                      <td width="20%">
+                        Norte
+                    </td>
+                  
+                    <td width="20%">
+                        Sur
+                    </td>
+                    <td width="20%">
+                        Este
+                    </td>
+                    <td width="20%" colspan="2">
+                        Oeste
+                    </td>
+                    
+                </tr>
+                <tr>
+                     <td width="20%">
+                         <p:outputLabel value="#{componenteFinca.tcFinca.norte}"/>    
+                    </td>
+                    <td width="20%">
+                        <p:outputLabel value="#{componenteFinca.tcFinca.sur}"/>    
+                    </td>
+                    <td width="20%">
+                        <p:outputLabel value="#{componenteFinca.tcFinca.este}"/>   
+                    </td>
+                    <td width="20%" colspan="2">
+                        <p:outputLabel value="#{componenteFinca.tcFinca.oeste}"/>   
+                    </td>
+                   
+                </tr>
+                 <tr style="background-color: #90ccf5;">
+                     <td width="20%" colspan="5">
+                         Documentos   
+                     </td>                   
+                </tr>
+                <tr>
+                    <td width="25%">
+                        Tipo documento propiedad:
+                        <p:selectOneMenu  dynamic="false" immediate="true"   id="tipoPropiedad" converter="tiposPropiedadConverter"  value="#{componenteFinca.tipoPropiedad}" >
+                            <f:selectItem itemLabel="#{componenteFinca.tcFinca.tcTipoPropiedad.tipoPropiedadDesc}" noSelectionOption="true" itemValue="#{componenteFinca.tcFinca.tcTipoPropiedad}" />
+                            <f:selectItems  var="tpro" value="#{componenteFinca.listaTiposPropiedad}" itemLabel="#{tpro.tipoPropiedadDesc}" itemValue="#{tpro}" />
+                                     <f:attribute name="listaTiposPropiedad" value="#{componenteFinca.listaTiposPropiedad}"/>                                      
+                                     <p:ajax event="select" listener="#{componenteFinca.agregaDocumento()}"  update=":form:tabw:acc:j_idt239:tipoPropiedad" />
+                         </p:selectOneMenu>
+                        
+                    </td>
+                     <td width="20%">
+                         Fecha Emisión:
+                         <p:datePicker size="12"  id="button" value="#{componenteFinca.listaFincas.get(0).fechaEmision}"	showIcon="true" showOnFocus="false"  />
+                    </td>
+                     <td width="20%">
+                         Número de Escritura  <p:inputText required="true" requiredMessage="Ingrese Notario"  value="#{componenteFinca.tcFinca.numeroDocumento}"/> 
+                    </td>
+                     <td colspan="2">
+                         Notario:  <p:inputText required="true" requiredMessage="Ingrese Número de Escritura" size="100" value="#{componenteFinca.tcFinca.notario}"/> 
+                    </td>
+                    
+                    
+                </tr>
+                <tr>
+                    <td width="20%">
+                        <p:selectOneMenu  style="width: 100%;"  value="#{componenteFinca.departamento}" converter="departamentoConverter">
+                            <f:selectItem itemLabel="#{componenteFinca.tcFinca.tcMunicipio.tcDepartamento.departamentoDesc}"  noSelectionOption="true" itemValue="#{componenteFinca.tcFinca.tcMunicipio.tcDepartamento}"/>
+                                                               <f:selectItems var="dep" value="#{componenteFinca.listaDepartamentos}" itemLabel="#{dep.departamentoDesc}" itemValue="#{dep}"/>
+                                                               <f:attribute name="listaDepartamentos" value="#{componenteFinca.listaDepartamentos}" />
+                                                               <p:ajax event="change" update="muniFinca" listener="#{componenteFinca.cargaMunicipios()}"/>      
+                       </p:selectOneMenu>
+                    </td>
+                    <td width="20%">
+                        
+                         <p:selectOneMenu  dynamic="false" immediate="true"   id="muniFinca" converter="municipiosConverter"  value="#{componenteFinca.municipioSelect}" >
+                                                              <f:selectItem itemLabel="#{componenteFinca.tcFinca.tcMunicipio.municipioDesc}" noSelectionOption="true" itemValue="#{componenteFinca.tcFinca.tcMunicipio}" />
+                                                               <f:selectItems  var="pmun" value="#{componenteFinca.listaMunicipios}" itemLabel="#{pmun.municipioDesc}" itemValue="#{pmun}" />
+                                                               <f:attribute name="listaMunicipios" value="#{componenteFinca.listaMunicipios}"/>
+                                                             
+                                                           </p:selectOneMenu>
+                        
+                    </td>
+                    <td colspan="3">
+                    </td>
+                    
+                                            
+                    
+                </tr>
+              
+                
+            </table>
+            
+            <br/>
+            <br/>
+            <table width="100%" border="1">
+                <tr>
+                    <td width="25%">
+                        Fecha Emision:
+                        <p:selectOneMenu  />
+                    </td>
+                    <td width="25%">
+                        Número de Escritura:
+                        <p:inputText />
+                    </td>
+                    <td width="25%">
+                        Nombre del Notario:
+                        <p:inputText style=" #{(componenteFinca.notarioVer)?'display:block;':'display:none;'}} "  />
+                    </td>
+                    <td width="25%">
+                        Departamento:
+                        <p:selectOneMenu style="#{(componenteFinca.departamentoVer)?'display:block;':'display:none;'}} " />
+                   </td>
+                </tr>
+                
+                  <tr>
+                      <td colspan="4">
+                          Municipio:
+                           <p:selectOneMenu />
+                      </td>
+                  </tr>
+                
+                
+            </table>
+            
+            
+        </div>
+        </p:outputPanel>
+        </p:outputPanel>
+        
+        
+    </cc:implementation>
+</html>
+

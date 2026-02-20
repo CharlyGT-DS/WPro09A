@@ -1,0 +1,78 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- Optional
+            <style></style>
+            <script></script>
+        -->
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+      
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                    <h4>insertar</h4>
+                    <p>Insertar en bandeja</p>
+                    
+                    <h:form>
+                        <p:growl id="msg" life="3000" />
+                        <p:panel header="Grabar una Tarea sobre cualquier usuario por id">
+                            <table width="100%">
+                                <tr>
+                                    <td width="20%">
+                                        id Usuario actual
+                                        <p:inputText size="20" value="#{insertar.idUsuarioActual}" />
+                                    </td>
+                                    <td width="20%">
+                                        id Usuario Siguiente
+                                        <p:inputText size="20" value="#{insertar.idUsuarioSiguiente}" />
+                                        
+                                    </td>
+                                    <td width="20%">
+                                        Proceso
+                                        <p:inputText size="20" value="#{insertar.proceso}" />
+                                    </td>
+                                    <td width="20%">
+                                        Paso
+                                        <p:inputText size="20" value="#{insertar.paso}" />
+                                    </td>
+                                    <td width="20%">
+                                        XML  DocumentoInab.Actual
+                                        <p:inputText size="20" value="#{insertar.xmlActual}" />
+                                    </td>
+                                    
+                                    
+                                </tr>
+                                <tr>
+                                    <td width="25%" colspan="4">
+                                        <p:commandButton update="msg" value="Grabar" actionListener="#{insertar.grabar}" />
+                                        
+                                    </td>
+                                    
+                                    
+                                </tr>
+                            </table>    
+                        </p:panel>
+                        
+                    </h:form>
+                    
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

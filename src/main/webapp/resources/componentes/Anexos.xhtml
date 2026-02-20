@@ -1,0 +1,205 @@
+<ui:component
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:gis="http://gisfaces.com">
+
+    <cc:interface>
+        <!-- Atributos que se pueden pasar al componente -->
+        <cc:attribute name="gestion_id" type="java.lang.String" required="false" />
+    </cc:interface>
+
+    <!-- ✅ Esta sección va después, y JSF la enlaza con la interfaz -->
+    <cc:implementation>
+        <p:growl id="horror" life="5000"/>
+
+
+
+        <p:panel>
+            <f:facet name="header">
+                <strong>NOTA:</strong>
+                Todos los mapas deben de llevar la orientación del norte, escala gráfica y numérica, identidicación de vértices georreferencidos
+                con DATUM WGS 84, sistema de coordenadas GTM y grilla de cooredenadas, los cuales deberán aparecer de la leyenda debidamente anotado 
+                como parte de las referencias. Con respecto a la protección del recurso hídrico se deberá considerar la Normativa Forestal Vigente 
+                (Lay Forestal y su Reglamento, Lineamientos Técnicos de Manejo Forestal Sostenible, Código de Salud, entre otros).
+                <br/>
+                <strong>La descripción del anexo ésta lista, es únicamente referencia del documento que necesita escanear o crear y luego adjuntat. 
+                    En el caso de ser un grupo debe crear un solo ducumento por grupo. Por ejemplo si existe varios solicitantes debe crear un documento 
+                    PDF con todos los docuemntos de identificación solicitados y luego adjuntar la opción respectiva</strong>
+            </f:facet>
+
+            <h:form id="frmAnexos" enctype="multipart/form-data">
+
+                <p:dataTable id="dtAnexos"
+                             var="dtDocs"
+                             value="#{anexos.documentos}"
+                             styleClass="ui-datatable-sm"
+                             rowIndexVar="idx">
+                    <p:column headerText="No." style="width: 5%">
+                        #{idx + 1}
+                    </p:column>
+
+                    <p:column headerText="Anexo" style="width: 80%">
+                        #{dtDocs.nombre}
+                    </p:column>
+
+                    <p:column headerText="Opción" style="width: 15%">
+
+                        <!-- AGREGAR (cuando NO hay archivo) -->
+                        <p:commandButton value="Agregar"
+                                         icon="pi pi-upload"
+                                         rendered="#{!dtDocs.tieneArchivo}"
+                                         actionListener="#{anexos.prepararDialog}"
+                                         process="@this"
+                                         update=":form:tabw:compAnexos:frmAnexos:dlgUpload"
+                                         styleClass="ui-button-info">
+                            <f:attribute name="doc" value="#{dtDocs}" />
+                        </p:commandButton>
+
+                        <!-- VER (cuando SÍ hay archivo) -->
+                        <p:commandButton value="Abrir" icon="pi pi-eye"
+                                         rendered="#{dtDocs.tieneArchivo}"
+                                         actionListener="#{anexos.previsualizarArchivo}"
+                                         styleClass="ui-button-secondary"
+                                         process="@this"
+                                         update=":form:tabw:compAnexos:frmAnexos:dlgPreview">
+
+                            <f:attribute name="doc" value="#{dtDocs}"/>
+
+
+                        </p:commandButton>
+
+                        <!-- CAMBIAR (cuando SÍ hay archivo) -->
+                        <p:commandButton value="Cambiar"
+                                         icon="pi pi-refresh"
+                                         rendered="#{dtDocs.tieneArchivo}"
+                                         actionListener="#{anexos.prepararDialog}"
+                                         process="@this"
+                                         update=":form:tabw:compAnexos:frmAnexos:dlgUpload">
+                            <f:attribute name="doc" value="#{dtDocs}" />
+                        </p:commandButton>
+
+                    </p:column>
+
+                </p:dataTable>
+
+                <!-- DIALOG DE SUBIDA -->
+                <p:dialog id="dlgUpload"
+                          header="#{empty anexos.documentoSeleccionado.nombreArchivo 
+                                    ? 'Subir archivo'
+                                    : 'Cambiar archivo'}"
+                          widgetVar="dlgUpload"
+                          modal="true"
+                          width="450">
+
+                    <p:panel rendered="#{not empty anexos.documentoSeleccionado.nombreArchivo}">
+                        Archivo actual:
+                        <strong>#{anexos.documentoSeleccionado.nombreArchivo}</strong>
+                    </p:panel>
+
+                    <p:messages />
+                    <p:autoUpdate />
+
+                    <p:fileUpload mode="simple"
+                                  skinSimple="true"
+                                  allowTypes="/(\.|\/)(pdf|jpeg|jpg|png)$/"
+                                  sizeLimit="3145728"
+                                  label="Seleccionar archivo"
+                                  auto="true"
+                                  listener="#{anexos.subirArchivo}"
+                                  update=":form:tabw:compAnexos:frmAnexos:dtAnexos"
+                                  oncomplete="PF('dlgUpload').hide()" />
+                </p:dialog>
+
+                <!-- DIALOG DE PREVIEW -->
+                <p:dialog id="dlgPreview" 
+                          header="Previsualización - #{anexos.documentoParaPrevisualizar.nombreArchivo}" 
+                          widgetVar="dlgPreview" 
+                          modal="true" 
+                          width="900" 
+                          height="700"
+                          responsive="true"
+                          dynamic="true"
+                          draggable="false"
+                          resizable="false">
+
+                    <h:panelGroup rendered="#{not empty anexos.documentoParaPrevisualizar}">
+
+                        <!-- Información del archivo -->
+                        <p:panel style="margin-bottom: 10px;">
+                            <h:panelGrid columns="2" cellpadding="5">
+                                <p:column>
+                                <h:outputText value="Nombre:"/>
+                                <h:outputText value="#{anexos.documentoParaPrevisualizar.nombreArchivo}"/>
+                                </p:column>
+                                
+                                <p:column>
+                                <h:outputText value="Tipo:"/>
+                                <h:outputText value="#{anexos.documentoParaPrevisualizar.tipoArchivo}"/>   
+                                </p:column>
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <!-- Previsualización para PDF e imágenes -->
+                        <h:panelGroup rendered="#{anexos.esPDF() or anexos.esImagen()}">
+
+                            <iframe src="#{request.contextPath}/preview"
+                                    width="100%"
+                                    height="500"
+                                    style="border:none">
+                            </iframe>
+
+                            <!-- Botón solo para PDF -->
+                            <p:commandButton value="Abrir PDF en nueva pestaña"
+                                             icon="pi pi-external-link"
+                                             rendered="#{anexos.esPDF()}"
+                                             onclick="window.open('#{request.contextPath}/preview', '_blank'); return false;"
+                                             styleClass="ui-button-secondary"
+                                             type="button"
+                                             style="margin-top: 10px;" />
+                        </h:panelGroup>
+
+                        <!-- Lo dejo por si se necesita aceptar otros tipos  -->
+                        <h:panelGroup rendered="#{!anexos.esImagen() and !anexos.esPDF()}">
+                            <p:panel>
+                                <div style="text-align: center; padding: 40px;">
+                                    <i class="pi pi-file" style="font-size: 64px; color: #999;"></i>
+                                    <p style="margin-top: 20px;">
+                                        Vista previa no disponible para este tipo de archivo.
+                                    </p>
+                                    <p:commandButton value="Descargar archivo" 
+                                                     icon="pi pi-download"
+                                                     styleClass="ui-button-primary"
+                                                     ajax="false"
+                                                     style="margin-top: 10px;">
+                                        <p:fileDownload value="#{anexos.archivoDescarga}"/>
+                                    </p:commandButton>
+                                </div>
+                            </p:panel>
+                        </h:panelGroup>
+
+                    </h:panelGroup>
+
+                </p:dialog>
+
+
+                <div style="text-align:right; margin-top:20px;">
+                    <p:commandButton value="Finalizar Elaboración" 
+                                     icon="pi pi-arrow-circle-right"
+                                     styleClass="ui-button-success"
+                                     ajax="true"
+                                     style="margin-top: 10px;">
+                    </p:commandButton>
+                </div>
+            </h:form>
+
+
+
+        </p:panel>
+
+
+    </cc:implementation>
+</ui:component>

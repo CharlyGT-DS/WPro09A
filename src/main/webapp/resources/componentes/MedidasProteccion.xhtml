@@ -1,0 +1,100 @@
+<ui:component
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:gis="http://gisfaces.com">
+
+    <cc:interface>
+        <!-- Atributos que se pueden pasar al componente -->
+        <cc:attribute name="gestion_id" type="java.lang.String" required="false" />
+    </cc:interface>
+
+    <!-- ✅ Esta sección va después, y JSF la enlaza con la interfaz -->
+    <cc:implementation>
+
+        <h:form id="f-uno">
+            <p:growl id="msg1" life="2500" />
+            
+            <p:panel header="XII MEDIDAS DE PREVENCIÓN CONTRA INCENDIOS FORESTALES">
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin-bottom:2px;">
+                    <p:outputLabel for="txtAreaUno" value="Líneas de control y rondas cortafuegos" style="font-weight:bold;"/>
+                </div>
+                <p:inputTextarea id="txtAreaUno" required="true" requiredMessage="Ingrese Ubicación altitudinal y topografía" 
+                                 value="#{medidasProteccion.txtAreaUno}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="txtAreaDos" value="Vigilancia (puestos de control y recorridos por el área)" 
+                                   style="font-weight:bold;"/>
+                </div>
+                <p:inputTextarea id="txtAreaDos" required="true" requiredMessage="Ingrese zona de vida" 
+                                 value="#{medidasProteccion.txtAreaDos}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="txtAreaTres" value="Manejo de conbustibles" style="font-weight:bold;"/>
+                </div>
+                <p:inputTextarea id="txtAreaTres" required="true" requiredMessage="Ingrese hidrografía"
+                                 value="#{medidasProteccion.txtAreaTres}" rows="5" autoResize="false"
+                                  style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="txtAreaCuatro" value="Identificación en áreas críticas" style="font-weight:bold;"/>
+                </div>
+                <p:inputTextarea id="txtAreaCuatro" required="true" requiredMessage="Ingrese caraterísticas del bosque"
+                                 value="#{medidasProteccion.txtAreaCuatro}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+                
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="txtAreaCinco" value="Respuestas en caso de incendios forestales" style="font-weight:bold;"/>
+                </div>
+                <p:inputTextarea id="txtAreaCinco" required="true" requiredMessage="Ingrese caraterísticas del bosque"
+                                 value="#{medidasProteccion.txtAreaCinco}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+                
+                <div style="display:inline-flex; align-items:center; margin:40px 0 20px 0; width: 100%">
+                    <p:outputLabel for="txtAreaCuatro" value="MEDIDAS DE PREVENCIÓN CONTRA PLAGAS FORESTALES Y ENFERMEDADES FORESTALES" 
+                                   style="font-weight:bold;"/>
+                </div>
+                
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="txtAreaCuatro" value="Respuestas en caso de incendios forestales" style="font-weight:bold;"/>
+                </div>
+                <p:inputTextarea id="txtAreaSeis" required="true" requiredMessage="Ingrese caraterísticas del bosque"
+                                 value="#{medidasProteccion.txtAreaSeis}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+                
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="txtAreaCuatro" value="Respuestas en caso de incendios forestales" style="font-weight:bold;"/>
+                </div>
+                <p:inputTextarea id="txtAreaSiete" required="true" requiredMessage="Ingrese caraterísticas del bosque"
+                                 value="#{medidasProteccion.txtAreaSiete}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+                
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="txtAreaCuatro" value="Respuestas en caso de incendios forestales" style="font-weight:bold;"/>
+                </div>
+                <p:inputTextarea id="txtAreaOcho" required="true" requiredMessage="Ingrese caraterísticas del bosque"
+                                 value="#{medidasProteccion.txtAreaOcho}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+                
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="txtAreaCuatro" value="Respuestas en caso de incendios forestales" style="font-weight:bold;"/>
+                </div>
+                <p:inputTextarea id="txtAreaNueve" required="true" requiredMessage="Ingrese caraterísticas del bosque"
+                                 value="#{medidasProteccion.txtAreaNueve}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+                
+                <div style="text-align:right; margin-top:20px;">
+                    <p:commandButton value="Guardar" update="msg1" actionListener="#{biofisicas.grabar()}" ajax="true" process="f-uno" 
+                                     icon="pi pi-arrow-circle-right" iconPos="right" style="min-width:120px"/>
+                </div>
+            </p:panel>
+        </h:form>
+
+    </cc:implementation>
+</ui:component>

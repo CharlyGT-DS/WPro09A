@@ -1,0 +1,250 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- Optional
+            <style></style>
+            <script></script>
+        -->
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+     <f:metadata>
+            
+         <f:viewAction action="#{tecnicoEntrada.cargarDatos()}"  />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                    <h4>Entrada de Documentos Electrónicos</h4>
+                     <p:panel header="Bandeja de Entrada">
+                         <div style="display: flex; flex-direction: column; height: 60vh;">
+                             
+                              <h:form id="form">
+                            <p:growl id="msg" sticky="false" life="2500"/>
+                            
+                            
+                            <p:dataTable id="basicDT" var="fin" value="#{tecnicoEntrada.listaEntrada}" emptyMessage="No hay Registros">
+                                    <p:column headerText="Expediente" style="width: 8%">
+                                        <h:outputText value="#{fin.actual.expediente}" />
+                                    </p:column>
+
+                                    <p:column headerText="Licencia" style="width: 10%">
+                                        <h:outputText value="#{fin.actual.licencia}" />
+                                    </p:column>
+
+                                    <p:column headerText="Gestion_id" style="width: 10%">
+                                        <h:outputText value="#{fin.actual.gestionId}" />
+                                    </p:column>
+
+                                    <p:column headerText="Accion" style="width: 20%">
+                                        <h:outputText value="#{fin.actual.tipoAccion}" />
+                                    </p:column>
+
+                                    <p:column headerText="Archivo" style="width: 20%">
+                                        <h:outputText value="#{fin.actual.urlDocumento}" />
+                                    </p:column>
+                                
+                                    <p:column headerText="Fecha" style="width: 20%">
+                                        <p:datePicker  style="bold"
+                                            value="#{fin.actual.fecha}" 
+                                            pattern="dd/MM/yyyy" 
+                                            converter="xmlGregorianCalendarConverter" 
+                                            disabled="true" />
+
+                                    </p:column>
+                                
+                                    <p:column headerText="Descripcion" style="width: 20%">
+                                         <h:outputText value="#{fin.actual.descripcion}" />
+                                    </p:column>
+
+                                    <p:column headerText="Acciones" style="width:15%;text-align: center">
+                                      
+                                        
+                                        <p:commandButton update=":form:productDetail" disabled="true"  oncomplete="PF('productDialog').show()"
+                                                          icon="pi pi-telegram" title="Aceptar" ajax="true">
+                                            <f:setPropertyActionListener value="#{fin}"
+                                                                         target="#{tecnicoEntrada.seleccionadoEntrada}"/>
+                                        </p:commandButton>
+                                        
+                                        <p:commandButton style="margin-left: 8px;" update=":form:productDetail2"  oncomplete="PF('productDialog2').show()"
+                                                          icon="pi pi-search" title="Ver Documentos" ajax="true">
+                                            <f:setPropertyActionListener value="#{fin}"
+                                                                         target="#{tecnicoEntrada.seleccionadoEntrada}"/>
+                                        </p:commandButton>
+                                        
+                                    
+                                    </p:column>
+                                </p:dataTable>
+                            
+                                 <p:dialog header="Confirma Recepción de Gestión" widgetVar="productDialog" modal="true" showEffect="fade"
+                                       hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                 <p:outputPanel id="productDetail" style="text-align:center;">                                                                  
+                                 </p:outputPanel>
+                                 <center>
+                                     <table width="100%">
+                                         <tr>
+                                             
+                                             <td style="width: 50%; text-align: right;" >
+                                                 <p:commandButton value="aceptar" update=":form:basicDT" oncomplete="PF('productDialog').hide();" actionListener="#{tecnicoEntrada.aceptar()}" />
+
+                                             </td>
+                                              
+                                             <td style="width: 50%">
+                                                   <p:commandButton value="Cerrar"   oncomplete="PF('productDialog').hide()" />
+                                             </td>
+                                             
+                                             
+                                         </tr>
+                                         
+                                     </table>
+                                   
+                                 </center>
+                                 
+                             </p:dialog>
+                            
+                              <p:dialog header="Confirma Recepción de Documentos" widgetVar="productDialog2" modal="true" showEffect="fade"
+                                  hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                  <p:outputPanel id="productDetail2" style="text-align:center;">       
+                                      <div style="width: 500px; min-height: 400px;">
+                                          <table width="100%" style="min-height: 350px;" border ="0">
+                                              <tr style="vertical-align: central;">
+                                                  <td style="width: 15%">
+                                                      1
+                                                  </td>
+                                                  <td style="width: 65%;text-align: left;">
+                                                     
+                                                      <p:outputLabel value="#{tecnicoEntrada.listaArchivos.get(0).get('data2').toString()}"/> 
+                                                  </td>
+                                                  <td style="width: 20%;text-align: left;">
+                                                      
+                                                      <p:selectBooleanCheckbox value="#{tecnicoEntrada.c1}" itemLabel="Verificar">
+                                                      
+                                                        <p:ajax listener="#{tecnicoEntrada.verificaBoton()}"/>
+                                                      </p:selectBooleanCheckbox>
+                                                      
+                                                  </td>
+                                                  
+                                                  
+                                              </tr>    
+                                              <tr>
+                                                   <td style="width: 15%;">
+                                                      2
+                                                  </td>
+                                                  <td style="width: 65%;text-align: left;">
+                                                      <p:outputLabel value="#{tecnicoEntrada.listaArchivos.get(1).get('data2').toString()}"/> 
+                                                    
+                                                      
+                                                  </td>
+                                                  <td style="width: 20%;text-align: left;">
+                                                      <p:selectBooleanCheckbox value="#{tecnicoEntrada.c2}" itemLabel="Verificar">
+                                                        <p:ajax listener="#{tecnicoEntrada.verificaBoton()}"/>
+                                                      </p:selectBooleanCheckbox>
+                                                      
+                                                  </td>
+                                                  
+                                                  
+                                                  
+                                                  
+                                                  
+                                              </tr>
+                                              <tr>
+                                                  
+                                                   <td style="width: 15%">
+                                                      3
+                                                  </td>
+                                                  <td style="width: 65%;text-align: left;">
+                                                      <p:outputLabel value="#{tecnicoEntrada.listaArchivos.get(2).get('data2').toString()}"/> 
+                                                      
+                                                  </td>
+                                                  <td style="width: 20%">
+                                                      
+                                                      <p:selectBooleanCheckbox value="#{tecnicoEntrada.c3}" itemLabel="Verificar">
+                                                        <p:ajax listener="#{tecnicoEntrada.verificaBoton()}"/>
+                                                      </p:selectBooleanCheckbox>  
+                                                  </td>
+                                                  
+                                                  
+                                                  
+                                                  
+                                              </tr>
+                                              <tr>
+                                                   <td style="width: 15%">
+                                                      4
+                                                  </td>
+                                                  <td style="width: 65%;text-align: left;">
+                                                      <p:outputLabel value="#{tecnicoEntrada.listaArchivos.get(3).get('data2').toString()}"/> 
+                                                      
+                                                  </td>
+                                                  <td style="width: 20%">
+                                                       <p:selectBooleanCheckbox value="#{tecnicoEntrada.c4}" itemLabel="Verificar">
+                                                             <p:ajax listener="#{tecnicoEntrada.verificaBoton()}"/>
+                                                       </p:selectBooleanCheckbox>
+                                                      
+                                                  </td>
+                                                  
+                                              </tr>
+                                              <tr>
+                                                   <td style="width: 15%">
+                                                      5
+                                                  </td>
+                                                  <td style="width: 65%;text-align: left;">
+                                                      <p:outputLabel value="#{tecnicoEntrada.listaArchivos.get(4).get('data2').toString()}"/> 
+                                                      
+                                                  </td>
+                                                  <td style="width: 20%">
+                                                       <p:selectBooleanCheckbox  value="#{tecnicoEntrada.c5}" itemLabel="Verificar">
+                                                           <p:ajax listener="#{tecnicoEntrada.verificaBoton()}"/>
+                                                           
+                                                       </p:selectBooleanCheckbox>
+                                                      
+                                                  </td>
+                                                  
+                                                  
+                                                  
+                                                  
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          <center>
+                                              <p:commandButton id="tpu" oncomplete="PF('productDialog2').hide();" actionListener="#{tecnicoEntrada.generacionDocumentos()}" value="#{tecnicoEntrada.boton}"  />
+                                              
+                                          </center>
+                                          
+                                      </div>                
+                                                 
+                                 </p:outputPanel>
+                                  
+                              </p:dialog>
+                            
+                            
+                            
+                              </h:form>
+                             
+                         </div>
+                         
+                     </p:panel>
+                    
+                    
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

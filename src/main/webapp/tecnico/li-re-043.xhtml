@@ -1,0 +1,254 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- Optional
+            <style></style>
+            <script></script>
+        -->
+
+        <f:metadata>
+
+            <f:viewAction action="#{lire043.llamar()}"  />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                    <p:panel header="DICTAMEN TÉCNICO DE MODIFICACIÓN DEL PLAN DE MANEJO FORESTAL LI-RE-043 #{lire043.validezDocumento ? '(APROBAR)' : '(DENEGAR)'}">
+
+
+                        <h:form id="form043">
+
+                            <p:growl id="msg" showDetail="true" life="2500" />
+
+                            <p:panelGrid columns="3" style="width: 100%;" layout="grid" styleClass="ui-fluid">
+
+                                <p:column colspan="2" class="col-12 lg:col-8">
+                                    <p:outputLabel value="Lugar y Fecha de Documento: " style="font-weight:bold;" />
+                                    <p:outputLabel value="#{lire043.direccion}, #{lire043.fechaFormateada}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Ver datos ocultos: " style="font-weight:bold;" />
+                                    <p:toggleSwitch   value="#{lire043.bot}">
+                                        <p:ajax update=":form043:datos"  />  
+                                    </p:toggleSwitch> 
+                                </p:column>
+                            </p:panelGrid>
+
+                            <div class="field grid">
+                                <p:outputLabel value="No. Dictamen: " />
+                                <div class="col-12 md:col-10">
+                                    <p:inputText id="noDic" required="true" requiredMessage="Ingrese número de Dictamen" 
+                                                 value="#{lire043.noDictamen}" style="width: 30%" />
+                                </div>
+                                
+                                <div class="col-12 md:col-10" style="margin-top: 25px;">
+                                <p:outputLabel value="Señor(a): " style="font-weight:bold;" />
+                                <p:outputLabel value="#{lire043.nombreDirectorSub}" style="font-weight:bold;"/>
+                                </div>
+                                <div class="col-12 md:col-10">
+                                <p:outputLabel value="Director (a) Subregional" style="font-weight:bold;" />
+                                </div>
+                                <div class="col-12 md:col-10">                                
+                                <p:outputLabel value="INAB,  " style="font-weight:bold;" />
+                                <p:outputLabel value="#{lire043.subRegion}" style="font-weight:bold;"/>
+                                </div>
+
+                            </div>
+
+
+
+                            <h:panelGroup id="datos" layout="block" style="display: #{lire043.bot ? 'block' : 'none'};">
+
+                                <p:divider />
+                                <div class="col-12 md:col-6" >
+                                    <div class="card ui-fluid">
+                                        <h5>Datos que integran el Documento</h5>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="nomF" styleClass="col-12 mb-2 md:col-2 mb-md-0">Nombre Finca</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="nomF" disabled="true" value="#{lire043.nombreFinca}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="ub" styleClass="col-12 mb-2 md:col-2 mb-md-0">Ubicacion</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="ub" disabled="true" value="#{lire043.ubicacionFinca}" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="field grid">
+                                            <p:outputLabel for="pro" styleClass="col-12 mb-2 md:col-2 mb-md-0">Propietario Finca</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="pro" disabled="true" value="#{lire043.propietario}" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="field grid">
+                                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Licencia</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="lic" disabled="true" value="#{lire043.licencia}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="po" styleClass="col-12 mb-2 md:col-2 mb-md-0">Plan Operativo</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="po" disabled="true" value="#{lire043.planOperativo}" />
+                                            </div>
+                                        </div>
+                                        
+                                        
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="exp" styleClass="col-12 mb-2 md:col-2 mb-md-0">Expediente</p:outputLabel>
+                                            <div class="col-12 md:col-10">
+                                                <p:inputText id="exp" disabled="true" value="#{lire043.expediente}" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+
+                            <h:panelGroup id="secConclusiones">
+                                <p:outputLabel value=" - Conclusiones" style="display:block;text-align:justify;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
+                                <ui:repeat id="bot4" value="#{lire043.conclusiones}" var="conclusion">
+                                    <table width="100%" border="0">
+                                        <tr style="vertical-align: middle;">
+
+                                            <td width="10%">
+                                                <p:commandButton value="Quitar" actionListener="#{lire043.eliminarConclusion(conclusion)}"
+                                                                 process="@this" update="form043:secConclusiones" rendered="#{not empty lire043.conclusiones}" styleClass="rounded-button ui-button-danger" />
+                                            </td>
+
+                                            <td width="70%">
+                                                <p:inputText value="#{conclusion.valor}" required="true" requiredMessage="Ingrese conclusión"
+                                                             placeholder="Ingrese su conclusión" style="width:100%;" />
+                                            </td>
+
+                                            <td width="10%">
+                                                <p:commandButton value="Agregar Elemento" actionListener="#{lire043.agregarConclusion}"
+                                                                 process="form043:secConclusiones" update="form043:secConclusiones,:form043:msg" styleClass="rounded-button ui-button-success" />
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </ui:repeat>
+                            </h:panelGroup>
+                            
+                            <h:panelGroup id="secDecisiones">
+                                <p:outputLabel value=" - Decisiones del Dictamen" style="display:block;text-align:justify;font-weight:bold;font-size:1.2rem;margin-top:40px;" />
+                                <ui:repeat id="bot5" value="#{lire043.decisiones}" var="decision">
+                                    <table width="100%" border="0">
+                                        <tr style="vertical-align: middle;">
+
+                                            <td width="10%">
+                                                <p:commandButton value="Quitar" actionListener="#{lire043.eliminarDecision(decision)}"
+                                                                 process="@this" update="form043:secDecisiones" rendered="#{not empty lire043.decisiones}" styleClass="rounded-button ui-button-danger" />
+                                            </td>
+
+                                            <td width="70%">
+                                                <p:inputText value="#{decision.valor}" required="true" requiredMessage="Ingrese decisión"
+                                                             placeholder="Ingrese su decisión" style="width:100%;" />
+                                            </td>
+
+                                            <td width="10%">
+                                                <p:commandButton value="Agregar Elemento" actionListener="#{lire043.agregarDecision()}"
+                                                                 process="form043:secDecisiones" update="form043:secDecisiones,:form043:msg" styleClass="rounded-button ui-button-success" />
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </ui:repeat>
+                            </h:panelGroup>
+
+
+                            <h:panelGroup style="display:inline-flex;align-items:center;gap:10px;margin-top:20px;margin-bottom:20px;">
+
+
+                                <p:outputLabel value="La modificación del plan es: #{lire043.validezDocumento ? 'Procedente' : 'No procedente'}"
+                                               style="font-weight:bold;" />
+                            </h:panelGroup>
+
+                            <p:panelGrid columns="2" style="width:40%" styleClass="ui-fluid">
+                                <p:commandButton id="bot1" disabled="#{lire043.bot1}"  
+                                                 actionListener="#{lire043.generarDocumento043()}"
+                                                 update=":form043:productDetail,:form043:msg,:form043" 
+                                                 icon="pi pi-search" title="Vista Previa"  value="Vista Previa" />
+
+                                <p:commandButton oncomplete="PF('productDialog2').show()" id='bot2'
+                                                 actionListener="#{lire043.generarDocumento043Final()}" 
+                                                 disabled="#{lire043.bot2}" update="productDetail2" value="Generar Documento" />
+                            </p:panelGrid>
+                               
+
+                            <p:dialog header="Vista Previa del Documento" widgetVar="productDialog" modal="true" showEffect="fade"
+                                      hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                <p:outputPanel id="productDetail" style="text-align:center;">
+
+                                    <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire043.rutaNombre}" 
+                                            width="900px" 
+                                            height="600px" 
+                                            style="border:none;">
+                                    </iframe>
+
+
+                                </p:outputPanel>
+                                <center>
+                                    <p:commandButton value="Cerrar" update="bot1,bot2,bot4" actionListener="#{lire043.activarBoton()}" oncomplete="PF('productDialog').hide()" />
+                                </center>
+
+                            </p:dialog>
+
+                            <p:dialog header="Documento Creado" widgetVar="productDialog2" modal="true" showEffect="fade"
+                                      hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                <p:outputPanel id="productDetail2" style="text-align:center;">
+                                    <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire043.rutaNombre}" 
+                                            width="900px" 
+                                            height="600px" 
+                                            style="border:none;">
+                                    </iframe>
+
+                                </p:outputPanel>
+                                <center>
+                                    <table width="50%">
+                                        <tr>                                                  
+                                            <td style="width: 50%;text-align: center">
+                                                <p:commandButton value="Cerrar" update="bot1,bot2,bot4,bot5" actionListener="#{lire043.desactivaAmbosBotones()}" oncomplete="PF('productDialog2').hide()" />
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </center>
+                            </p:dialog>
+
+                        </h:form>
+
+
+                    </p:panel>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

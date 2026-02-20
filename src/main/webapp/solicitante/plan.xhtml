@@ -1,0 +1,1629 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:comp="http://xmlns.jcp.org/jsf/composite/componentes">
+
+    
+    <ui:define name="title"> 
+        
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        
+        <h:outputScript>
+function openMapaDialog(jsonValue) {
+    // Mostramos el diálogo
+    PF('maps').show();
+
+    // Si ya existe un formulario previo, lo eliminamos
+    const oldForm = document.getElementById("postFormMapa");
+    if (oldForm) oldForm.remove();
+
+    // Creamos un form dinámico
+    const form = document.createElement("form");
+    form.id = "postFormMapa";
+    form.method = "POST";
+    form.target = "iframeMapa";
+    form.action = "#{request.contextPath}/solicitante/AService.xhtml";
+
+    // Campo con el JSON (puede ser texto, id, etc.)
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "json";
+    input.value = jsonValue || "";
+
+    form.appendChild(input);
+    document.body.appendChild(form);
+
+    // Enviamos el formulario (el iframe recibirá el POST)
+    form.submit();
+}
+
+    function imprimirIframe(iframeId) {
+        var iframe = document.getElementById(iframeId);
+        if (iframe &amp;&amp; iframe.contentWindow) {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        } else {
+            alert("No se encontró el contenido del mapa para imprimir.");
+        }
+    }
+
+</h:outputScript>
+
+        
+        <style>
+            /* Borde para cada cabecera del tab */
+.ui-accordion .ui-accordion-header {
+    border: 1px solid #666;   /* Color del borde */
+    border-radius: 6px;       /* Bordes redondeados */
+    margin-bottom: 14px;       /* Separación entre tabs */
+    
+}
+
+/* Borde para el contenido del tab */
+.ui-accordion .ui-accordion-content {
+    border: 1px solid #666;
+    border-radius: 6px;
+    padding: 10px;
+    background-color: #fafafa;
+}
+            
+        
+        </style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        <link href="../resources/layout/styles/tundra.css" rel="stylesheet" type="text/css"/>
+        <link href="../resources/layout/styles/esri.css" rel="stylesheet" type="text/css"/>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        
+        
+         <f:metadata>
+           <!--   <f:viewAction action="#{planManejo.cargaValoredDefault()}"  /> -->
+        </f:metadata>
+      
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                     <p:panel header="Plan de Manejo Forestal (Edición)">
+                        <div style="display: flex; flex-direction: column; min-height: 60vh;">
+                      <h:form id="form">
+                      <p:growl id="msgs" showDetail="true" skipDetailIfEqualsSummary="true"/>
+                      
+                      
+                      
+                      
+                      <p:tabView id="tabw">
+                        <p:tab title="General"> 
+                            <p:accordionPanel id="acc" widgetVar="basic" multiple="true">
+                            <p:tab id="uno" title="I. DATOS DEL SOLICITANTE">
+                                <div id="base" class="card ui-fluid">
+                                <div id="base2" class="formgrid grid" style="height: 200px;background-color: #FFF8E1;">
+                                    
+                                   
+                                        <div class="field col-4">
+                                          <p:outputLabel value="Tipo de Solicitante" />
+                                          <p:selectOneMenu  id="option" value="#{planManejo.tipoSolicitante}">
+                                    
+                                          <f:selectItem itemLabel="Individual" itemValue="1"/>
+                                          <f:selectItem itemLabel="Jurídico" itemValue="2"/>
+                                          <p:ajax   listener="#{planManejo.verSeccionUno()}"  update=":form:tabw:acc" />
+                                          </p:selectOneMenu>
+                                         </div>
+                                         <div id="sec2" class="field col-4">
+                            
+                                              <p:outputLabel value="Tipo Entidad" style="#{planManejo.verGeneralSeccionUno?'display:block':'display:none;'}" />
+                                             
+                                              <p:selectOneMenu style="#{planManejo.verGeneralSeccionUno?'display:block':'display:none;'}" id="entidad" value="#{planManejo.tipoEmporesa}">
+                                    
+                                          <f:selectItem itemLabel="Empresas Privadas" itemValue="1"/>
+                                          <f:selectItem itemLabel="Cooperativas" itemValue="3"/>
+                                          <f:selectItem itemLabel="Asociaciones" itemValue="4"/>
+                                          <f:selectItem itemLabel="Comites" itemValue="5"/>
+                                          <f:selectItem itemLabel="Fundaciones" itemValue="6"/>
+                                          <f:selectItem itemLabel="Municipalidades" itemValue="7"/>
+                                          <f:selectItem itemLabel="ONG" itemValue="8"/>
+                                          <f:selectItem itemLabel="Iglesias" itemValue="9"/>
+                                          <f:selectItem itemLabel="Entidad Pública" itemValue="10"/>
+                                           
+                                          <p:ajax listener="#{planManejo.verNombreComercial()}"  update=":form:tabw:acc" />
+                                          </p:selectOneMenu>
+                                         
+                                         </div>
+                                         <div id="sec3" class="field col-4">
+                                        
+                                             <p:outputLabel style="#{planManejo.verGeneralSeccionUno?'display:block':'display:none;'}"   value="Nombre o razón social" />
+                                             <p:inputText value="#{planManejo.tg.razonSocial}"  required="#{planManejo.verGeneralSeccionUno}"  requiredMessage="Ingrese Razón Social" style="#{planManejo.verGeneralSeccionUno?'display:true':'display:none;'}" />
+                                        
+                                         </div>
+                                    
+                                 
+                                            <div id="sec4" class="field col-6">
+                                                <p:outputLabel style="#{(planManejo.verGeneralSeccionUno and planManejo.tipoEmpresaVer) ? 'display:block;' : 'display:none;'}" value="Nombre Comercial"/>
+                                                <p:inputText value="#{planManejo.tg.nombreComercial}" required="#{(planManejo.verGeneralSeccionUno and planManejo.tipoEmpresaVer)}" style="#{(planManejo.verGeneralSeccionUno and planManejo.tipoEmpresaVer) ? 'display:block;' : 'display:none;'}" />
+
+                                            </div>
+                                            <div id="sec5" class="field col-6">
+                                                <p:outputLabel style="#{planManejo.verGeneralSeccionUno?'display:block':'display:none;'} float:left;" value="NIT"/>
+                                                <p:inputText value="#{planManejo.tg.nitEntidad}" required="#{planManejo.verGeneralSeccionUno}" requiredMessage="Ingrese NIT" style="#{planManejo.verGeneralSeccionUno?'display:block':'display:none;'} float:left;"  />
+                                            </div>
+                                            <div id="sec6" class="field col-12">
+                                                 <table width="100%" border ="0">
+                                                 <tr>
+                                                 <td width="20%"></td>
+                                                 <td width="20%"></td>
+                                                 <td width="20%"></td>
+                                                 <td width="20%"></td>
+                                                 <td width="20%">
+                                                     
+                                                     <p:commandButton actionListener="#{planManejo.procesaGrabaPlan()}" value="Grabar" update=":form:tabw:acc"/>
+                                                 </td>
+                                                 
+                                                 </tr>
+                                                 </table>
+
+                                              
+                                            </div>
+
+                                        
+                                        
+                                    
+                                     
+                                </div>
+                                    
+                                    
+                                </div>
+                            </p:tab>
+                                <p:tab id="dos" title="H1.1 Personas involucradas en la solicitud" >
+                                    <div style="height: 400px;background-color:#FFF8E1;">
+                                        <table width="100%" border="0">
+                                            <tr>
+                                                <td  width="50%">
+                                                    Lista de propietarios Haga clic para buscar o agregar en los botones del lado derecho
+                                                </td>
+                                                <td width="25%">
+                                                    <center>
+                                                        <p:commandButton  action="#{planManejo.cargaCatalogos(1,null)}" icon="pi pi-user" oncomplete="PF('npersona').show();" iconPos="left" value="Agregar Personas" />
+                                                    </center>
+                                                    
+                                                </td>
+                                                <td width="25%">
+                                                    <center>
+                                                        <p:commandButton icon="pi pi-search" oncomplete="PF('bpersona').show();" iconPos="left"  value="Buscar Persona" />
+                                                    </center>
+                                                </td>
+                                                
+                                            </tr>
+                                        </table>
+                                        
+                                        <p:dataTable id="basicDT" var="per" value="#{planManejo.mhome.per.pplanM.data.get(0).personas}"
+                                                     style="border:1px solid #ccc; border-radius:6px;">
+                                            
+                                            <p:column headerText="Nombre" style="width: 30%;">
+                                                <h:outputText value="#{per.tcPersona.personaDesc}" />
+                                            </p:column>
+
+                                            <p:column headerText="CUI" style="width: 10%;">
+                                                <h:outputText value="#{per.tcPersona.cui}" />
+                                            </p:column>
+
+                                            <p:column headerText="Comunidad Linguistica" style="width: 15%;">
+                                               
+                                                    
+                                                <h:outputText value="#{per.tcPersona.tcIdioma.idiomaDesc}" />
+                                               
+                                            </p:column>
+
+                                            <p:column headerText="Pueblo de Pertenencia" style="width: 15%;">
+                                               
+                                                <h:outputText value="#{per.tcPersona.tcCultura.culturaDesc}" />
+                                                
+                                            </p:column>
+                                            
+                                            <p:column headerText="Estado civil" style="width: 15%;">
+                                                <h:outputText value="#{per.tcPersona.tcEstadoCivil.estadoCivilDesc}" />
+                                            </p:column>
+                                            
+                                            <p:column headerText="Representante Legal" style="text-align: center;width: 10%;">
+                                                <center>
+                                                    <p:commandButton icon="pi pi-arrow-up" ajax="true" update=":form:tabw:acc:repre" process="@form" action="#{planManejo.agregaRepresenante(per)}" title="Seleccionar como Representante"  styleClass="rounded-button mr-2 mb-2"  >
+                                           
+                                                        <f:setPropertyActionListener target="#{planManejo.persona2}" value="#{per}" />
+                                                        
+                                                    </p:commandButton>
+                                                </center>
+                                            </p:column>
+                                            <p:column headerText="Acciones" style="text-align: center;width: 10%;" >
+                                                <center>
+                                                    <p:commandButton icon="pi pi-times" update=":form:quitarper,:form:datosHombreMuje" oncomplete="PF('quitarper').show();" title="Quitar Registro" styleClass="rounded-button ui-button-danger mr-2 mb-2">
+                                                        
+                                                        <f:setPropertyActionListener value="#{per}" target="#{planManejo.persona}" /><!-- comment -->     
+                                                        
+                                                    </p:commandButton>
+                                                    <p:commandButton icon="pi pi-check" update=":form:editar" actionListener="#{planManejo.cargaCatalogos(2,per)}" oncomplete="PF('editar').show();" title="Modificar Datos Persona" styleClass="rounded-button mr-2 mb-2" >
+                                                        
+                                                        <f:setPropertyActionListener value="#{per}" target="#{planManejo.persona}" />
+                                                        
+                                                    </p:commandButton>
+                                                </center>
+                                            </p:column>
+
+
+                                           
+                                        </p:dataTable>
+                            <p:outputPanel id="datosHombreMuje" style="text-align:center;">
+                             <table width="100%" border="1" style="margin-top:10px;">
+                                  <tr>
+                                      <td width="20%">
+                                          Mujeres
+                                          <p:inputText style="width: 100%;" disabled="true" value="#{planManejo.mhome.per.mujeres} " />
+                                          
+                                      </td>
+                                      <td width="20%">
+                                          Hombres
+                                          <p:inputText style="width: 100%;" disabled="true" value="#{planManejo.mhome.per.hombres} " />
+                                      </td>  
+                               
+                                  
+                            
+                                      <td width="10%">
+                                          representante legal
+                                      </td>
+                                      <td width="50%">
+                                          
+                                      </td>
+                                    
+                                      
+                                  </tr>
+                                 <tr>
+                                     <td colspan="4">
+                                         <br/><!-- comment -->
+                                         <br/>
+                                         <p style="text-align:  left"> Lista de representante (s) legal (es). Haga clic para buscar o agregar en los botones del lado derecho de la siguiente lista</p>
+                                     </td>                                     
+                                 </tr>
+                                 <tr>
+                                     <td colspan="4">
+                                        
+                                         <p:dataTable id="repre" value="#{planManejo.lpersona}"  var="rep" emptyMessage="No hay registros que mostrar">
+                                             
+                                             <p:column style="text-align: left; width: 40%;" headerText="Nombre Representante">
+                                                 
+                                                 <p:outputLabel value="#{rep.tcPersona.personaDesc}"  />
+                                             </p:column>
+                                             
+                                             <p:column  style="text-align: left; width: 10%;" headerText="Identificación">
+                                                 <p:outputLabel value="#{rep.tcPersona.cui} "  />
+                                             </p:column>
+                                             
+                                              <p:column  style="text-align: left; width: 10%;" headerText="Comunidad linguistica">
+                                                  <p:outputLabel value="#{rep.tcPersona.tcIdioma.idiomaDesc} "  />
+                                             </p:column>
+                                             
+                                             <p:column  style="text-align: left; width: 10%;" headerText="Estado civil">
+                                                 <p:outputLabel value="#{rep.tcPersona.tcEstadoCivil.estadoCivilDesc} "  />
+                                             </p:column>
+                                             
+                                             <p:column  style="width:20%; text-align: left;" headerText=""  >
+                                                 <f:facet name="header">
+                                                     
+                                                       <p:commandButton value="Buscar" icon="pi pi-search" title="Buscar Persona"  />
+                                                 </f:facet>
+                                                 
+                                                 <p:commandButton ajax="true" process="@this" update=":form:tabw:acc:repre"  icon="pi pi-times"  title="Quitar registro"  actionListener="#{planManejo.quitarRepresentanteFin(rep)}" styleClass="rounded-button ui-button-danger mr-2 mb-2" />
+                                                    
+                                             </p:column>            
+                                             
+                                              <p:column  style="width:20%; text-align: left;" headerText=""  >
+                                                  <f:facet name ="header">
+                                                      
+                                                      <p:commandButton value="Nuevo Representante" title="Edita al representante legal" icon="pi pi-user-edit" />
+                                                      
+                                                  </f:facet>
+                                                  <p:commandButton icon="pi pi-pencil" title="Editar registro" styleClass="rounded-button ui-button-danger mr-2 mb-2" />
+                                                  
+                                              </p:column>
+                                        
+                                         </p:dataTable>
+                                             
+                                     </td> 
+                                     
+                                 </tr>
+                                  
+                                </table>
+                                <br/>
+                                <br/>
+                                <h:form>
+                                    <table width="100%" border="0">
+                                        <tr>
+                                            <td width="50%"></td>
+                                            <td width="20%"></td>
+                                            <td width="20%"></td>
+                                            <td width="10%">
+                                                <p:commandButton value="Grabar" />
+                                                
+                                            </td>
+                                                
+                                        </tr>
+                                        
+                                    </table>
+                                    
+                                </h:form>
+                                 <br/>
+                                <br/>
+                              </p:outputPanel>
+                                        
+                                    </div>
+                                    
+                                </p:tab>    
+                                 <p:tab title="II. DATOS DE NOTIFICACIÓN">
+                                    <div style="height: 400px;background-color:#FFF8E1;">
+                                        <h:form id="nof">       
+                                            
+                                            <h:messages id="messages1" layout="table" showDetail="true" showSummary="true"></h:messages>
+                                            <p:growl id="msg4" sticky="false" life="3000"/>
+                                            <table width="100%" border="1">
+                                                <tr>
+                                                    <td width="80%">
+                                            <ui:repeat id="bot4" value="#{planManejo.mhome.per.pplanM.data.get(0).notificaciones}" var="elemento">                               
+                                                  <table width="100%" border="1">
+                                                      
+                                                      <h:panelGroup rendered="#{(elemento.tcTipoNotificacion.tipoNotificacionId eq 1) || (elemento.tcTipoNotificacion.tipoNotificacionId eq 2) }">
+                                                        <tr>
+                                                            <td>
+                                                               
+                                                                <b>Departamento:</b>     <p:outputLabel value="#{elemento.tcMunicipio.tcDepartamento.departamentoDesc}" />
+                                                            </td>    
+                                                            <td>
+                                                                <b>Municipio:</b>   <p:outputLabel value="#{elemento.tcMunicipio.municipioDesc}" />
+                                                             
+                                                            </td>
+                                                        </tr>
+                                                    </h:panelGroup>
+                                                      
+                                                       <tr style="vertical-align: middle;">
+                                                       
+                                                        <td width="20%">
+                                                            <p:outputLabel  value="#{elemento.tcTipoNotificacion.tipoNotificacionDesc}"     style="width: 100%;" />
+                                                        </td>
+                                                        <td width="60%">
+                                                            <p:outputLabel  value="#{elemento.notificacionGestionDesc}"   style="width: 100%; " />
+                                                        </td>
+                                                       
+                                                        <td width="20%" style="vertical-align: middle;" >
+                                                            <p:commandButton ajax="true" value="Quitar" action="#{planManejo.eliminarElemento(elemento)}" process="@this" update=":form:tabw:acc:nof" styleClass="rounded-button ui-button-danger mr-2 mb-2" rendered="#{not empty planManejo.mhome.per.pplanM.data.get(0).notificaciones}"/> 
+                                                        </td>
+                                                    </tr>
+
+                                                  </table>
+                                            </ui:repeat>
+                                            </td>
+                                                    <td style="text-align: center; vertical-align: top;">
+                                                        
+                                                        <p:commandButton process="@this" value="Agregar Elemento"  action="#{planManejo.cargaValoredDefault()}"
+                                                                         oncomplete="PF('noti').show();" update=":form:tabw:acc:nof"
+                                                                         styleClass="rounded-button ui-button-success mr-2 mb-2"  />
+                                                        
+                                                    </td>
+                                                        
+                                           
+                                                           
+                                                       
+                                                </tr>
+                                                </table>
+                                           <p:dialog id="noti" closable="true" style="width: 100%;"  modal="true" minHeight="600" minWidth="1200" dynamic="true" responsive="true"
+                                            hideEffect="clip" showEffect="scale"
+                                            widgetVar="noti" header="Agrega Notificación">
+                                               
+                                              
+                                               <div class="card" style="min-width: 850px; min-height: 200px;">
+                                                   
+                                                    <table  width="100%" border ="1">
+                                                   <tr>
+                                                       <td width="30%">
+                                                           <p:selectOneMenu required="true" value="#{planManejo.tipoNotificacion}" dynamic="true"  style="width: 100%;">
+                                                               <f:selectItem noSelectionOption="true" itemValue="#{null}" itemLabel="Seleccione uno" /> 
+                                                       <f:selectItem itemValue="1" itemLabel="Dirección Domiciliar" />
+                                                       <f:selectItem itemValue="2" itemLabel="Ditección Oficina" />
+                                                       <f:selectItem itemValue="3" itemLabel="Teléfono" />
+                                                       <f:selectItem itemValue="4" itemLabel="Celular" />
+                                                       <f:selectItem itemValue="5" itemLabel="Correo Electrónico" />
+                                                       
+                                                       <p:ajax  event="change" listener="#{planManejo.verCampos()}" update=":form:tabw:acc:nof:mosField,:form:tabw:acc:nof:depver,:form:tabw:acc:nof:munsver"  />
+                                                       
+                                                             </p:selectOneMenu>
+                                                       </td>
+                                                       <td width="10%">
+                                                        
+                                                           
+                                                       </td>
+                                                       <td width="25%">
+                                                           <p:selectOneMenu   required="#{(planManejo.tipoNotificacion eq 1)?'true':(planManejo.tipoNotificacion eq 2)?'true':'false'}" value="#{planManejo.departamento}" converter="departamentoConverter" style="display: #{planManejo.tipoNotificacion eq '1'?'flex':(planManejo.tipoNotificacion eq '2')?'flex':'none'}"       id="depver">
+                                                               <f:selectItems var="dep" value="#{planManejo.listaDepartamentos}" itemLabel="#{dep.departamentoDesc}" itemValue="#{dep}"/>
+                                                               <f:attribute name="listaDepartamentos" value="#{planManejo.listaDepartamentos}" />
+                                                               <p:ajax event="change" update="munsver" listener="#{planManejo.cargaMunicipios}"/>
+                                                           </p:selectOneMenu>
+                                                           
+                                                       </td>
+                                                       
+                                                       <td width="25%"> 
+                                                           
+                                                           <p:selectOneMenu  dynamic="false" immediate="true"   id="munsver" converter="municipiosConverter"  value="#{planManejo.municipioSelect2}" required="#{planManejo.tipoNotificacion eq 1 or planManejo.tipoNotificacion eq 2}" style="display: #{planManejo.tipoNotificacion eq '1'?'flex':(planManejo.tipoNotificacion eq '2')?'flex':'none'}"  >
+                                                               <f:selectItem itemLabel="Seleccione uno" noSelectionOption="true" itemValue="#{null}" />
+                                                               <f:selectItems  var="pmun" value="#{planManejo.listaMunicipios}" itemLabel="#{pmun.municipioDesc}" itemValue="#{pmun}" />
+                                                               <f:attribute name="listaMunicipios" value="#{planManejo.listaMunicipios}"/>
+                                                             
+                                                           </p:selectOneMenu>
+                                                           
+                                                       </td>
+                                                       
+                                                       
+                                                   </tr>
+                                                        <tr>
+                                                            <td colspan="4" style="min-height: 155px;">
+                                                                <p:inputText required="true" value="#{planManejo.valorNotificacion}" requiredMessage="Ingrese valor de notiicación" placeholder="#{planManejo.placeHolderData}" id="mosField" style="width: 100%;  display: #{(planManejo.verField)?'inline':'none'};  " />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="4" style="min-height: 155px;">
+                                                                
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="4" style="min-height: 155px;">
+                                                                
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="4" style="text-align: right;">
+                                                                
+                                                                <p:commandButton  oncomplete="PF('noti').hide();" ajax="true" update=":form:tabw:acc:nof:msg4,:form:tabw:acc:nof" process="@form" value="Grabar"   actionListener =  "#{planManejo.agregarNotificacion()}"  />
+                                                            </td>
+                                                            
+                                                            
+                                                        </tr>
+                                                   
+                                                   
+                                               </table>
+                                                  
+                                                       
+                                                 
+                                                   
+                                                
+                                                   
+                                               </div>
+                                                
+                                                
+                                                
+                                            </p:dialog>
+                                            
+                                        </h:form>
+                                        
+                                        
+                                    </div>
+                                    
+                                </p:tab>    
+                                 <p:tab id="cuatrot" title="III. DATOS DE LA FINCA">
+                                    <div id="finca" style="min-height: 650px ;background-color: #FFF8E1;">
+                                        
+                                        <table width="100%" border="1">
+                                            <tr>
+                                                <td width="25%">
+                                                  
+                                                 <h:form id="multiple" enctype="multipart/form-data">
+                                                     <p:growl id="growl" showDetail="true" keepAlive="true"/>
+                                                    <p:fileUpload id="upload"
+                                                                  mode="advanced"
+                                                                  auto="true"
+                                                                  allowTypes="/(\.|\/)(xls|xlsx)$/"
+                                                                  label="Seleccionar Archivo"
+                                                                  uploadLabel="Subir"
+                                                                  update="growl"
+                                                                  cancelLabel="Cancelar"
+                                                                  dragDropSupport="false"  
+                                                                  oncomplete="#{planManejo.muestraBotonMapa()}"
+                                                                  listener="#{fileUploadView.handleFileUpload}" 
+                                                                  invalidFileMessage="Solo se permiten archivos Excel (.xls, .xlsx)" >
+                                                        <f:attribute name="gestion_id" value="#{mHHome.per.licencia.gestion_id}" />
+                                                    </p:fileUpload>
+                                                </h:form>
+
+                                                </td>
+                                                <td width="25%">
+                                                    <p:commandButton value="Mapa" style="display:#{(planManejo.verBotMapa)?'inline':'none'}}"
+                                                     actionListener="#{planManejo.datosPoligono()}"
+                                                     oncomplete="openMapaDialog('#{planManejo.json}');" />
+                                                </td>
+                                                <td width="25%">
+                                                    
+                                                </td>
+                                                <td width="25%">
+                                                    
+                                                </td>
+                                            </tr>
+                                            
+                                        </table>
+                                        
+                                        <!--
+                                        <comp:Finca  gestion_id="#{mHHome.per.licencia.gestion_id}" />
+                                        -->
+                                       
+
+                                    
+
+                              <p:dialog id="dialogMapa"
+                                    widgetVar="maps"
+                                    width="900"
+                                    height="600"
+                                    closable="true"
+                                    modal="true"
+                                    header="Mapa de la Finca">
+                                  
+                            
+                               <p:commandButton value="Imprimir"
+                                type="button"
+                                icon="pi pi-print"
+                                styleClass="shadow-1 mb-3 mr-2"
+                                onclick="imprimirIframe('iframeMapa')" />
+                          
+                              <!-- Iframe donde se cargará la página destino -->
+                              <iframe id="iframeMapa"
+                                      name="iframeMapa"
+                                      width="100%"
+                                      height="100%"
+                                      frameborder="0"
+                                      style="border: none;"></iframe>
+                             
+                             
+                          </p:dialog>
+
+                                          
+                                    </div>
+                                 </p:tab>   
+                              
+                              
+                                
+                                
+                            </p:accordionPanel>
+                        </p:tab>
+                        <p:tab title="Biofísicas">
+                           
+                            <comp:Biofisicas />
+                            
+                        </p:tab>
+                        <p:tab id="resto" title="Características de la Finca">  <!--  agrege un id = resto -->
+                            
+                            <comp:CaracteristicasFincaUno  id="incrustado"  />
+                        </p:tab>
+                           <p:tab title="Inventario Forestal">
+                            <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
+                                et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
+                                Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit
+                                quo minus.</p>
+                        </p:tab>
+                           <p:tab title="Planificación del Manejo">
+                            <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
+                                et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
+                                Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit
+                                quo minus.</p>
+                        </p:tab>
+                           <p:tab title="Resumen">
+                                <comp:Resumen id="compResumen"/>
+                        </p:tab>
+                            <p:tab title="Medidas de Protección">
+                                <comp:MedidasProteccion id="compMedidasP"/>
+                        </p:tab>
+                            <p:tab title="Cronograma de Actividades">
+                            <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
+                                et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
+                                Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit
+                                quo minus.</p>
+                            </p:tab>
+                             <p:tab title="Anexos (Mapas y Otros)">
+                                 <comp:Anexos id="compAnexos" />
+                            </p:tab>
+                           
+                    </p:tabView>
+                      
+                      <p:dialog id="quitarper" closable="true" style="width: 50%;"  modal="true" minHeight="600" minWidth="1200" dynamic="true" responsive="true"
+                                hideEffect="clip" showEffect="scale"
+                          widgetVar="quitarper" header="Desea Quitar Persona">
+                          <h:form id ="ap3">
+                              <div class="card" style="min-height: 150px; min-width: 400px;background-color: #FFF8E1;">
+                                  <table width="100%" border="1">
+                                      <tr>
+                                          <td width="100%">
+                                              Desea Quitar a : <p:outputLabel value="#{planManejo.persona.tcPersona.personaDesc}"/>
+                                          </td>
+                                          
+                                      </tr>
+                                    
+                                      <tr>
+                                          <td width="100%">
+                                              <center>
+                                                  <p:commandButton value="Aceptar" process="@form" update=":form:tabw:acc:basicDT"  oncomplete="PF('quitarper').hide();" action="#{planManejo.quitarPersona()}" style="margin-right: 8px;" /> 
+                                                  <p:commandButton oncomplete="PF('quitarper').hide();" value="Cancelar" />
+                                              </center>
+                                          </td>
+                                          
+                                      </tr>
+                                  </table>
+                              </div>
+                              
+                          </h:form>                              
+                      </p:dialog>
+                      
+                       <p:dialog id="abuscar" closable="true" style="width: 100%;"  modal="true" minHeight="600" minWidth="1200" dynamic="true" responsive="true"
+                                hideEffect="clip" showEffect="scale"
+                                widgetVar="bpersona" header="Búsqueda de Persona">
+                             <h:form id ="ap2">
+                             <p:growl id="msg2" showDetail="true" skipDetailIfEqualsSummary="true"/>
+                           
+                              <p:outputLabel value="Ingrese la Información"/>
+                              <div class="card" style="min-height: 500px; min-width: 1200px;background-color: #FFF8E1;">
+                             
+                                  <table width="100%" border="0">
+                                      <tr>
+                                          <td width="20%">
+                                              <p:selectOneMenu value="#{planManejo.nombreBusqueda}">
+                                                  <f:selectItem itemLabel="Ingrese Nombre Apellido"  itemValue="3"/>
+                                                  <f:selectItem itemLabel="Ingrese DPI"  itemValue="1"/>
+                                                  <f:selectItem itemLabel="Ingrese NIT" itemValue="2"/>
+                                               
+                                                  <p:ajax listener="#{planManejo.actualizarPlaceHolder}" update="ingresoData" />
+                                                  
+                                              </p:selectOneMenu>
+                                              
+                                          </td>
+                                          <td width="25%">
+                                              <p:inputText required="true" requiredMessage="Ingrese Dato de busqueda" id="ingresoData" value="#{planManejo.datoIngresado}" style="width:100%;" placeholder="#{planManejo.tipoAccion}" />
+                                           
+                                          </td>
+                                          <td width="50%">
+                                              <p:commandButton type="submit" process="@form" actionListener="#{planManejo.buscarPersona()}" style="margin-left: 8px;" update=":form:ap2:msg2,:form:ap2:tablaPersonas"  value="Buscar" />
+                                              
+                                          </td>
+                                          
+                                          
+                                      </tr>
+                                      
+                                  </table>
+                                  <br/><!-- comment -->
+                                  <hr/>
+                                 
+                                  <p:dataTable id="tablaPersonas" value="#{planManejo.personas.data}"  var="pers"
+                                               rows="5" emptyMessage="No hay registros en la consulta" 
+                                               rowsPerPageTemplate="5,10,{ShowAll|'All'}" paginator="true" >
+                                      <p:column headerText="Nombre" filterBy="#{pers.personaDesc}">
+                                          <p:outputLabel value="#{pers.personaDesc}"/>
+                                      </p:column>
+                                      <p:column headerText="identificación" filterBy="#{pers.cui}">
+                                          <p:outputLabel value="#{pers.cui}"/>
+                                      </p:column>
+                                      <p:column headerText="Correo" filterBy="#{pers.correo}">
+                                          <p:outputLabel value="#{pers.correo}"/>
+                                      </p:column>
+                                      <p:column headerText="NIT" filterBy="#{pers.nit}">
+                                          <p:outputLabel value="#{pers.nit}"/>
+                                      </p:column>
+                                      <p:column headerText="Acciones">
+                                          <p:commandButton  process="tablaPersonas" value="Seleccionar" update=":form:tabw:acc:basicDT" oncomplete="PF('bpersona').hide();" action="#{planManejo.agregaPersona}">
+                                              <f:setPropertyActionListener target="#{planManejo.personaSelect}" value="#{pers}"/>
+                                              
+                                          </p:commandButton>
+                                          
+                                      </p:column>
+                                      
+                                      
+                                      
+                                  </p:dataTable>
+                                  
+                              
+                                  
+                                  
+                              </div>
+                             </h:form>
+                       </p:dialog>
+                      
+                      
+                      <p:dialog id="agregaper" closable="true" style="width: 100%;"  modal="true" minHeight="600" minWidth="1200" dynamic="true" responsive="true"
+                                hideEffect="clip" showEffect="scale"
+                                widgetVar="npersona" header="Agregar datos de la persona">
+                          <h:form id ="ap">
+                               <p:growl id="msg" showDetail="true" skipDetailIfEqualsSummary="true"/>
+                             <p:outputLabel value="Ingrese Información"/>
+                          <div class="card" style="min-height: 500px; min-width: 1200px;background-color: #FFF8E1;">
+                           
+                              <table width="100" border="0" style="min-width: 1190px;">
+                                  
+                                  <tr>
+                                      <td width="20%">
+                                         .
+                                      </td>
+                                    
+                                      <td width="20%">
+                                         .
+                                      </td>
+                                      <td width="20%">
+                                          .
+                                      </td>
+                                       <td width="20%">
+                                         .
+                                      </td>
+                                       <td width="20%">
+                                         .
+                                      </td>
+                                      
+                                      
+                                      
+                                      
+                                  </tr>
+                                  <tr>
+                                      
+                                      <td colspan="2">
+                                          <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100">
+                                                      <p:outputLabel value="Ingrese Nombre Completo"/>
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100">
+                                                      <p:inputText value="#{planManejo.persona.tcPersona.personaDesc}" required="true" requiredMessage="Ingrese Nombre" style="width: 100%" />
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                          
+                                      </td>
+                                    
+                                      <td>
+                                           <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100">
+                                                      <p:outputLabel value="Fecha Nacimiento"/>
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100">
+                                                   
+                                                      <p:datePicker value="#{planManejo.persona.tcPersona.fechaNacimiento}" required="true" requiredMessage="Ingrese Fecha" style="width: 100%;" />
+                                                  
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                      </td>
+                                        <td style="vertical-align: top;">
+                                            
+                                             <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100">
+                                                      <p:outputLabel value="Sexo"/>
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                    
+                                                      <p:selectOneMenu converter="sexConverter" value="#{planManejo.persona.tcPersona.tcSexo}" filter="true" filterMatchMode="contains" >
+                                                          <f:selectItem itemLabel="Seleccione uno" itemEscaped="#{null}" noSelectionOption="true"/>
+                                                          <f:selectItems var="sex" value="#{planManejo.listaSexo}" itemLabel="#{sex.sexoDesc}" itemValue="#{sex}"/>
+                                                          <f:attribute name="listaSexo" value="#{planManejo.listaSexo}"/>
+                                                          
+                                                      
+                                                      </p:selectOneMenu>
+                                                      
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                      </td>
+                                        <td style="vertical-align: top;">
+                                            
+                                              <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100">
+                                                      <center>
+                                                      <p:outputLabel value="Clic para agregar (opcional)"/>
+                                                      </center>
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                      <p:commandButton value="Foto" />
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                      </td>
+                                    
+                                      
+                                      
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                           <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                   
+                                                      <p:outputLabel value="CUI"/>
+                                                  
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:inputText value="#{planManejo.persona.tcPersona.cui}" required="true" requiredMessage="Ingrese CUI" style="width: 100%" />
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      <td>
+                                          <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                 
+                                                      <p:outputLabel value="Teléfono"/>
+                                                  
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:inputMask value="#{planManejo.persona.tcPersona.telefono}" mask="9999-9999" required="true" requiredMessage="Ingrese Teléfono" style="width: 100%" />
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                      </td>
+                                      <td colspan="3"> </td>
+                                          
+                                      
+                                      
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                        <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                 
+                                                      <p:outputLabel value="Departamento/Estado"/>
+                                                   
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu    filter="true" converter="departamentoConverter" filterMatchMode="contains" value="#{planManejo.departamento}" style="width: 100%;" >
+                                                              <f:selectItem noSelectionOption="true" itemLabel="Seleccione uno" itemValue="#{null}" />
+                                                              <f:selectItems value="#{planManejo.listaDepartamentos}" var="dp" itemLabel ="#{dp.departamentoDesc}" itemValue="#{dp}"/>
+                                                              <p:ajax event="change" listener="#{planManejo.cargaMunicipios()}"  update="muni" />
+                                                              <f:attribute name="listaDepartamentos" value="#{planManejo.listaDepartamentos}" />
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      <td>
+                                          <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                               
+                                                      <p:outputLabel value="Municipio/Provincia"/>
+                                                   
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu id="muni" value="#{planManejo.municipioSelect}"  converter="municipiosConverter" filter="true" filterMatchMode="contains" style="width: 100%;">
+                                                              <f:selectItem noSelectionOption="true" itemLabel="Seleccione Uno" itemValue="#{null}"/>
+                                                              <f:selectItems value="#{planManejo.listaMunicipios}" var="mu" itemLabel="#{mu.municipioDesc}" itemValue="#{mu}" />
+                                                              <f:attribute name="listaMunicipios" value="#{planManejo.listaMunicipios}"/>
+                                                              
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      
+                                      
+                                       <td colspan="3"> 
+                                       
+                                       
+                                        <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                               
+                                                      <p:outputLabel value="Dirección"/>
+                                                   
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:inputText value="#{planManejo.persona.tcPersona.direccion}" required="true" requiredMessage="Ingrese Dirección"  style="width: 100%;"/>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                       
+                                       
+                                       
+                                       </td>
+                                      
+                                  </tr>                                  
+                                  <tr>
+                                      <td>
+                                          <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                 
+                                                      <p:outputLabel value="Correo"/>
+                                                     
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:inputText required="true" value="#{planManejo.persona.tcPersona.correo}" requiredMessage="Ingrese Correo"  style="width: 100%;">
+                                                             <f:validateRegex pattern="^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$" />                                                              
+                                                          </p:inputText>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      <td>
+                                          <table width="100%" border="0" >
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                     
+                                                      <p:outputLabel value="NIT o DPI si no tiene"/>
+                                                    
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:inputText value="#{planManejo.persona.tcPersona.nit}" required="true" requiredMessage="Ingrese NIT o DPI"  style="width: 100%;"/>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      
+                                       <td> 
+                                        <table width="100%" border="0" >
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                     
+                                                      <p:outputLabel value="Comunidad linguistica"/>
+                                                    
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu value="#{planManejo.persona.tcPersona.tcIdioma}" converter="idiomaConverter"  filter="true" filterMatchMode="contains" style="width: 100%">
+                                                              <f:selectItem noSelectionOption="true" itemLabel="Selecciones Uno" itemValue="#{null}"/>
+                                                              <f:selectItems var="idio" value="#{planManejo.listaIdio}" itemLabel="#{idio.idiomaDesc}"  itemValue="#{idio}"/>
+                                                              <f:attribute name="listaIdio" value="#{planManejo.listaIdio}" />
+                                                              
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                       
+                                       
+                                       
+                                       </td>
+                                      <td>
+                                           <table width="100%" border="0" >
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                     
+                                                      <p:outputLabel value="Pueblo de pertenencia"/>
+                                                    
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu value="#{planManejo.culturaSelect}"  converter="culturaConverter" filter="true" filterMatchMode="contains" style="width: 100%">
+                                                                  <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                                                                  <f:selectItems var="cu" value="#{planManejo.listaCultura}" itemLabel="#{cu.culturaDesc}" itemValue="#{cu}" />
+                                                                  <f:attribute name="listaCultura" value="#{planManejo.listaCultura}" />
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      <td>
+                                          
+                                      </td>
+                                      
+                                  </tr>
+                                  
+                                  <tr>
+                                      <td>
+                                          <table width="100%" border="0" >
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                     
+                                                      <p:outputLabel value="Estado Civil"/>
+                                                    
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu value="#{planManejo.persona.tcPersona.tcEstadoCivil}"  converter="civilConverter" filter="true" filterMatchMode="contains" style="width: 100%">
+                                                                <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                                                                <f:selectItems var="es" value="#{planManejo.listaEstado}" itemLabel="#{es.estadoCivilDesc}" itemValue="#{es}"/>
+                                                                <f:attribute name="listaEstado" value="#{planManejo.listaEstado}"/>
+                                                        
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      <td>
+                                          
+                                          <table width="100%" border="0" >
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                     
+                                                      <p:outputLabel value="ocupación"/>
+                                                    
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu filter="true" filterMatchMode="contains" converter="ocupacionConverter" value="#{planManejo.persona.tcPersona.tcOcupacion}"   style="width: 100%">
+                                                              <f:selectItem noSelectionOption="true" itemLabel="Seleccione Uno" itemValue="#{null}"/>
+                                                              <f:selectItems var="ocu" value="#{planManejo.listaOcupaciones}"  itemLabel="${ocu.ocupacionDesc}" itemValue="#{ocu}"/>
+                                                              <f:attribute name="listaOcupaciones" value="#{planManejo.listaOcupaciones}" />
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                      </td>
+                                      <td colspan="3" style="text-align: right;"> 
+                                         
+                                          <p:commandButton update="ap,msg" actionListener="#{planManejo.validarDatosFormularioGrabar(1)}" type="submit"  process="@this ap" style="margin-right: 10px;" value="Guardar"/>
+                                              <p:commandButton style="margin-right: 10px;" oncomplete="PF('npersona').hide();" value="Cancelar"/>
+                                          
+                                      
+                                      </td>
+                                      
+                                      
+                                  </tr>
+                                  
+                              </table>
+                              
+                              
+                              
+                          </div>
+                          </h:form>
+                          
+                      </p:dialog>
+                      
+                      <!-- ediar personas  -->
+                        <p:dialog id="editar" closable="true" style="width: 100%;"  modal="true" minHeight="600" minWidth="1200" dynamic="true" responsive="true"
+                                hideEffect="clip" showEffect="scale"
+                                widgetVar="editar" header="Editar datos de Persona">
+                          <h:form id ="ape">
+                               <p:growl id="msg3" showDetail="true" skipDetailIfEqualsSummary="true"/>
+                             <p:outputLabel value="Ingrese Información"/>
+                          <div class="card" style="min-height: 500px; min-width: 1200px;background-color: #FFF8E1;">
+                           
+                              <table width="100" border="0" style="min-width: 1190px;">
+                                  
+                                
+                                  <tr>
+                                      
+                                      <td colspan="2">
+                                          <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100">
+                                                      <p:outputLabel value="Ingrese Nombre Completo"/>
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100">
+                                                      <p:inputText value="#{planManejo.persona2.tcPersona.personaDesc}" autocomplete="false"  required="true" requiredMessage="Ingrese Nombre" style="width: 100%" />
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                          
+                                      </td>
+                                    
+                                      <td>
+                                           <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100">
+                                                      <p:outputLabel value="Fecha Nacimiento"/>
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100">
+                                                   
+                                                      <p:datePicker value="#{planManejo.persona2.tcPersona.fechaNacimiento}" required="true" requiredMessage="Ingrese Fecha" style="width: 100%;" />
+                                                  
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                      </td>
+                                        <td style="vertical-align: top;">
+                                            
+                                             <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100">
+                                                      <p:outputLabel value="Sexo"/>
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                    
+                                                      <p:selectOneMenu converter="sexConverter" value="#{planManejo.persona2.tcPersona.tcSexo}" filter="true" filterMatchMode="contains" >
+                                                          <f:selectItem itemLabel="#{planManejo.persona.tcPersona.tcSexo.sexoDesc}"  itemValue="#{planManejo.persona.tcPersona.tcSexo}" />
+                                                          <f:selectItems var="sex" value="#{planManejo.listaSexo}" itemLabel="#{sex.sexoDesc}" itemValue="#{sex}"/>
+                                                          <f:attribute name="listaSexo" value="#{planManejo.listaSexo}"/>
+                                                          
+                                                      
+                                                      </p:selectOneMenu>
+                                                      
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                      </td>
+                                        <td style="vertical-align: top;">
+                                            
+                                              <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100">
+                                                      <center>
+                                                      <p:outputLabel value="Clic para agregar (opcional)"/>
+                                                      </center>
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                      <p:commandButton value="Foto" />
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                      </td>
+                                    
+                                      
+                                      
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                           <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                   
+                                                      <p:outputLabel value="CUI"/>
+                                                  
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:inputText value="#{planManejo.persona2.tcPersona.cui}" required="true" requiredMessage="Ingrese CUI" style="width: 100%" />
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      <td>
+                                          <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                 
+                                                      <p:outputLabel value="Teléfono"/>
+                                                  
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:inputMask value="#{planManejo.persona2.tcPersona.telefono}" mask="9999-9999" required="true" requiredMessage="Ingrese Teléfono" style="width: 100%" />
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                      </td>
+                                      <td colspan="3"> </td>
+                                          
+                                      
+                                      
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                        <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                 
+                                                      <p:outputLabel value="Departamento/Estado"/>
+                                                   
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu    filter="true" converter="departamentoConverter" filterMatchMode="contains" value="#{planManejo.persona.tcPersona.tcMunicipio.tcDepartamento}" style="width: 100%;" >
+                                                              <f:selectItem noSelectionOption="true" itemLabel="#{planManejo.persona2.tcPersona.tcMunicipio.tcDepartamento.departamentoDesc}" itemValue="#{planManejo.persona.tcPersona.tcMunicipio.tcDepartamento}" />
+                                                              <f:selectItems value="#{planManejo.listaDepartamentos}" var="dp" itemLabel ="#{dp.departamentoDesc}" itemValue="#{dp}"/>
+                                                              <p:ajax event="change" listener="#{planManejo.cargaMunicipios()}"  update="munie" />
+                                                              <f:attribute name="listaDepartamentos" value="#{planManejo.listaDepartamentos}" />
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      <td>
+                                          <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                               
+                                                      <p:outputLabel value="Municipio/Provincia"/>
+                                                   
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu id="munie" value="#{planManejo.persona.tcPersona.tcMunicipio}"  converter="municipiosConverter" filter="true" filterMatchMode="contains" style="width: 100%;">
+                                                              <f:selectItem noSelectionOption="true" itemLabel="#{planManejo.persona2.tcPersona.tcMunicipio.municipioDesc}" itemValue="#{planManejo.persona.tcPersona.tcMunicipio}"/>
+                                                              <f:selectItems value="#{planManejo.listaMunicipios}" var="mu" itemLabel="#{mu.municipioDesc}" itemValue="#{mu}" />
+                                                              <f:attribute name="listaMunicipios" value="#{planManejo.listaMunicipios}"/>
+                                                              
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      
+                                      
+                                       <td colspan="3"> 
+                                       
+                                       
+                                        <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                               
+                                                      <p:outputLabel value="Dirección"/>
+                                                   
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:inputText value="#{planManejo.persona2.tcPersona.direccion}" required="true" requiredMessage="Ingrese Dirección"  style="width: 100%;"/>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                       
+                                       
+                                       
+                                       </td>
+                                      
+                                  </tr>                                  
+                                  <tr>
+                                      <td>
+                                          <table width="100%" border="0">
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                 
+                                                      <p:outputLabel value="Correo"/>
+                                                     
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:inputText required="true" value="#{planManejo.persona2.tcPersona.correo}" requiredMessage="Ingrese Correo"  style="width: 100%;">
+                                                             <f:validateRegex pattern="^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$" />                                                              
+                                                          </p:inputText>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      <td>
+                                          <table width="100%" border="0" >
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                     
+                                                      <p:outputLabel value="NIT o DPI si no tiene"/>
+                                                    
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:inputText value="#{planManejo.persona2.tcPersona.nit}" required="true" requiredMessage="Ingrese NIT o DPI"  style="width: 100%;"/>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      
+                                       <td> 
+                                        <table width="100%" border="0" >
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                     
+                                                      <p:outputLabel value="Comunidad linguistica"/>
+                                                    
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu   value="#{planManejo.persona2.tcPersona.tcIdioma}"  converter="idiomaConverter"  filter="true" filterMatchMode="contains" style="width: 100%">
+                                                             
+                                                              <f:selectItems var="idio" value="#{planManejo.listaIdio}" itemLabel="#{idio.idiomaDesc}"  itemValue="#{idio}"/>
+                                                              <f:attribute name="listaIdio" value="#{planManejo.listaIdio}" />
+                                                              
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                       
+                                       
+                                       
+                                       </td>
+                                      <td>
+                                           <table width="100%" border="0" >
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                     
+                                                      <p:outputLabel value="Pueblo de pertenencia"/>
+                                                    
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu value="#{planManejo.persona2.tcPersona.tcCultura}"  converter="culturaConverter" filter="true" filterMatchMode="contains" style="width: 100%">
+                                                                  <f:selectItem itemLabel="#{planManejo.persona.tcPersona.tcCultura.culturaDesc}" itemValue="#{planManejo.persona.tcPersona.tcCultura}" noSelectionOption="true"/>
+                                                                  <f:selectItems var="cu" value="#{planManejo.listaCultura}" itemLabel="#{cu.culturaDesc}" itemValue="#{cu}" />
+                                                                  <f:attribute name="listaCultura" value="#{planManejo.listaCultura}" />
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      <td>
+                                          
+                                      </td>
+                                      
+                                  </tr>
+                                  
+                                  <tr>
+                                      <td>
+                                          <table width="100%" border="0" >
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                     
+                                                      <p:outputLabel value="Estado Civil"/>
+                                                    
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                          <p:selectOneMenu value="#{planManejo.persona2.tcPersona.tcEstadoCivil}"  converter="civilConverter" filter="true" filterMatchMode="contains" style="width: 100%">
+                                                                <f:selectItem itemLabel="#{planManejo.persona2.tcPersona.tcEstadoCivil.estadoCivilDesc}" itemValue="#{planManejo.persona2.tcPersona.tcEstadoCivil}" noSelectionOption="true"/>
+                                                                <f:selectItems var="es" value="#{planManejo.listaEstado}" itemLabel="#{es.estadoCivilDesc}" itemValue="#{es}"/>
+                                                                <f:attribute name="listaEstado" value="#{planManejo.listaEstado}"/>
+                                                        
+                                                          </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                      </td>
+                                      <td>
+                                          
+                                          <table width="100%" border="0" >
+                                              <tr>
+                                                  <td width="100" style="text-align: left;">
+                                                     
+                                                      <p:outputLabel value="ocupación"/>
+                                                    
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td width="100" >
+                                                      <center>
+                                                        <p:selectOneMenu value="#{planManejo.persona.tcPersona.tcOcupacion}"
+                                                                    converter="ocupacionConverter" 
+                                                                    filter="true" filterMatchMode="contains"
+                                                                    style="width: 100%">
+                                                      
+                                                   
+                                                       <!-- lista de opciones -->
+                                                       <f:selectItems value="#{planManejo.listaOcupaciones}" 
+                                                                      var="ocu"
+                                                                      itemLabel="#{ocu.ocupacionDesc}"
+                                                                      itemValue="#{ocu}"/>
+                                                   </p:selectOneMenu>
+                                                      </center>
+                                                  </td>
+                                                  
+                                              </tr>
+                                              
+                                              
+                                          </table>
+                                          
+                                      </td>
+                                      <td colspan="3" style="text-align: right;"> 
+                                         
+                                          <p:commandButton update=":form:ape,ape,:form:msg3,:form:tabw:acc:basicDT,:form:editar"    action="#{planManejo.validarDatosFormularioGrabar(2)}"    process="@form" style="margin-right: 10px;" value="Actualizar"/>
+                                              <p:commandButton style="margin-right: 10px;" oncomplete="PF('editar').hide();" value="Cancelar"/>
+                                          
+                                      
+                                      </td>
+                                      
+                                      
+                                  </tr>
+                                  
+                              </table>
+                              
+                             
+                              
+                              
+                          </div>
+                          </h:form>
+                          
+                      </p:dialog>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      </h:form>
+                        </div>
+                     </p:panel>
+                    
+                    
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

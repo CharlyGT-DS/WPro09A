@@ -1,0 +1,252 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- Optional
+            <style></style>
+            <script></script>
+        -->
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        
+          <f:metadata>
+              <f:viewAction action="#{LIRE080.llamar()}" />
+          </f:metadata>
+   
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                    <h4>Creadno LI-RE-080</h4>
+                     <p:panel header="Cumplimiento de Documentación presentada">
+                        <div style="display: flex; flex-direction: column; min-height: 60vh;">
+                            <h:form id="form">
+                                 <p:growl id="msg" sticky="false" life="2500" />
+                                 
+                                  <table width="100%" border="1">
+                                <tr>
+                                    <td width="50%">
+                                        <b>Lugar y Fecha de Documento:</b> #{LIRE080.doc042.solicitudActualizacion.general.direccionSedeInab} , #{LIRE080.fechaFormateada}
+                                    </td>
+                                    <td width="50%" style="text-align: right">
+                                        <b> Ver Datos Ocultos  </b> 
+                                        <p:toggleSwitch   value="#{LIRE080.bot}">
+                                        
+                                            <p:ajax update=":form:datos"   />  
+                                        </p:toggleSwitch>
+                                    </td>
+                                </tr>
+                                     
+                            </table>
+                                 
+                                 
+                                    <h:panelGroup id="datos" layout="block"
+                                          style="display: #{LIRE080.bot ? 'block' : 'none'};">
+                                
+                             <div class="col-12 md:col-6" >
+                    <div class="card ui-fluid">
+                        <h5>Datos Generales del Expediente</h5>
+                        <div class="field grid">
+                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-2 mb-md-0">Lugar Y fecha</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="lic" disabled="true" value="#{LIRE080.doc042.solicitudActualizacion.general.direccionSedeInab} , #{LIRE080.fechaFormateada}" />
+                            </div>
+                        </div>
+                        <div class="field grid">
+                            <p:outputLabel for="exp" styleClass="col-12 mb-2 md:col-2 mb-md-0">Expediente</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="exp" disabled="true" value="#{LIRE080.doc042.expediente}" />
+                            </div>
+                        </div>
+                        
+                        <div class="field grid">
+                            <p:outputLabel for="ela" styleClass="col-12 mb-2 md:col-2 mb-md-0">Número de Folios</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="ela" disabled="true" value="5" />
+                            </div>
+                        </div>
+                        
+                        <div class="field grid">
+                            <p:outputLabel for="tit" styleClass="col-12 mb-2 md:col-2 mb-md-0">Nombre Solicitante</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="tit" disabled="true" value="#{LIRE080.doc042.solicitudActualizacion.visor.firmantes.firma.get(0).nombreQuienFirma}" />
+                            </div>
+                        </div>
+                        
+                    </div>
+                    </div>
+                    
+                    
+                    
+                     <div class="col-12 md:col-6" >
+                    <div class="card ui-fluid">
+                        <h5>Datos de Notificación</h5>
+                        <div class="field grid">
+                            <p:outputLabel for="lic1" styleClass="col-12 mb-2 md:col-2 mb-md-0">Dirección domiciliar</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="lic1" disabled="true" value="#{LIRE080.contactos.get(0).valor} " />
+                            </div>
+                        </div>
+                        <div class="field grid">
+                            <p:outputLabel for="exp1" styleClass="col-12 mb-2 md:col-2 mb-md-0">Telefóno</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="exp1" disabled="true" value="#{LIRE080.contactos.get(1).valor}" />
+                            </div>
+                        </div>
+                        
+                        <div class="field grid">
+                            <p:outputLabel for="ela1" styleClass="col-12 mb-2 md:col-2 mb-md-0">Celular</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="ela1" disabled="true" value="#{LIRE080.contactos.get(2).valor}" />
+                            </div>
+                        </div>
+                        
+                        <div class="field grid">
+                            <p:outputLabel for="tit1" styleClass="col-12 mb-2 md:col-2 mb-md-0">Correo Electrónico</p:outputLabel>
+                            <div class="col-12 md:col-10">
+                                <p:inputText id="tit1" disabled="true" value="#{LIRE080.contactos.get(3).valor}" />
+                            </div>
+                        </div>
+                        
+                    </div>
+                    </div>
+                                        
+                    <div class="col-12 md:col-6" >
+                    <div class="card ui-fluid">
+                        <h5>Aprovechamiento Forestal</h5>
+                        <div class="field grid">
+                             
+                            <ui:repeat value="#{LIRE080.elementos}" var="elemento">
+                            <div style="width: 100%;">                            
+                            <div class="col-06">
+                                  <p:inputText value="#{elemento.valor}" required="true" requiredMessage="Ingrese Motivo Solicitud" placeholder="Ingrese Motivo de su Solicitud"  style="width: 100%;" />
+                            </div>
+                            </div>
+                            </ui:repeat>
+                            
+                            
+                            
+                        </div>
+                        </div>                
+                    </div>              
+                                        
+                                        
+                    <div class="col-12 md:col-6" >
+                    <div class="card ui-fluid">
+                        <h5>Documentos</h5>
+                        <div class="field grid">
+                            
+                            <ui:repeat value="#{LIRE080.documentos}" var="das">
+                                <div style="width: 100%;">                           
+                            <div class="col-06">
+                                  <p:inputText value="#{das.valor}" required="true" requiredMessage="Ingrese Motivo Solicitud" placeholder="Ingrese Motivo de su Solicitud"  style="width: 100%;" />
+                            </div>
+                            </div>
+                            </ui:repeat>
+                            
+                            
+                        </div>
+                    </div>                         
+                    </div>
+                                        
+                    
+                                 </h:panelGroup>
+                                <hr/>
+                            <table width="100%" border="0">
+                                <tr>
+                                    <td width="15%">
+                                        
+                                        <p:commandButton id="bot1" disabled="#{LIRE080.bot1}" oncomplete="PF('productDialog').show()"
+                                                         action="#{LIRE080.generarDocumento080()}" update=":form:productDetail"
+                                                         icon="pi pi-search" title="Vista Previa"  value="Vista Previa" />
+                                        
+                                    </td>
+                                    <td width="15%">
+                                        <p:commandButton oncomplete="PF('productDialog2').show()" id='bot2'
+                                                         actionListener="#{LIRE080.generarDocumento080Final()}" 
+                                                         disabled="#{LIRE080.bot2}" update=":form:productDetail2" value="Generar Documento" />
+                                    </td>
+                                    <td width="25%">
+                                        
+                                    </td>
+                                    <td width="25%">
+                                        
+                                    </td>
+                                    <td width="10%">
+                                        
+                                    </td>
+                                    <td width="10%">
+                                        
+                                    </td>
+                                    
+                                </tr>
+                                
+                            </table>
+
+                             <p:dialog header="Vista Previa del Documento" widgetVar="productDialog" modal="true" showEffect="fade"
+                                       hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                 <p:outputPanel id="productDetail" style="text-align:center;">  
+                                     <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{LIRE080.rutaNombre}" 
+                                       width="900px" 
+                                       height="600px" 
+                                       style="border:none;">
+                                 </iframe>
+                                 </p:outputPanel>
+                                 <center>
+                                     <p:commandButton value="Cerrar" update="bot1,bot2" action="#{LIRE080.activarBoton()}" oncomplete="PF('productDialog').hide()" />
+                                 </center>
+                                 
+                             </p:dialog>
+                                
+                                
+                             <p:dialog header="Documento Creado" widgetVar="productDialog2" modal="true" showEffect="fade"
+                                       hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                   <p:outputPanel id="productDetail2" style="text-align:center;">
+                           
+                                       
+                                        <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{LIRE080.rutaNombre}" 
+                                       width="900px" 
+                                       height="600px" 
+                                       style="border:none;">
+                                 </iframe>
+                                       
+                                   </p:outputPanel>
+                                      <center>
+                                          <table width="50%">
+                                              <tr>                                                  
+                                                  <td style="width: 50%;text-align: center">
+                                                      <p:commandButton value="Cerrar" update="bot1,bot2" actionListener="#{LIRE080.desactivaAmbosBotones()}" oncomplete="PF('productDialog2').hide()" />
+                                                  </td>
+                                              </tr>
+                                          </table>
+                                        
+                                      </center>
+                                </p:dialog>
+                          
+
+                                
+                            </h:form>
+                        </div>
+                          
+                     </p:panel>
+                     
+                      
+                      
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

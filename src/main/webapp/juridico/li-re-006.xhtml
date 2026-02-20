@@ -1,0 +1,243 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- CSS/JS opcional -->
+
+        <f:metadata>
+            <f:viewAction action="#{lire006.llamar()}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        <!-- migas -->
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+
+                    <p:panel header="DICTAMEN JURÍDICO DE ENMIENDAS LI-RE-006">
+
+                        <h:form id="form006">
+
+                            <p:growl id="msg" showDetail="true" life="2500" />
+
+                            <!-- Encabezado: lugar/fecha y toggle -->
+                            <p:panelGrid columns="3" style="width:100%;" layout="grid" styleClass="ui-fluid">
+                                <p:column colspan="2" styleClass="col-12 lg:col-8">
+                                    <p:outputLabel value="Lugar y Fecha de Documento: " style="font-weight:bold;" />
+                                    <p:outputLabel value="#{lire006.direccion}, #{lire006.fechaFormateada}" />
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Ver datos ocultos: " style="font-weight:bold;" />
+                                    <p:toggleSwitch value="#{lire006.bot}">
+                                        <p:ajax update=":form006:datos" />
+                                    </p:toggleSwitch>
+                                </p:column>
+                            </p:panelGrid>
+
+                            <!-- Dictamen No. y datos visibles del destinatario -->
+                            <div class="field grid">
+                                <p:outputLabel value="Dictamen No.:" />
+                                <div class="col-12 md:col-10">
+                                    <p:inputText id="noDic"
+                                                 required="true"
+                                                 requiredMessage="Ingrese número de Dictamen"
+                                                 value="#{lire006.noDictamen}"
+                                                 style="width:30%" />
+                                </div>
+
+                                <div class="col-12 md:col-10" style="margin-top: 25px;">
+                                    <p:outputLabel value="#{lire006.nombreDirectorSub}" style="font-weight:bold;" />
+                                </div>
+                                <div class="col-12 md:col-10">
+                                    <p:outputLabel value="Director Subregional" style="font-weight:bold;" />
+                                </div>
+                                <div class="col-12 md:col-10">
+                                    <p:outputLabel value="INAB, " style="font-weight:bold;" />
+                                    <p:outputLabel value="#{lire006.subRegion}" style="font-weight:bold;" />
+                                </div>
+                            </div>
+
+                            <!-- DATOS QUE INTEGRAN EL DOCUMENTO (oculto con toggle) -->
+                            <h:panelGroup id="datos" layout="block" style="display: #{lire006.bot ? 'block' : 'none'};">
+                                <p:divider />
+                                <div class="col-12 md:col-6">
+                                    <div class="card ui-fluid">
+                                        <h5>Datos que integran el Documento</h5>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="prov" styleClass="col-12 mb-2 md:col-3 mb-md-0">No. de Providencia</p:outputLabel>
+                                            <div class="col-12 md:col-9">
+                                                <p:inputText id="prov" disabled="true" value="#{lire006.noProvidencia}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="exp" styleClass="col-12 mb-2 md:col-3 mb-md-0">Expediente No.</p:outputLabel>
+                                            <div class="col-12 md:col-9">
+                                                <p:inputText id="exp" disabled="true" value="#{lire006.expediente}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="lic" styleClass="col-12 mb-2 md:col-3 mb-md-0">Licencia</p:outputLabel>
+                                            <div class="col-12 md:col-9">
+                                                <p:inputText id="lic" disabled="true" value="#{lire006.licencia}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="sol" styleClass="col-12 mb-2 md:col-3 mb-md-0">Solicitante</p:outputLabel>
+                                            <div class="col-12 md:col-9">
+                                                <p:inputText id="sol" disabled="true" value="#{lire006.solicitante}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="fin" styleClass="col-12 mb-2 md:col-3 mb-md-0">Finca</p:outputLabel>
+                                            <div class="col-12 md:col-9">
+                                                <p:inputText id="fin" disabled="true" value="#{lire006.finca}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="ubi" styleClass="col-12 mb-2 md:col-3 mb-md-0">Ubicación de Finca</p:outputLabel>
+                                            <div class="col-12 md:col-9">
+                                                <p:inputText id="ubi" disabled="true" value="#{lire006.ubicacionFinca}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="rep" styleClass="col-12 mb-2 md:col-3 mb-md-0">Representante Legal</p:outputLabel>
+                                            <div class="col-12 md:col-9">
+                                                <p:inputText id="rep" disabled="true" value="#{lire006.representanteLegal}" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field grid">
+                                            <p:outputLabel for="tl" styleClass="col-12 mb-2 md:col-3 mb-md-0">Tipo de Licencia</p:outputLabel>
+                                            <div class="col-12 md:col-9">
+                                                <p:inputText id="tl" disabled="true" value="#{lire006.tipoLicencia}" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+
+                            <!-- Secciones dinámicas -->
+                            <h:panelGroup id="secEnmiendas">
+                                <p:outputLabel value=" - Faltantes o Enmiendas" style="display:block;font-weight:bold;font-size:1.2rem;margin-top:30px;margin-bottom: 15px;" />
+                                <ui:repeat id="repEnmienas" value="#{lire006.enmiendas}" var="item">
+                                    <table width="100%" border="0">
+                                        <tr style="vertical-align: middle;">
+                                            <td width="10%">
+                                                <p:commandButton value="Quitar"
+                                                                 actionListener="#{lire006.eliminarEnmiendas(item)}"
+                                                                 process="@this"
+                                                                 update="form006:secEnmiendas"
+                                                                 rendered="#{not empty lire006.enmiendas}"
+                                                                 styleClass="rounded-button ui-button-danger"/>
+                                            </td>
+                                            <td width="70%">
+                                                <p:inputText value="#{item.valor}"
+                                                             required="true"
+                                                             requiredMessage="Ingrese Enmindas o Pendientes"
+                                                             placeholder="Ingrese Pendientes o Enmiendas"
+                                                             style="width:100%;" />
+                                            </td>
+                                            <td width="10%">
+                                                <p:commandButton value="Agregar Elemento"
+                                                                 actionListener="#{lire006.agregarEnmiendas}"
+                                                                 process="form006:secEnmiendas"
+                                                                 update="form006:secEnmiendas, :form006:msg"
+                                                                 styleClass="rounded-button ui-button-success" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </ui:repeat>
+                            </h:panelGroup>
+                            
+                            <!-- Botonera -->
+                            <p:panelGrid columns="2" style="width:40%;margin-top: 25px;" styleClass="ui-fluid">
+                                <p:commandButton id="bot1"
+                                                 disabled="#{lire006.bot1}"
+                                                 actionListener="#{lire006.generarDocumento006()}"
+                                                 update=":form006:productDetail,:form006:msg,:form006"
+                                                 icon="pi pi-search"
+                                                 title="Vista Previa"
+                                                 value="Vista Previa" />
+
+                                <p:commandButton oncomplete="PF('productDialog2').show()"
+                                                 id="bot2"
+                                                 actionListener="#{lire006.generarDocumento006Final()}"
+                                                 disabled="#{lire006.bot2}"
+                                                 update="productDetail2"
+                                                 value="Generar Documento" />
+                            </p:panelGrid>
+                                    
+
+                            <!-- Diálogo de Vista Previa -->
+                            <p:dialog header="Vista Previa del Documento"
+                                      widgetVar="productDialog"
+                                      modal="true" showEffect="fade" hideEffect="fade"
+                                      resizable="false" closable="false" style="width:900px;">
+                                <p:outputPanel id="productDetail" style="text-align:center;">
+                                    <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire006.rutaNombre}"
+                                            width="900px" height="600px" style="border:none;">
+                                    </iframe>
+                                </p:outputPanel>
+                                <center>
+                                    <p:commandButton value="Cerrar"
+                                                     update="bot1,bot2"
+                                                     actionListener="#{lire006.activarBoton()}"
+                                                     oncomplete="PF('productDialog').hide()" />
+                                </center>
+                            </p:dialog>
+
+                            <!-- Diálogo de Documento Final -->
+                            <p:dialog header="Documento Creado"
+                                      widgetVar="productDialog2"
+                                      modal="true" showEffect="fade" hideEffect="fade"
+                                      resizable="false" closable="false" style="width:900px;">
+                                <p:outputPanel id="productDetail2" style="text-align:center;">
+                                    <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{lire006.rutaNombre}"
+                                            width="900px" height="600px" style="border:none;">
+                                    </iframe>
+                                </p:outputPanel>
+                                <center>
+                                    <table width="50%">
+                                        <tr>
+                                            <td style="width:50%;text-align:center">
+                                                <p:commandButton value="Cerrar"
+                                                                 update="bot1,bot2"
+                                                                 actionListener="#{lire006.desactivaAmbosBotones()}"
+                                                                 oncomplete="PF('productDialog2').hide()" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </center>
+                            </p:dialog>
+
+                        </h:form>
+
+                    </p:panel>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,328 @@
+<ui:component
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:gis="http://gisfaces.com">
+
+    <cc:interface>
+        <!-- Atributos que se pueden pasar al componente -->
+        <cc:attribute name="gestion_id" type="java.lang.String" required="false" />
+    </cc:interface>
+
+    <!-- ✅ Esta sección va después, y JSF la enlaza con la interfaz -->
+    <cc:implementation>
+        <p:growl id="horror" life="5000"/>
+
+            <p:outputPanel id="SecUno">
+            <p:panel header="V. CARACTERÍSTICAS DE LA FINCA">
+
+                <h:outputLabel value="5.1 Uso actual de la finca" style="font-weight:bold;"/>
+
+                <h:panelGroup id="SecUnoA" layout="block">
+                    <p:panelGrid columns="3" style="width: 100%;">
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Área total de la finca (ha): "/>
+                                <p:outputLabel value="#{caracteristicasFinca.areaTotalFinca}" style="font-weight:bold;">
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="2"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column>
+                                <p:outputLabel value="Área restante (ha):"/>
+                                <p:outputLabel value="#{caracteristicasFinca.areaRestanteUso}" style="font-weight:bold;">
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="2"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column>
+                                <p:outputLabel value="Área total a intervenir (ha):"/>
+                                <p:outputLabel value="#{caracteristicasFinca.areaIntervenirUso}" style="font-weight:bold;">
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="2"/>
+                                </p:outputLabel>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="3" style="width: 100%;">
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Uso de finca:" />
+
+                                <p:selectOneMenu id="somUsoFinca" required="true" requiredMessage="Seleccione uso de finca" 
+                                                 converter="fincaUsoConverter" style="width: 100%" value="#{caracteristicasFinca.usoSeleccionado}" 
+                                                 filter="true" filterMatchMode="contains">
+                                    <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{caracteristicasFinca.listaUsoFinca}" var="lis" itemValue="#{lis}"
+                                                   itemLabel="#{lis.usoFincaDesc}" />
+                                    <f:attribute name="listausoFinca" value="#{caracteristicasFinca.listaUsoFinca}"/>
+                                </p:selectOneMenu>
+
+                            </p:column>
+
+                            <p:column>
+                                <p:outputLabel for="txtAreaUso" value="Área en (ha):"/>
+                                <p:inputText id="txtAreaUso" required="true" requiredMessage="Ingrese Área" value="#{caracteristicasFinca.areaHaUso}" 
+                                             style="width: 100%" onkeydown="return event.key !== 'Enter';" maxlength="10">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+                            </p:column>
+
+                            <p:column>
+                                <p:commandButton value="Agregar" action="#{caracteristicasFinca.agregarDatoUso}" ajax="true"
+                                                 process=":form:tabw:incrustado:SecUno" update=":form:tabw:incrustado:horror, SecUno" 
+                                                 style="min-width:120px"/>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </h:panelGroup>
+
+                <h:panelGroup id="SecUnoB" layout="block">
+
+                    <p:dataTable id="dtUsoFinca" var="DtUso" value="#{caracteristicasFinca.datosDtUsoFinca}">
+                        <p:column headerText="Uso">
+                            <p:outputLabel value="#{DtUso.usoFinca}"/>
+                        </p:column>
+
+                        <p:column headerText="Area en (ha)">
+                            <p:outputLabel value="#{DtUso.areaHaUso}">
+                                <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                            </p:outputLabel>
+                            <p:outputLabel value=" ha"/>
+                        </p:column>
+
+                        <p:column headerText="Porcentaje (%)">
+                            <p:outputLabel value="#{DtUso.porcentajeUso}">
+                                <f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="0"/>
+                            </p:outputLabel>
+                            <p:outputLabel value=" %"/>
+                        </p:column>
+
+                        <p:column headerText="Quitar" style="width:3rem;text-align: center">
+                            <p:commandButton icon="pi pi-times-circle" action="#{caracteristicasFinca.eliminarDatoUso(DtUso)}" 
+                                             ajax="true" process=":form:tabw:incrustado:SecUnoB" update=":form:tabw:incrustado:SecUno" 
+                                             styleClass="ui-button-danger"/>
+                        </p:column>
+
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column footerText="Total: " style="text-align: right; font-weight: bold;"/>
+                                <p:column style="font-weight: bold;">
+                                    <f:facet name="footer">
+                                        <p:outputLabel value="#{caracteristicasFinca.totalAreaUso}">
+                                            <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                        </p:outputLabel>
+                                        <h:outputText value=" ha"/>
+                                    </f:facet>
+                                </p:column>
+                                <p:column style="font-weight: bold;">
+                                    <f:facet name="footer">
+                                        <p:outputLabel value="#{caracteristicasFinca.totalPorcentajeUso}">
+                                            <f:convertNumber type="number" maxFractionDigits="1" minFractionDigits="0"/>
+                                        </p:outputLabel>
+                                        <h:outputText value="%"/>
+                                    </f:facet>
+                                </p:column>
+                            </p:row>
+                        </p:columnGroup>  
+                    </p:dataTable>
+
+
+
+                    <p:panelGrid columns="2" layout="grid" style="width: 80%;">
+                        <p:commandButton type="button" value="Clic para cambiar mapa de fincas" style="min-width:250px"/>
+                        <p:commandButton type="button" value="Ver Mapa" icon="pi pi-image" iconPos="right" style="min-width:100px"/>
+                    </p:panelGrid>
+
+                    <div style="margin:20px 0 2px 0;">
+                        <p:outputLabel value="Habilitar árboles fuera de bosque" styleClass="mr-2"/>
+                        <p:selectBooleanCheckbox  />
+                    </div>
+
+                    <div style="text-align:right; margin-top:20px;">
+                        <p:commandButton value="Guardar" ajax="true" process=":form:tabw:incrustado:SecUnoB" 
+                                         update=":form:tabw:incrustado:horror" 
+                                         action="#{caracteristicasFinca.guardarSecUno}" icon="pi pi-arrow-circle-right" iconPos="right"/>
+                    </div>
+
+                </h:panelGroup>
+            </p:panel>
+        </p:outputPanel>
+
+
+        <!-- *************************************************Sec dos ************************************************-->
+
+        <p:outputLabel value="5.2 BOSQUE DE LA FINCA" style="margin-top:50px;"/>
+
+        <p:outputPanel id="SecDos">
+
+            <p:panel header="5.2.1 DIVISIÓN CON BÓSQUE">
+
+                <h:panelGroup id="secDosA" layout="block">
+                    <p:panelGrid columns="4" style="width: 100%;">
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Área con bosque (ha):"/>
+                                <p:inputText required="true" requiredMessage="Ingrese Área con bosque" value="#{caracteristicasFinca.areaBosque}"
+                                             style="width: 100%;" onkeydown="return event.key !== 'Enter';">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+                            </p:column>
+
+                            <p:column>
+                                <p:outputLabel value="Área de protección (ha):"/>
+                                <p:inputText id="txtAreaProteccion" value="#{caracteristicasFinca.areaProteccion}" 
+                                             style="width: 100%;" onkeydown="return event.key !== 'Enter';">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+                            </p:column>
+
+                            <p:column>
+                                <p:outputLabel value="Área de producción:"/>
+                                <p:inputText required="true" requiredMessage="Ingrese Área de producción" value="#{caracteristicasFinca.areaProduccion}" 
+                                             style="width: 100%;" onkeydown="return event.key !== 'Enter';">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+                            </p:column>
+
+                            <p:column>
+                                <p:outputLabel value="Área a intervenir:"/>
+                                <p:inputText required="true" requiredMessage="Ingrese Área a intervenir" value="#{caracteristicasFinca.areaIntervenir}" 
+                                             style="width: 100%;" onkeydown="return event.key !== 'Enter';">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="4">
+                                <p:outputLabel value="Tipo de bosque:"/>
+                                <p:selectOneMenu id="somTipoBosque" required="true" requiredMessage="Seleccione un tipo de bosque" 
+                                                 value="#{caracteristicasFinca.tipoSeleccionado}" converter="tipoBosqueConverter" filter="true" 
+                                                 filterMatchMode="contains" style="width:100%">
+                                    <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{caracteristicasFinca.listaTipoBosque}" var="lisTipoBosque" itemValue="#{lisTipoBosque}"
+                                                   itemLabel="#{lisTipoBosque.tipoBosqueDesc}" />
+                                    <f:attribute name="listaTipoBosque" value="#{caracteristicasFinca.listaTipoBosque}"/>
+                                </p:selectOneMenu>
+
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+
+                </h:panelGroup>
+
+
+                <p:outputLabel value="Si ha iniciado área de protección, liste los criterios. De lo contrario presione sobre guardar"/>
+
+                <h:panelGroup id="secDosB" layout="block">
+
+                    <p:panelGrid columns="3" style="width: 100%;">
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Criterio de protección:"/>
+
+                                <p:selectOneMenu id="somCriterioProteccion" required="true" 
+                                                 requiredMessage="Seleccione un criterio de protección" 
+                                                 value="#{caracteristicasFinca.criterioSeleccionado}" converter="criterioProteccionConverter"
+                                                 filter="true" filterMatchMode="contains" style="width:100%"> 
+                                    <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{caracteristicasFinca.listaCriterioProteccion}" var="lisCriterioProteccion" 
+                                                   itemValue="#{lisCriterioProteccion}" itemLabel="#{lisCriterioProteccion.criterioProteccionDesc}"/>
+                                    <f:attribute name="listaCriterioProteccion" value="#{caracteristicasFinca.listaCriterioProteccion}"/>
+                                </p:selectOneMenu>
+
+                            </p:column>
+
+                            <p:column>
+                                <p:outputLabel value="Área en (ha):"/>
+                                <p:inputText required="true" requiredMessage="Ingrese el área" value="#{caracteristicasFinca.areaHaCriterio}" 
+                                             style="width: 100%;" onkeydown="return event.key !== 'Enter';">
+                                    <p:keyFilter mask="num" />
+                                    <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                </p:inputText>
+                            </p:column>
+
+                            <p:column>
+                                <p:commandButton value="Agregar" action="#{caracteristicasFinca.agregarDatoCriterio}" ajax="true" 
+                                                 process=":form:tabw:incrustado:secDosB,txtAreaProteccion" 
+                                                 update=":form:tabw:incrustado:secDosB,horror,dtCriterioProteccion"/>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </h:panelGroup> 
+
+
+                <h:panelGroup id="secDosC" layout="block">
+                    <p:dataTable id="dtCriterioProteccion" var="DtCriterio" value="#{caracteristicasFinca.datosDtCriterioProteccion}">
+                        <p:column headerText="Criterio de protección">
+                            <p:outputLabel value="#{DtCriterio.creterioProteccion}" />
+                        </p:column>
+
+                        <p:column headerText="Area en (ha)">
+                            <p:outputLabel value="#{DtCriterio.areaHaCriterio}">
+                                <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                            </p:outputLabel>
+                            <p:outputLabel value=" ha"/>
+                        </p:column>
+
+                        <p:column headerText="Porcentaje (%)">
+                            <p:outputLabel value="#{DtCriterio.porcentajeCriterio}" >
+                                <f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="0"/>
+                            </p:outputLabel>
+                            <p:outputLabel value="%"/>
+                        </p:column>
+
+                        <p:column headerText="Quitar" style="width:3rem;text-align: center">
+                            <p:commandButton icon="pi pi-times-circle" action="#{caracteristicasFinca.eliminarDatoCriterio(DtCriterio)}" 
+                                             ajax="true" process=":form:tabw:incrustado:dtCriterioProteccion" update=":form:tabw:incrustado:dtCriterioProteccion" 
+                                             styleClass="ui-button-danger"/>
+                        </p:column>
+
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column footerText="Total: " class="text-right font-bold"/>
+                                <p:column style="font-weight: bold;">
+                                    <f:facet name="footer">
+                                        <p:outputLabel value="#{caracteristicasFinca.totalAreaCriterio}">
+                                            <f:convertNumber type="number" maxFractionDigits="5" minFractionDigits="0"/>
+                                        </p:outputLabel>
+                                        <h:outputText value=" ha"/>
+                                    </f:facet>
+                                </p:column>
+                                <p:column style="font-weight: bold;">
+                                    <f:facet name="footer">
+                                        <p:outputLabel value="#{caracteristicasFinca.totalPorcentajeCriterio}">
+                                            <f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="0"/>
+                                        </p:outputLabel>
+                                        <h:outputText value="%"/>
+                                    </f:facet>
+                                </p:column>
+                            </p:row>
+                        </p:columnGroup>    
+                    </p:dataTable>
+
+
+
+                    <div style="margin-top:20px;">
+                        <p:commandButton type="button" value="Clic para agregar mapa" style="min-width:250px"/>
+                    </div>
+
+                    <div style="text-align:right; margin-top:20px;">
+                        <p:commandButton value="Guardar" ajax="true" process=":form:tabw:incrustado:secDosC, secDosA" update=":form:tabw:incrustado:horror" 
+                                         action="#{caracteristicasFinca.guardarSecDos}" icon="pi pi-arrow-circle-right" iconPos="right"/>
+
+                    </div>
+                </h:panelGroup>
+            </p:panel>
+
+        </p:outputPanel>   
+
+    </cc:implementation>
+</ui:component>

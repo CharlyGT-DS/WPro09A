@@ -1,0 +1,113 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="title">
+        <!-- Title -->
+    </ui:define>
+
+    <ui:define name="head">
+        <!-- Optional
+            <style></style>
+            <script></script>
+        -->
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        
+          <f:metadata>
+            
+              <f:viewAction action="#{subRegionalFinalizados.cargarDatos()}"  />
+        </f:metadata>
+       
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                    <h4>Finalizados</h4>
+                    <p:panel header="Tareas Finalizadas">
+                        <div style="display: flex; flex-direction: column; min-height: 60vh;">
+                        <h:form id="form">
+                        <p:growl id="msg" sticky="false" life="2500"/>
+                                         
+                        <p:dataTable id="basicDT" var="fin" value="#{subRegionalFinalizados.lista}" emptyMessage="No hay Registros">
+                                    <p:column headerText="Expediente" style="width: 8%">
+                                        <h:outputText value="#{fin.actual.expediente}" />
+                                    </p:column>
+
+                                    <p:column headerText="Licencia" style="width: 10%">
+                                        <h:outputText value="#{fin.actual.licencia}" />
+                                    </p:column>
+
+                                    <p:column headerText="Gestion_id" style="width: 10%">
+                                        <h:outputText value="#{fin.actual.gestionId}" />
+                                    </p:column>
+
+                                    <p:column headerText="Accion" style="width: 20%">
+                                        <h:outputText value="#{fin.actual.tipoAccion}" />
+                                    </p:column>
+
+                                    <p:column headerText="Archivo" style="width: 20%">
+                                        <h:outputText value="#{fin.actual.urlDocumento}" />
+                                    </p:column>
+                                
+                                    <p:column headerText="Fecha" style="width: 20%">
+                                        <p:datePicker  style="bold"
+                                            value="#{fin.actual.fecha}" 
+                                            pattern="dd/MM/yyyy" 
+                                            converter="xmlGregorianCalendarConverter" 
+                                            disabled="true" />
+
+                                    </p:column>
+                                
+                                    <p:column headerText="Descripcion" style="width: 20%">
+                                         <h:outputText value="#{fin.actual.descripcion}" />
+                                    </p:column>
+
+                                    <p:column headerText="Acciones" style="width:15%;text-align: center">
+                                        <p:commandButton  oncomplete="PF('productDialog').show()"  update=":form:productDetail"
+                                                          icon="pi pi-search" title="Mostrar" ajax="true">
+                                            <f:setPropertyActionListener value="#{fin}"
+                                                                         target="#{subRegionalFinalizados.seleccionado}"/>
+                                        </p:commandButton>
+                                        
+                                   
+                                        
+                                    </p:column>
+                                </p:dataTable>
+                        
+                          <p:dialog header="Vista del Documento" widgetVar="productDialog" modal="true" showEffect="fade"
+                                       hideEffect="fade" resizable="false" closable="false" style ="width: 900px;">
+                                 <p:outputPanel id="productDetail" style="text-align:center;">
+                                    
+                                     <iframe src="http://24.199.121.192/Report/mostrar.jsp?file=#{subRegionalFinalizados.seleccionado.actual.urlDocumento}" 
+                                       width="900px" 
+                                       height="600px" 
+                                       style="border:none;">
+                                 </iframe>
+
+                                     
+                                 </p:outputPanel>
+                                 <center>
+                                     <p:commandButton value="Cerrar"  oncomplete="PF('productDialog').hide()" />
+                                 </center>
+                                 
+                             </p:dialog>
+                                                        
+                            
+                          
+                        </h:form>
+                        </div>
+                    </p:panel>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

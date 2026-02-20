@@ -1,0 +1,67 @@
+<ui:component
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:gis="http://gisfaces.com">
+
+    <cc:interface>
+        <!-- Atributos que se pueden pasar al componente -->
+        <cc:attribute name="gestion_id" type="java.lang.String" required="false" />
+    </cc:interface>
+
+    <!-- ✅ Esta sección va después, y JSF la enlaza con la interfaz -->
+    <cc:implementation>
+
+        <h:form id="f-uno">
+            <p:growl id="msg1" life="2500" />
+            
+            <p:panel header="IV. DESCRIPCIÓN BIOFÍSICA DEL ÁREA">
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin-bottom:2px;">
+                    <p:outputLabel for="TextAreaUno" value="Ubicación altitudinal y topografía" style="font-weight:bold;"/>
+                    <i class="pi pi-question-circle" title="Describa la altitud, pendiente y forma del terreno del área evaluada."
+                       style="cursor:help; color:black;"/>
+                </div>
+                <p:inputTextarea id="TextAreaUno" required="true" requiredMessage="Ingrese Ubicación altitudinal y topografía" 
+                                 value="#{biofisicas.txtAreaUno}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="TextAreaDos" value="Zona de vida" style="font-weight:bold;"/>
+                    <i class="pi pi-question-circle" title="Indique la zona de vida según clasificación ecológica."
+                       style="cursor:help; color:black;"/>
+                </div>
+                <p:inputTextarea id="TextAreaDos" required="true" requiredMessage="Ingrese zona de vida" 
+                                 value="#{biofisicas.txtAreaDos}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="TextAreaTres" value="Hidrografía" style="font-weight:bold;"/>
+                    <i class="pi pi-question-circle" title="Describa ríos, quebradas, lagos u otras fuentes de agua presentes."
+                       style="cursor:help; color:black;"/>
+                </div>
+                <p:inputTextarea id="TextAreaTres" required="true" requiredMessage="Ingrese hidrografía"
+                                 value="#{biofisicas.txtAreaTres}" rows="5" autoResize="false"
+                                  style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="display:inline-flex; align-items:center; gap:5px; margin:20px 0 2px 0;">
+                    <p:outputLabel for="TextAreaCuatro" value="Características del bosque" style="font-weight:bold;"/>
+                    <i class="pi pi-question-circle" title="Describa tipo de bosque, especies dominantes y estado de conservación."
+                       style="cursor:help; color:black;"/>
+                </div>
+                <p:inputTextarea id="TextAreaCuatro" required="true" requiredMessage="Ingrese caraterísticas del bosque"
+                                 value="#{biofisicas.txtAreaCuatro}" rows="5" autoResize="false" 
+                                 style="resize: vertical; width:100%; margin:0; box-sizing:border-box;"/>
+
+                <div style="text-align:right; margin-top:20px;">
+                    <p:commandButton value="Guardar" update="msg1" actionListener="#{biofisicas.grabar()}" ajax="true" process="f-uno" 
+                                     icon="pi pi-arrow-circle-right" iconPos="right" style="min-width:120px"/>
+                </div>
+            </p:panel>
+        </h:form>
+
+    </cc:implementation>
+</ui:component>

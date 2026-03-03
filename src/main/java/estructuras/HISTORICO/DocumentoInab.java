@@ -1,10 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package estructuras.HISTORICO;
-
-
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -45,39 +40,23 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *                                 &lt;complexContent&gt;
  *                                   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *                                     &lt;sequence&gt;
- *                                       &lt;element name="Expediente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *                                       &lt;element name="Licencia" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *                                       &lt;element name="Proceso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *                                       &lt;element name="Paso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *                                       &lt;element name="Documento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *                                       &lt;element name="Licencia" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *                                       &lt;element name="GestionId" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
  *                                       &lt;element name="Descripcion" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *                                       &lt;element name="FechaEvento" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
- *                                       &lt;element name="EstadoItem"&gt;
- *                                         &lt;simpleType&gt;
- *                                           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
- *                                             &lt;enumeration value="INGRESADO"/&gt;
- *                                             &lt;enumeration value="PENDIENTE"/&gt;
- *                                             &lt;enumeration value="FINLIZADO"/&gt;
- *                                             &lt;enumeration value="CERRADO"/&gt;
- *                                           &lt;/restriction&gt;
- *                                         &lt;/simpleType&gt;
- *                                       &lt;/element&gt;
- *                                       &lt;element name="Creador" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *                                       &lt;element name="PerfilCreador" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *                                       &lt;element name="EstadoRegistro"&gt;
- *                                         &lt;simpleType&gt;
- *                                           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
- *                                             &lt;enumeration value="EDITABLE"/&gt;
- *                                             &lt;enumeration value="NO EDITABLE"/&gt;
- *                                             &lt;enumeration value="CANCELADO"/&gt;
- *                                             &lt;enumeration value="FINALIZADO"/&gt;
- *                                           &lt;/restriction&gt;
- *                                         &lt;/simpleType&gt;
- *                                       &lt;/element&gt;
+ *                                       &lt;element name="Estado" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *                                       &lt;element name="Proceso" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *                                       &lt;element name="Paso" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *                                       &lt;element name="PasoSiguiente" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *                                       &lt;element name="Fecha" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
+ *                                       &lt;element name="TipoAccion" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *                                       &lt;element name="UrlDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *                                     &lt;/sequence&gt;
- *                                     &lt;attribute name="TipoItem" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
- *                                     &lt;attribute name="GestionId" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
- *                                     &lt;attribute name="OrdenRedis" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+ *                                     &lt;attribute name="idUsuarioActual" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+ *                                     &lt;attribute name="idUsuarioAnterior" type="{http://www.w3.org/2001/XMLSchema}int" /&gt;
+ *                                     &lt;attribute name="idUsuarioHistorico" type="{http://www.w3.org/2001/XMLSchema}int" /&gt;
+ *                                     &lt;attribute name="Esquema" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *                                     &lt;attribute name="Expediente" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *                                     &lt;attribute name="Personalizado" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *                                   &lt;/restriction&gt;
  *                                 &lt;/complexContent&gt;
  *                               &lt;/complexType&gt;
@@ -137,12 +116,12 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "actual"
 })
 @XmlRootElement(name = "DocumentoInab")
-public class DocumentoInab  implements Serializable{
+public class DocumentoInab implements Serializable{
 
     @XmlElement(name = "Historico", required = true)
     protected DocumentoInab.Historico historico = new Historico();
     @XmlElement(name = "Actual")
-    protected DocumentoInab.Actual actual = new Actual();
+    protected DocumentoInab.Actual actual;
     @XmlAttribute(name = "Version")
     protected BigDecimal version;
     @XmlAttribute(name = "NombreEsquema")
@@ -339,7 +318,6 @@ public class DocumentoInab  implements Serializable{
      * 
      * 
      */
-    @XmlRootElement(name = "Actual")
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "licencia",
@@ -353,10 +331,10 @@ public class DocumentoInab  implements Serializable{
         "tipoAccion",
         "urlDocumento"
     })
-    public static class Actual implements Serializable{
+    public static class Actual implements Serializable {
 
         @XmlElement(name = "Licencia", required = true)
-        protected String licencia="";
+        protected String licencia;
         @XmlElement(name = "GestionId", defaultValue = "0")
         protected int gestionId;
         @XmlElement(name = "Descripcion", required = true)
@@ -385,7 +363,7 @@ public class DocumentoInab  implements Serializable{
         @XmlAttribute(name = "Esquema")
         protected String esquema;
         @XmlAttribute(name = "Expediente")
-        protected String expediente="";
+        protected String expediente;
         @XmlAttribute(name = "Personalizado")
         protected String personalizado;
 
@@ -776,39 +754,23 @@ public class DocumentoInab  implements Serializable{
      *                       &lt;complexContent&gt;
      *                         &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
      *                           &lt;sequence&gt;
-     *                             &lt;element name="Expediente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-     *                             &lt;element name="Licencia" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-     *                             &lt;element name="Proceso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-     *                             &lt;element name="Paso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-     *                             &lt;element name="Documento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+     *                             &lt;element name="Licencia" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+     *                             &lt;element name="GestionId" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
      *                             &lt;element name="Descripcion" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-     *                             &lt;element name="FechaEvento" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
-     *                             &lt;element name="EstadoItem"&gt;
-     *                               &lt;simpleType&gt;
-     *                                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
-     *                                   &lt;enumeration value="INGRESADO"/&gt;
-     *                                   &lt;enumeration value="PENDIENTE"/&gt;
-     *                                   &lt;enumeration value="FINLIZADO"/&gt;
-     *                                   &lt;enumeration value="CERRADO"/&gt;
-     *                                 &lt;/restriction&gt;
-     *                               &lt;/simpleType&gt;
-     *                             &lt;/element&gt;
-     *                             &lt;element name="Creador" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-     *                             &lt;element name="PerfilCreador" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-     *                             &lt;element name="EstadoRegistro"&gt;
-     *                               &lt;simpleType&gt;
-     *                                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
-     *                                   &lt;enumeration value="EDITABLE"/&gt;
-     *                                   &lt;enumeration value="NO EDITABLE"/&gt;
-     *                                   &lt;enumeration value="CANCELADO"/&gt;
-     *                                   &lt;enumeration value="FINALIZADO"/&gt;
-     *                                 &lt;/restriction&gt;
-     *                               &lt;/simpleType&gt;
-     *                             &lt;/element&gt;
+     *                             &lt;element name="Estado" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+     *                             &lt;element name="Proceso" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+     *                             &lt;element name="Paso" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+     *                             &lt;element name="PasoSiguiente" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+     *                             &lt;element name="Fecha" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
+     *                             &lt;element name="TipoAccion" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+     *                             &lt;element name="UrlDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
      *                           &lt;/sequence&gt;
-     *                           &lt;attribute name="TipoItem" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
-     *                           &lt;attribute name="GestionId" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
-     *                           &lt;attribute name="OrdenRedis" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+     *                           &lt;attribute name="idUsuarioActual" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+     *                           &lt;attribute name="idUsuarioAnterior" type="{http://www.w3.org/2001/XMLSchema}int" /&gt;
+     *                           &lt;attribute name="idUsuarioHistorico" type="{http://www.w3.org/2001/XMLSchema}int" /&gt;
+     *                           &lt;attribute name="Esquema" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+     *                           &lt;attribute name="Expediente" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+     *                           &lt;attribute name="Personalizado" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
      *                         &lt;/restriction&gt;
      *                       &lt;/complexContent&gt;
      *                     &lt;/complexType&gt;
@@ -831,10 +793,10 @@ public class DocumentoInab  implements Serializable{
     @XmlType(name = "", propOrder = {
         "items"
     })
-    public static class Historico implements Serializable{
+    public static class Historico  implements Serializable{
 
         @XmlElement(name = "Items", required = true)
-        protected DocumentoInab.Historico.Items items;
+        protected DocumentoInab.Historico.Items items = new Items();
 
         /**
          * Gets the value of the items property.
@@ -876,39 +838,23 @@ public class DocumentoInab  implements Serializable{
          *             &lt;complexContent&gt;
          *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
          *                 &lt;sequence&gt;
-         *                   &lt;element name="Expediente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-         *                   &lt;element name="Licencia" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-         *                   &lt;element name="Proceso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-         *                   &lt;element name="Paso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-         *                   &lt;element name="Documento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+         *                   &lt;element name="Licencia" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+         *                   &lt;element name="GestionId" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
          *                   &lt;element name="Descripcion" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-         *                   &lt;element name="FechaEvento" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
-         *                   &lt;element name="EstadoItem"&gt;
-         *                     &lt;simpleType&gt;
-         *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
-         *                         &lt;enumeration value="INGRESADO"/&gt;
-         *                         &lt;enumeration value="PENDIENTE"/&gt;
-         *                         &lt;enumeration value="FINLIZADO"/&gt;
-         *                         &lt;enumeration value="CERRADO"/&gt;
-         *                       &lt;/restriction&gt;
-         *                     &lt;/simpleType&gt;
-         *                   &lt;/element&gt;
-         *                   &lt;element name="Creador" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-         *                   &lt;element name="PerfilCreador" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-         *                   &lt;element name="EstadoRegistro"&gt;
-         *                     &lt;simpleType&gt;
-         *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
-         *                         &lt;enumeration value="EDITABLE"/&gt;
-         *                         &lt;enumeration value="NO EDITABLE"/&gt;
-         *                         &lt;enumeration value="CANCELADO"/&gt;
-         *                         &lt;enumeration value="FINALIZADO"/&gt;
-         *                       &lt;/restriction&gt;
-         *                     &lt;/simpleType&gt;
-         *                   &lt;/element&gt;
+         *                   &lt;element name="Estado" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+         *                   &lt;element name="Proceso" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+         *                   &lt;element name="Paso" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+         *                   &lt;element name="PasoSiguiente" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+         *                   &lt;element name="Fecha" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
+         *                   &lt;element name="TipoAccion" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+         *                   &lt;element name="UrlDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
          *                 &lt;/sequence&gt;
-         *                 &lt;attribute name="TipoItem" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
-         *                 &lt;attribute name="GestionId" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
-         *                 &lt;attribute name="OrdenRedis" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+         *                 &lt;attribute name="idUsuarioActual" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+         *                 &lt;attribute name="idUsuarioAnterior" type="{http://www.w3.org/2001/XMLSchema}int" /&gt;
+         *                 &lt;attribute name="idUsuarioHistorico" type="{http://www.w3.org/2001/XMLSchema}int" /&gt;
+         *                 &lt;attribute name="Esquema" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+         *                 &lt;attribute name="Expediente" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+         *                 &lt;attribute name="Personalizado" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
          *               &lt;/restriction&gt;
          *             &lt;/complexContent&gt;
          *           &lt;/complexType&gt;
@@ -926,10 +872,10 @@ public class DocumentoInab  implements Serializable{
         @XmlType(name = "", propOrder = {
             "item"
         })
-        public static class Items  implements Serializable{
+        public static class Items implements Serializable{
 
             @XmlElement(name = "Item")
-            protected List<DocumentoInab.Historico.Items.Item> item;
+            protected List<DocumentoInab.Historico.Items.Item> item = new ArrayList<>();
             @XmlAttribute(name = "TotalItems")
             protected Integer totalItems;
 
@@ -1001,39 +947,23 @@ public class DocumentoInab  implements Serializable{
              *   &lt;complexContent&gt;
              *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
              *       &lt;sequence&gt;
-             *         &lt;element name="Expediente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-             *         &lt;element name="Licencia" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-             *         &lt;element name="Proceso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-             *         &lt;element name="Paso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
-             *         &lt;element name="Documento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+             *         &lt;element name="Licencia" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+             *         &lt;element name="GestionId" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
              *         &lt;element name="Descripcion" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-             *         &lt;element name="FechaEvento" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
-             *         &lt;element name="EstadoItem"&gt;
-             *           &lt;simpleType&gt;
-             *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
-             *               &lt;enumeration value="INGRESADO"/&gt;
-             *               &lt;enumeration value="PENDIENTE"/&gt;
-             *               &lt;enumeration value="FINLIZADO"/&gt;
-             *               &lt;enumeration value="CERRADO"/&gt;
-             *             &lt;/restriction&gt;
-             *           &lt;/simpleType&gt;
-             *         &lt;/element&gt;
-             *         &lt;element name="Creador" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-             *         &lt;element name="PerfilCreador" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-             *         &lt;element name="EstadoRegistro"&gt;
-             *           &lt;simpleType&gt;
-             *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
-             *               &lt;enumeration value="EDITABLE"/&gt;
-             *               &lt;enumeration value="NO EDITABLE"/&gt;
-             *               &lt;enumeration value="CANCELADO"/&gt;
-             *               &lt;enumeration value="FINALIZADO"/&gt;
-             *             &lt;/restriction&gt;
-             *           &lt;/simpleType&gt;
-             *         &lt;/element&gt;
+             *         &lt;element name="Estado" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+             *         &lt;element name="Proceso" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+             *         &lt;element name="Paso" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+             *         &lt;element name="PasoSiguiente" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+             *         &lt;element name="Fecha" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
+             *         &lt;element name="TipoAccion" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+             *         &lt;element name="UrlDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
              *       &lt;/sequence&gt;
-             *       &lt;attribute name="TipoItem" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
-             *       &lt;attribute name="GestionId" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
-             *       &lt;attribute name="OrdenRedis" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+             *       &lt;attribute name="idUsuarioActual" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+             *       &lt;attribute name="idUsuarioAnterior" type="{http://www.w3.org/2001/XMLSchema}int" /&gt;
+             *       &lt;attribute name="idUsuarioHistorico" type="{http://www.w3.org/2001/XMLSchema}int" /&gt;
+             *       &lt;attribute name="Esquema" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+             *       &lt;attribute name="Expediente" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+             *       &lt;attribute name="Personalizado" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
              *     &lt;/restriction&gt;
              *   &lt;/complexContent&gt;
              * &lt;/complexType&gt;
@@ -1043,73 +973,52 @@ public class DocumentoInab  implements Serializable{
              */
             @XmlAccessorType(XmlAccessType.FIELD)
             @XmlType(name = "", propOrder = {
-                "expediente",
                 "licencia",
+                "gestionId",
+                "descripcion",
+                "estado",
                 "proceso",
                 "paso",
-                "documento",
-                "descripcion",
-                "fechaEvento",
-                "estadoItem",
-                "creador",
-                "perfilCreador",
-                "estadoRegistro"
+                "pasoSiguiente",
+                "fecha",
+                "tipoAccion",
+                "urlDocumento"
             })
-            public static class Item  implements Serializable{
+            public static class Item implements Serializable{
 
-                @XmlElement(name = "Expediente")
-                protected String expediente;
-                @XmlElement(name = "Licencia")
+                @XmlElement(name = "Licencia", required = true)
                 protected String licencia;
-                @XmlElement(name = "Proceso")
-                protected String proceso;
-                @XmlElement(name = "Paso")
-                protected String paso;
-                @XmlElement(name = "Documento")
-                protected String documento;
+                @XmlElement(name = "GestionId", defaultValue = "0")
+                protected int gestionId;
                 @XmlElement(name = "Descripcion", required = true)
                 protected String descripcion;
-                @XmlElement(name = "FechaEvento", required = true)
+                @XmlElement(name = "Estado", defaultValue = "0")
+                protected int estado;
+                @XmlElement(name = "Proceso", required = true)
+                protected String proceso;
+                @XmlElement(name = "Paso", required = true)
+                protected String paso;
+                @XmlElement(name = "PasoSiguiente", required = true)
+                protected String pasoSiguiente;
+                @XmlElement(name = "Fecha", required = true)
                 @XmlSchemaType(name = "dateTime")
-                protected XMLGregorianCalendar fechaEvento;
-                @XmlElement(name = "EstadoItem", required = true)
-                protected String estadoItem;
-                @XmlElement(name = "Creador", required = true)
-                protected String creador;
-                @XmlElement(name = "PerfilCreador", required = true)
-                protected String perfilCreador;
-                @XmlElement(name = "EstadoRegistro", required = true)
-                protected String estadoRegistro;
-                @XmlAttribute(name = "TipoItem", required = true)
-                protected String tipoItem;
-                @XmlAttribute(name = "GestionId")
-                protected Integer gestionId;
-                @XmlAttribute(name = "OrdenRedis")
-                protected Integer ordenRedis;
-
-                /**
-                 * Gets the value of the expediente property.
-                 * 
-                 * @return
-                 *     possible object is
-                 *     {@link String }
-                 *     
-                 */
-                public String getExpediente() {
-                    return expediente;
-                }
-
-                /**
-                 * Sets the value of the expediente property.
-                 * 
-                 * @param value
-                 *     allowed object is
-                 *     {@link String }
-                 *     
-                 */
-                public void setExpediente(String value) {
-                    this.expediente = value;
-                }
+                protected XMLGregorianCalendar fecha;
+                @XmlElement(name = "TipoAccion", required = true)
+                protected String tipoAccion;
+                @XmlElement(name = "UrlDocumento", required = true)
+                protected String urlDocumento;
+                @XmlAttribute(name = "idUsuarioActual")
+                protected Integer idUsuarioActual;
+                @XmlAttribute(name = "idUsuarioAnterior")
+                protected Integer idUsuarioAnterior;
+                @XmlAttribute(name = "idUsuarioHistorico")
+                protected Integer idUsuarioHistorico;
+                @XmlAttribute(name = "Esquema")
+                protected String esquema;
+                @XmlAttribute(name = "Expediente")
+                protected String expediente;
+                @XmlAttribute(name = "Personalizado")
+                protected String personalizado;
 
                 /**
                  * Gets the value of the licencia property.
@@ -1133,6 +1042,62 @@ public class DocumentoInab  implements Serializable{
                  */
                 public void setLicencia(String value) {
                     this.licencia = value;
+                }
+
+                /**
+                 * Gets the value of the gestionId property.
+                 * 
+                 */
+                public int getGestionId() {
+                    return gestionId;
+                }
+
+                /**
+                 * Sets the value of the gestionId property.
+                 * 
+                 */
+                public void setGestionId(int value) {
+                    this.gestionId = value;
+                }
+
+                /**
+                 * Gets the value of the descripcion property.
+                 * 
+                 * @return
+                 *     possible object is
+                 *     {@link String }
+                 *     
+                 */
+                public String getDescripcion() {
+                    return descripcion;
+                }
+
+                /**
+                 * Sets the value of the descripcion property.
+                 * 
+                 * @param value
+                 *     allowed object is
+                 *     {@link String }
+                 *     
+                 */
+                public void setDescripcion(String value) {
+                    this.descripcion = value;
+                }
+
+                /**
+                 * Gets the value of the estado property.
+                 * 
+                 */
+                public int getEstado() {
+                    return estado;
+                }
+
+                /**
+                 * Sets the value of the estado property.
+                 * 
+                 */
+                public void setEstado(int value) {
+                    this.estado = value;
                 }
 
                 /**
@@ -1184,257 +1149,253 @@ public class DocumentoInab  implements Serializable{
                 }
 
                 /**
-                 * Gets the value of the documento property.
+                 * Gets the value of the pasoSiguiente property.
                  * 
                  * @return
                  *     possible object is
                  *     {@link String }
                  *     
                  */
-                public String getDocumento() {
-                    return documento;
+                public String getPasoSiguiente() {
+                    return pasoSiguiente;
                 }
 
                 /**
-                 * Sets the value of the documento property.
+                 * Sets the value of the pasoSiguiente property.
                  * 
                  * @param value
                  *     allowed object is
                  *     {@link String }
                  *     
                  */
-                public void setDocumento(String value) {
-                    this.documento = value;
+                public void setPasoSiguiente(String value) {
+                    this.pasoSiguiente = value;
                 }
 
                 /**
-                 * Gets the value of the descripcion property.
-                 * 
-                 * @return
-                 *     possible object is
-                 *     {@link String }
-                 *     
-                 */
-                public String getDescripcion() {
-                    return descripcion;
-                }
-
-                /**
-                 * Sets the value of the descripcion property.
-                 * 
-                 * @param value
-                 *     allowed object is
-                 *     {@link String }
-                 *     
-                 */
-                public void setDescripcion(String value) {
-                    this.descripcion = value;
-                }
-
-                /**
-                 * Gets the value of the fechaEvento property.
+                 * Gets the value of the fecha property.
                  * 
                  * @return
                  *     possible object is
                  *     {@link XMLGregorianCalendar }
                  *     
                  */
-                public XMLGregorianCalendar getFechaEvento() {
-                    return fechaEvento;
+                public XMLGregorianCalendar getFecha() {
+                    return fecha;
                 }
 
                 /**
-                 * Sets the value of the fechaEvento property.
+                 * Sets the value of the fecha property.
                  * 
                  * @param value
                  *     allowed object is
                  *     {@link XMLGregorianCalendar }
                  *     
                  */
-                public void setFechaEvento(XMLGregorianCalendar value) {
-                    this.fechaEvento = value;
+                public void setFecha(XMLGregorianCalendar value) {
+                    this.fecha = value;
                 }
 
                 /**
-                 * Gets the value of the estadoItem property.
+                 * Gets the value of the tipoAccion property.
                  * 
                  * @return
                  *     possible object is
                  *     {@link String }
                  *     
                  */
-                public String getEstadoItem() {
-                    return estadoItem;
+                public String getTipoAccion() {
+                    return tipoAccion;
                 }
 
                 /**
-                 * Sets the value of the estadoItem property.
+                 * Sets the value of the tipoAccion property.
                  * 
                  * @param value
                  *     allowed object is
                  *     {@link String }
                  *     
                  */
-                public void setEstadoItem(String value) {
-                    this.estadoItem = value;
+                public void setTipoAccion(String value) {
+                    this.tipoAccion = value;
                 }
 
                 /**
-                 * Gets the value of the creador property.
+                 * Gets the value of the urlDocumento property.
                  * 
                  * @return
                  *     possible object is
                  *     {@link String }
                  *     
                  */
-                public String getCreador() {
-                    return creador;
+                public String getUrlDocumento() {
+                    return urlDocumento;
                 }
 
                 /**
-                 * Sets the value of the creador property.
+                 * Sets the value of the urlDocumento property.
                  * 
                  * @param value
                  *     allowed object is
                  *     {@link String }
                  *     
                  */
-                public void setCreador(String value) {
-                    this.creador = value;
+                public void setUrlDocumento(String value) {
+                    this.urlDocumento = value;
                 }
 
                 /**
-                 * Gets the value of the perfilCreador property.
-                 * 
-                 * @return
-                 *     possible object is
-                 *     {@link String }
-                 *     
-                 */
-                public String getPerfilCreador() {
-                    return perfilCreador;
-                }
-
-                /**
-                 * Sets the value of the perfilCreador property.
-                 * 
-                 * @param value
-                 *     allowed object is
-                 *     {@link String }
-                 *     
-                 */
-                public void setPerfilCreador(String value) {
-                    this.perfilCreador = value;
-                }
-
-                /**
-                 * Gets the value of the estadoRegistro property.
-                 * 
-                 * @return
-                 *     possible object is
-                 *     {@link String }
-                 *     
-                 */
-                public String getEstadoRegistro() {
-                    return estadoRegistro;
-                }
-
-                /**
-                 * Sets the value of the estadoRegistro property.
-                 * 
-                 * @param value
-                 *     allowed object is
-                 *     {@link String }
-                 *     
-                 */
-                public void setEstadoRegistro(String value) {
-                    this.estadoRegistro = value;
-                }
-
-                /**
-                 * Gets the value of the tipoItem property.
-                 * 
-                 * @return
-                 *     possible object is
-                 *     {@link String }
-                 *     
-                 */
-                public String getTipoItem() {
-                    return tipoItem;
-                }
-
-                /**
-                 * Sets the value of the tipoItem property.
-                 * 
-                 * @param value
-                 *     allowed object is
-                 *     {@link String }
-                 *     
-                 */
-                public void setTipoItem(String value) {
-                    this.tipoItem = value;
-                }
-
-                /**
-                 * Gets the value of the gestionId property.
+                 * Gets the value of the idUsuarioActual property.
                  * 
                  * @return
                  *     possible object is
                  *     {@link Integer }
                  *     
                  */
-                public int getGestionId() {
-                    if (gestionId == null) {
+                public int getIdUsuarioActual() {
+                    if (idUsuarioActual == null) {
                         return  0;
                     } else {
-                        return gestionId;
+                        return idUsuarioActual;
                     }
                 }
 
                 /**
-                 * Sets the value of the gestionId property.
+                 * Sets the value of the idUsuarioActual property.
                  * 
                  * @param value
                  *     allowed object is
                  *     {@link Integer }
                  *     
                  */
-                public void setGestionId(Integer value) {
-                    this.gestionId = value;
+                public void setIdUsuarioActual(Integer value) {
+                    this.idUsuarioActual = value;
                 }
 
                 /**
-                 * Gets the value of the ordenRedis property.
+                 * Gets the value of the idUsuarioAnterior property.
                  * 
                  * @return
                  *     possible object is
                  *     {@link Integer }
                  *     
                  */
-                public int getOrdenRedis() {
-                    if (ordenRedis == null) {
-                        return  0;
-                    } else {
-                        return ordenRedis;
-                    }
+                public Integer getIdUsuarioAnterior() {
+                    return idUsuarioAnterior;
                 }
 
                 /**
-                 * Sets the value of the ordenRedis property.
+                 * Sets the value of the idUsuarioAnterior property.
                  * 
                  * @param value
                  *     allowed object is
                  *     {@link Integer }
                  *     
                  */
-                public void setOrdenRedis(Integer value) {
-                    this.ordenRedis = value;
+                public void setIdUsuarioAnterior(Integer value) {
+                    this.idUsuarioAnterior = value;
+                }
+
+                /**
+                 * Gets the value of the idUsuarioHistorico property.
+                 * 
+                 * @return
+                 *     possible object is
+                 *     {@link Integer }
+                 *     
+                 */
+                public Integer getIdUsuarioHistorico() {
+                    return idUsuarioHistorico;
+                }
+
+                /**
+                 * Sets the value of the idUsuarioHistorico property.
+                 * 
+                 * @param value
+                 *     allowed object is
+                 *     {@link Integer }
+                 *     
+                 */
+                public void setIdUsuarioHistorico(Integer value) {
+                    this.idUsuarioHistorico = value;
+                }
+
+                /**
+                 * Gets the value of the esquema property.
+                 * 
+                 * @return
+                 *     possible object is
+                 *     {@link String }
+                 *     
+                 */
+                public String getEsquema() {
+                    return esquema;
+                }
+
+                /**
+                 * Sets the value of the esquema property.
+                 * 
+                 * @param value
+                 *     allowed object is
+                 *     {@link String }
+                 *     
+                 */
+                public void setEsquema(String value) {
+                    this.esquema = value;
+                }
+
+                /**
+                 * Gets the value of the expediente property.
+                 * 
+                 * @return
+                 *     possible object is
+                 *     {@link String }
+                 *     
+                 */
+                public String getExpediente() {
+                    return expediente;
+                }
+
+                /**
+                 * Sets the value of the expediente property.
+                 * 
+                 * @param value
+                 *     allowed object is
+                 *     {@link String }
+                 *     
+                 */
+                public void setExpediente(String value) {
+                    this.expediente = value;
+                }
+
+                /**
+                 * Gets the value of the personalizado property.
+                 * 
+                 * @return
+                 *     possible object is
+                 *     {@link String }
+                 *     
+                 */
+                public String getPersonalizado() {
+                    return personalizado;
+                }
+
+                /**
+                 * Sets the value of the personalizado property.
+                 * 
+                 * @param value
+                 *     allowed object is
+                 *     {@link String }
+                 *     
+                 */
+                public void setPersonalizado(String value) {
+                    this.personalizado = value;
                 }
 
             }
 
         }
 
-    } 
+    }
 
 }

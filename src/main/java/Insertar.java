@@ -1,6 +1,10 @@
 
+
+
 import MANEJADORES.MHHome;
+import estructuras.HISTORICO.DocumentoInab;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -77,21 +81,34 @@ public class Insertar implements Serializable{
     public void grabar(){
         
         estructuras.HISTORICO.DocumentoInab.Actual act;
-        try {
-            act = UTILIDADES.FuncionesComunes.fromXml(this.xmlActual,  estructuras.HISTORICO.DocumentoInab.Actual.class);
-            //graba en la cola del usuario actual por su id
-            mhome.getApi().grabaHistorico(act);
-            
-          FacesContext.getCurrentInstance().
+        
+       
+        
+        
+        //act = UTILIDADES.FuncionesComunes.fromXml(this.xmlActual,  estructuras.HISTORICO.DocumentoInab.Actual.class);
+        act = new DocumentoInab.Actual();
+        act.setDescripcion("SE creo una solcitud ******");
+        act.setUrlDocumento("c:/pdf/solicitud.pdf");
+        act.setEsquema("LI-RE-042");
+        act.setProceso("LI-PR-009");
+        act.setEstado(1);
+        act.setGestionId(2193);
+        act.setPasoSiguiente("PASO-2");
+        act.setPaso("PASO-1");
+        act.setExpediente("21-1603-41-1.1.1-2024");
+        act.setLicencia("21-1603-41-1.1.1-2024-1");
+        act.setFecha(UTILIDADES.FuncionesComunes.toXMLGregorianCalendar(new Date()));
+        act.setPersonalizado("c:/pdf/plan.xml");
+        act.setIdUsuarioActual(Integer.parseInt(this.idUsuarioActual));// usario solicitante elaborador
+        //graba en la cola del usuario actual por su id
+        mhome.getApi().grabaHistorico(act);
+        FacesContext.getCurrentInstance().
                 addMessage(null,this.mhome.getApi().creaMensajeError("Se creo la tarea con el usuario id: "+this.idUsuarioActual));
-                    
-
-        } catch (JAXBException ex) {
-            Logger.getLogger(Insertar.class.getName()).log(Level.SEVERE, null, ex);
-        }
         
         
     }
+    
+    
     
     
     

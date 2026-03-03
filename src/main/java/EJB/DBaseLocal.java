@@ -44,4 +44,5 @@ public interface DBaseLocal {
     public String enviarApiMMCoreXMLGetDocIndividual(String url, String param);
     public  long bandejadeEntrada(long idUsuarioActual);
     public String enviarApiMMCoreJSON(String param, int tipo, String core, String index);
+    public DocumentoInab moverTarea(DocumentoInab tarea,DocumentoInab.Actual tareaNueva,int idUsuarioSiguiente);
 }

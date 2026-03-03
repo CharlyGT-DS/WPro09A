@@ -328,7 +328,7 @@ public class CreaHistorico implements Serializable{
     public estructuras.HISTORICO.DocumentoInab.Historico.Items.Item creaRegistroItem( estructuras.HISTORICO.DocumentoInab actual, estructuras.PefilInab per){
         estructuras.HISTORICO.DocumentoInab.Historico.Items.Item item = new DocumentoInab.Historico.Items.Item();
         
-        
+        /*
         item.setCreador(per.getTcUsuario().getUsuarioDesc());
         item.setDescripcion(actual.getActual().getDescripcion());
         item.setDocumento(actual.getActual().getUrlDocumento());
@@ -342,7 +342,7 @@ public class CreaHistorico implements Serializable{
         item.setEstadoRegistro(actual.getActual().getUrlDocumento());
         item.setPerfilCreador(per.getTcPerfil().getPerfilDesc());
         item.setEstadoItem("1");
-        
+        */
         
         
         return item;

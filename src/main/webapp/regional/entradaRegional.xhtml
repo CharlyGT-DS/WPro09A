@@ -20,7 +20,7 @@
     <ui:define name="breadcrumb">
      <f:metadata>
             
-         <f:viewAction action="#{secretariaEntrada.cargarDatos()}"  />
+         <f:viewAction action="#{regionalEntrada.cargarDatos()}"  />
         </f:metadata>
     </ui:define>
 
@@ -36,7 +36,7 @@
                             <p:growl id="msg" sticky="false" life="2500"/>
                             
                             
-                            <p:dataTable id="basicDT" var="fin" value="#{secretariaEntrada.listaEntrada}" emptyMessage="No hay Registros">
+                            <p:dataTable id="basicDT" var="fin" value="#{regionalEntrada.listaEntrada}" emptyMessage="No hay Registros">
                                     <p:column headerText="Expediente" style="width: 8%">
                                         <h:outputText value="#{fin.actual.expediente}" />
                                     </p:column>
@@ -76,13 +76,13 @@
                                         <p:commandButton update=":form:productDetail" disabled="true"  oncomplete="PF('productDialog').show()"
                                                           icon="pi pi-telegram" title="Aceptar" ajax="true">
                                             <f:setPropertyActionListener value="#{fin}"
-                                                                         target="#{secretariaEntrada.seleccionadoEntrada}"/>
+                                                                         target="#{regionalEntrada.seleccionadoEntrada}"/>
                                         </p:commandButton>
                                         
                                         <p:commandButton style="margin-left: 8px;" update=":form:productDetail2"  oncomplete="PF('productDialog2').show()"
                                                           icon="pi pi-search" title="Ver Documentos" ajax="true">
                                             <f:setPropertyActionListener value="#{fin}"
-                                                                         target="#{secretariaEntrada.seleccionadoEntrada}"/>
+                                                                         target="#{regionalEntrada.seleccionadoEntrada}"/>
                                         </p:commandButton>
                                         
                                     
@@ -98,7 +98,7 @@
                                          <tr>
                                              
                                              <td style="width: 50%; text-align: right;" >
-                                                 <p:commandButton value="aceptar" update=":form:basicDT" oncomplete="PF('productDialog').hide();" actionListener="#{secretariaEntrada.aceptar()}" />
+                                                 <p:commandButton value="aceptar" update=":form:basicDT" oncomplete="PF('productDialog').hide();" actionListener="#{regionalEntrada.aceptar()}" />
 
                                              </td>
                                               
@@ -126,13 +126,13 @@
                                                   </td>
                                                   <td style="width: 65%;text-align: left;">
                                                      
-                                                      <p:outputLabel value="#{secretariaEntrada.listaArchivos.get(0).get('data2').toString()}"/> 
+                                                      <p:outputLabel value="#{regionalEntrada.listaArchivos.get(0).get('data2').toString()}"/> 
                                                   </td>
                                                   <td style="width: 20%;text-align: left;">
                                                       
-                                                      <p:selectBooleanCheckbox value="#{secretariaEntrada.c1}" itemLabel="Verificar">
+                                                      <p:selectBooleanCheckbox value="#{regionalEntrada.c1}" itemLabel="Verificar">
                                                       
-                                                        <p:ajax listener="#{secretariaEntrada.verificaBoton()}"/>
+                                                        <p:ajax listener="#{regionalEntrada.verificaBoton()}"/>
                                                       </p:selectBooleanCheckbox>
                                                       
                                                   </td>
@@ -144,13 +144,13 @@
                                                       2
                                                   </td>
                                                   <td style="width: 65%;text-align: left;">
-                                                      <p:outputLabel value="#{secretariaEntrada.listaArchivos.get(1).get('data2').toString()}"/> 
+                                                      <p:outputLabel value="#{regionalEntrada.listaArchivos.get(1).get('data2').toString()}"/> 
                                                     
                                                       
                                                   </td>
                                                   <td style="width: 20%;text-align: left;">
-                                                      <p:selectBooleanCheckbox value="#{secretariaEntrada.c2}" itemLabel="Verificar">
-                                                        <p:ajax listener="#{secretariaEntrada.verificaBoton()}"/>
+                                                      <p:selectBooleanCheckbox value="#{regionalEntrada.c2}" itemLabel="Verificar">
+                                                        <p:ajax listener="#{regionalEntrada.verificaBoton()}"/>
                                                       </p:selectBooleanCheckbox>
                                                       
                                                   </td>
@@ -166,13 +166,13 @@
                                                       3
                                                   </td>
                                                   <td style="width: 65%;text-align: left;">
-                                                      <p:outputLabel value="#{secretariaEntrada.listaArchivos.get(2).get('data2').toString()}"/> 
+                                                      <p:outputLabel value="#{regionalEntrada.listaArchivos.get(2).get('data2').toString()}"/> 
                                                       
                                                   </td>
                                                   <td style="width: 20%">
                                                       
-                                                      <p:selectBooleanCheckbox value="#{secretariaEntrada.c3}" itemLabel="Verificar">
-                                                        <p:ajax listener="#{secretariaEntrada.verificaBoton()}"/>
+                                                      <p:selectBooleanCheckbox value="#{regionalEntrada.c3}" itemLabel="Verificar">
+                                                        <p:ajax listener="#{regionalEntrada.verificaBoton()}"/>
                                                       </p:selectBooleanCheckbox>  
                                                   </td>
                                                   
@@ -185,12 +185,12 @@
                                                       4
                                                   </td>
                                                   <td style="width: 65%;text-align: left;">
-                                                      <p:outputLabel value="#{secretariaEntrada.listaArchivos.get(3).get('data2').toString()}"/> 
+                                                      <p:outputLabel value="#{regionalEntrada.listaArchivos.get(3).get('data2').toString()}"/> 
                                                       
                                                   </td>
                                                   <td style="width: 20%">
-                                                       <p:selectBooleanCheckbox value="#{secretariaEntrada.c4}" itemLabel="Verificar">
-                                                             <p:ajax listener="#{secretariaEntrada.verificaBoton()}"/>
+                                                       <p:selectBooleanCheckbox value="#{regionalEntrada.c4}" itemLabel="Verificar">
+                                                             <p:ajax listener="#{regionalEntrada.verificaBoton()}"/>
                                                        </p:selectBooleanCheckbox>
                                                       
                                                   </td>
@@ -201,12 +201,12 @@
                                                       5
                                                   </td>
                                                   <td style="width: 65%;text-align: left;">
-                                                      <p:outputLabel value="#{secretariaEntrada.listaArchivos.get(4).get('data2').toString()}"/> 
+                                                      <p:outputLabel value="#{regionalEntrada.listaArchivos.get(4).get('data2').toString()}"/> 
                                                       
                                                   </td>
                                                   <td style="width: 20%">
-                                                       <p:selectBooleanCheckbox  value="#{secretariaEntrada.c5}" itemLabel="Verificar">
-                                                           <p:ajax listener="#{secretariaEntrada.verificaBoton()}"/>
+                                                       <p:selectBooleanCheckbox  value="#{regionalEntrada.c5}" itemLabel="Verificar">
+                                                           <p:ajax listener="#{regionalEntrada.verificaBoton()}"/>
                                                            
                                                        </p:selectBooleanCheckbox>
                                                       
@@ -221,7 +221,7 @@
                                               
                                           </table>
                                           <center>
-                                              <p:commandButton id="tpu" oncomplete="PF('productDialog2').hide();" actionListener="#{secretariaEntrada.generacionDocumentos()}" value="#{secretariaEntrada.boton}"  />
+                                              <p:commandButton id="tpu" oncomplete="PF('productDialog2').hide();" actionListener="#{regionalEntrada.generacionDocumentos()}" value="#{regionalEntrada.boton}"  />
                                               
                                           </center>
                                           

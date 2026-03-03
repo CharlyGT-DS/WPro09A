@@ -294,6 +294,8 @@ public class SecretariaEntrada implements Serializable{
        
 
        for (String t : s){ // retorna una lista de XML de tipo HISTORICO.DocumentoInab
+           System.out.println("XML LEIDO:");
+           System.out.println(t);
            try {
                estructuras.HISTORICO.DocumentoInab.Actual act = new DocumentoInab.Actual();
                

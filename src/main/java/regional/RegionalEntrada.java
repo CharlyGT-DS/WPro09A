@@ -4,8 +4,8 @@
  */
 package regional;
 
-import subregional.*;
-import secretaria.*;
+import juridico.*;
+import solicitante.*;
 import MANEJADORES.MHHome;
 import PERFIL.CargaDocumentosLocal;
 import estructuras.GEnericaCincoCampos;
@@ -299,8 +299,13 @@ public class RegionalEntrada implements Serializable{
            try {
                estructuras.HISTORICO.DocumentoInab act = new DocumentoInab();
                
-               act = UTILIDADES.FuncionesComunes.fromXml(t,  estructuras.HISTORICO.DocumentoInab.class); 
-              
+//               act = UTILIDADES.FuncionesComunes.fromXml(t,  estructuras.HISTORICO.DocumentoInab.class); 
+
+               DocumentoInab.Actual actual = UTILIDADES.FuncionesComunes.fromXml(t, DocumentoInab.Actual.class);
+
+               DocumentoInab nuevo = new DocumentoInab();
+               nuevo.setActual(actual);
+               act = nuevo;
                listaTmp.add(act);
            } catch (JAXBException ex) {
                Logger.getLogger(RegionalEntrada.class.getName()).log(Level.SEVERE, null, ex);

@@ -297,8 +297,15 @@ public class SolicitanteEntrada implements Serializable{
            try {
                estructuras.HISTORICO.DocumentoInab act = new DocumentoInab();
                
-               act = UTILIDADES.FuncionesComunes.fromXml(t,  estructuras.HISTORICO.DocumentoInab.class); 
-              
+//               act = UTILIDADES.FuncionesComunes.fromXml(t,  estructuras.HISTORICO.DocumentoInab.class); 
+
+               DocumentoInab.Actual actual = UTILIDADES.FuncionesComunes.fromXml(t, DocumentoInab.Actual.class);
+
+               DocumentoInab nuevo = new DocumentoInab();
+               nuevo.setActual(actual);
+               act = nuevo;
+               listaTmp.add(act);
+
                listaTmp.add(act);
            } catch (JAXBException ex) {
                Logger.getLogger(SolicitanteEntrada.class.getName()).log(Level.SEVERE, null, ex);

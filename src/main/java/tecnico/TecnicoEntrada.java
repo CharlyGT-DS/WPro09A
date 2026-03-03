@@ -175,44 +175,44 @@ public class TecnicoEntrada implements Serializable{
     
     public void aceptar(){
         
-        try {
-            String llaveOrigen ="EXP-ACTU-"+mhome.getPer().getTcUsuario().getUsuarioId();
-            String llaveAceptado="EXP-ACTU-A-"+mhome.getPer().getTcUsuario().getUsuarioId();
-            Jedis JD =  cargaDoc.obtieneRedis();
-            long l = JD.llen(llaveOrigen);
-            List<String> lis = JD.lrange(llaveOrigen, 0, l);
-            String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(this.seleccionadoEntrada);
-            
-            // mueve a cola aceptados
-            JD.lpush(llaveAceptado, xml);
-            
-            // elimina de cola entrada
-            JD.lrem(llaveOrigen, 0, xml);
-            //elimina de la lista de la tabla
-            this.listaEntrada.remove(this.seleccionadoEntrada);
-            // actualiza la tabla
-            
-            //MODIFICA ESTADO del paso anteior
-            String sql = UTILIDADES.SQL.consultaDetalle2(seleccionadoEntrada, Integer.parseInt(this.mhome.getRa()));
-            GEnericaCincoCampos cinco = (GEnericaCincoCampos) mhome.getApi().repuestaApi(new GEnericaCincoCampos(), "JSON",sql,"24.199.121.192");
-            
-            String llave ="EXP-ACTU-F-"+cinco.getDato5().toString().replaceAll(".0", "");
-            String xmlR = JD.lindex(llave,0);
-            
-            DocumentoInab temp = UTILIDADES.FuncionesComunes.fromXml(xmlR, estructuras.HISTORICO.DocumentoInab.class);
-            temp.getActual().setTipoAccion("Bloqueado");
-            String tmpXML = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(temp);
-            
-            JD.lrem(llave, 0, xmlR);
-            JD.lpush(llave, tmpXML);
-            
-            //PrimeFaces.current().ajax().update(":form:basicDT");
-
-            
-        } catch (JAXBException ex) {
-            Logger.getLogger(TecnicoEntrada.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+//        try {
+//            String llaveOrigen ="EXP-ACTU-"+mhome.getPer().getTcUsuario().getUsuarioId();
+//            String llaveAceptado="EXP-ACTU-A-"+mhome.getPer().getTcUsuario().getUsuarioId();
+//            Jedis JD =  cargaDoc.obtieneRedis();
+//            long l = JD.llen(llaveOrigen);
+//            List<String> lis = JD.lrange(llaveOrigen, 0, l);
+//            String xml = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(this.seleccionadoEntrada);
+//            
+//            // mueve a cola aceptados
+//            JD.lpush(llaveAceptado, xml);
+//            
+//            // elimina de cola entrada
+//            JD.lrem(llaveOrigen, 0, xml);
+//            //elimina de la lista de la tabla
+//            this.listaEntrada.remove(this.seleccionadoEntrada);
+//            // actualiza la tabla
+//            
+//            //MODIFICA ESTADO del paso anteior
+//            String sql = UTILIDADES.SQL.consultaDetalle2(seleccionadoEntrada, Integer.parseInt(this.mhome.getRa()));
+//            GEnericaCincoCampos cinco = (GEnericaCincoCampos) mhome.getApi().repuestaApi(new GEnericaCincoCampos(), "JSON",sql,"24.199.121.192");
+//            
+//            String llave ="EXP-ACTU-F-"+cinco.getDato5().toString().replaceAll(".0", "");
+//            String xmlR = JD.lindex(llave,0);
+//            
+//            DocumentoInab temp = UTILIDADES.FuncionesComunes.fromXml(xmlR, estructuras.HISTORICO.DocumentoInab.class);
+//            temp.getActual().setTipoAccion("Bloqueado");
+//            String tmpXML = UTILIDADES.FuncionesComunes.convierteObjetoAXMLString(temp);
+//            
+//            JD.lrem(llave, 0, xmlR);
+//            JD.lpush(llave, tmpXML);
+//            
+//            //PrimeFaces.current().ajax().update(":form:basicDT");
+//
+//            
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(TecnicoEntrada.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
         
     }
     
@@ -296,11 +296,18 @@ public class TecnicoEntrada implements Serializable{
        
 
        for (String t : s){
+           System.out.println("XML LEIDO:");
+           System.out.println(t);
            try {
                estructuras.HISTORICO.DocumentoInab act = new DocumentoInab();
                
-               act = UTILIDADES.FuncionesComunes.fromXml(t,  estructuras.HISTORICO.DocumentoInab.class); 
+//               act = UTILIDADES.FuncionesComunes.fromXml(t,  estructuras.HISTORICO.DocumentoInab.class); 
               
+               DocumentoInab.Actual actual = UTILIDADES.FuncionesComunes.fromXml(t, DocumentoInab.Actual.class);
+
+               DocumentoInab nuevo = new DocumentoInab();
+               nuevo.setActual(actual);
+               act = nuevo;
                listaTmp.add(act);
            } catch (JAXBException ex) {
                Logger.getLogger(TecnicoEntrada.class.getName()).log(Level.SEVERE, null, ex);
